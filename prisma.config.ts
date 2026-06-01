@@ -9,6 +9,8 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // Las migraciones / prisma db push usan esta URL. En Supabase debe ser una
+    // conexión SIN pgbouncer (puerto 5432). Por eso apuntamos a DIRECT_URL.
+    url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
   },
 });

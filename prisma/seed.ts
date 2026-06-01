@@ -74,16 +74,16 @@ async function main() {
   // ---- Provider profiles ----
   const [pedroProfile, mariaProfile, robertoProfile, anaProfile] = await Promise.all([
     prisma.providerProfile.create({
-      data: { userId: pedro.id, bio: 'Plomero certificado con 10 años de experiencia.', category: 'PLUMBING', rating: 4.8, totalReviews: 32 },
+      data: { userId: pedro.id, bio: 'Plomero certificado con 10 años de experiencia.', skills: ['PLUMBING'], rating: 4.8, totalReviews: 32 },
     }),
     prisma.providerProfile.create({
-      data: { userId: maria.id, bio: 'Maestra de matemáticas y ciencias para primaria y secundaria.', category: 'TEACHING', rating: 4.9, totalReviews: 58 },
+      data: { userId: maria.id, bio: 'Maestra de matemáticas y ciencias para primaria y secundaria.', skills: ['TEACHING'], rating: 4.9, totalReviews: 58 },
     }),
     prisma.providerProfile.create({
-      data: { userId: roberto.id, bio: 'Delivery express en toda el área metropolitana de San Salvador.', category: 'DELIVERY', rating: 4.6, totalReviews: 120 },
+      data: { userId: roberto.id, bio: 'Delivery express en toda el área metropolitana de San Salvador.', skills: ['DELIVERY'], rating: 4.6, totalReviews: 120 },
     }),
     prisma.providerProfile.create({
-      data: { userId: ana.id, bio: 'Diseñadora gráfica y web con 6 años de experiencia.', category: 'DESIGN', rating: 4.7, totalReviews: 21 },
+      data: { userId: ana.id, bio: 'Diseñadora gráfica y web con 6 años de experiencia.', skills: ['DESIGN'], rating: 4.7, totalReviews: 21 },
     }),
   ])
 
@@ -93,49 +93,49 @@ async function main() {
       {
         title: 'Reparación de tuberías y fugas',
         description: 'Detección y reparación de fugas, cambio de tuberías dañadas y revisión general del sistema hidráulico del hogar.',
-        priceInTkiero: 120,
+        price: 120,
         category: 'PLUMBING',
         providerId: pedroProfile.id,
       },
       {
         title: 'Instalación de calentador de agua',
         description: 'Instalación y conexión de calentadores eléctricos o de gas, incluyendo revisión de presión y pruebas de seguridad.',
-        priceInTkiero: 250,
+        price: 250,
         category: 'PLUMBING',
         providerId: pedroProfile.id,
       },
       {
         title: 'Clases de matemáticas — primaria y secundaria',
         description: 'Refuerzo escolar de álgebra, geometría y aritmética. Sesiones de 1 hora adaptadas al nivel del estudiante.',
-        priceInTkiero: 40,
+        price: 40,
         category: 'TEACHING',
         providerId: mariaProfile.id,
       },
       {
         title: 'Preparación para bachillerato PAES',
         description: 'Preparación intensiva para el examen de bachillerato. Incluye simulacros y material de estudio actualizado.',
-        priceInTkiero: 180,
+        price: 180,
         category: 'TEACHING',
         providerId: mariaProfile.id,
       },
       {
         title: 'Delivery en San Salvador y alrededores',
         description: 'Entrega de paquetes, documentos o compras del día en San Salvador, Santa Tecla y Antiguo Cuscatlán. Mismo día.',
-        priceInTkiero: 15,
+        price: 15,
         category: 'DELIVERY',
         providerId: robertoProfile.id,
       },
       {
         title: 'Mensajería express — entrega en 2 horas',
         description: 'Servicio urgente de mensajería para contratos, facturas y documentos legales dentro del Área Metropolitana.',
-        priceInTkiero: 35,
+        price: 35,
         category: 'DELIVERY',
         providerId: robertoProfile.id,
       },
       {
         title: 'Diseño de logo y branding',
         description: 'Creación de identidad visual completa: logotipo en vectores, paleta de colores, tipografía y guía de marca.',
-        priceInTkiero: 320,
+        price: 320,
         category: 'DESIGN',
         providerId: anaProfile.id,
       },
