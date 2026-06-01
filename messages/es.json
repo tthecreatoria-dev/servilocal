@@ -1,0 +1,106 @@
+{
+  "Header": {
+    "findWork": "Buscar trabajo",
+    "postJob": "Publicar trabajo",
+    "about": "Acerca de",
+    "login": "Entrar"
+  },
+  "Footer": {
+    "tagline": "© 2024 ServiLocal. Hecho para la comunidad.",
+    "terms": "Términos de servicio",
+    "privacy": "Política de privacidad",
+    "help": "Centro de ayuda",
+    "safety": "Consejos de seguridad"
+  },
+  "BottomNav": {
+    "home": "Inicio",
+    "jobs": "Trabajos",
+    "messages": "Mensajes",
+    "profile": "Perfil"
+  },
+  "HomePage": {
+    "heroTitle": "Encuentra trabajadores locales de confianza",
+    "heroSubtitle": "Conecta con artesanos y trabajadores calificados en tu comunidad. Seguro, simple y local.",
+    "searchService": "¿Qué servicio necesitas?",
+    "searchLocation": "¿Dónde?",
+    "searchButton": "Buscar",
+    "postJob": "Publicar trabajo",
+    "findWork": "Buscar trabajo",
+    "browseCategoriesTitle": "Explorar por categoría",
+    "seeAll": "Ver todos",
+    "activeJobsTitle": "Trabajos activos en tu área",
+    "activeJobsSubtitle": "Aplica directamente a estas solicitudes abiertas.",
+    "sortNewest": "Más recientes",
+    "sortBudget": "Mayor presupuesto",
+    "viewAllJobs": "Ver todos los trabajos",
+    "viewJob": "Ver",
+    "noJobsTitle": "Aún no hay trabajos publicados",
+    "noJobsSubtitle": "Sé el primero en publicar un trabajo en tu área.",
+    "trustVerified": "Servicios verificados",
+    "trustPayment": "Pagos seguros vía Tkiero",
+    "trustLocal": "Solo en El Salvador",
+    "howItWorksTitle": "¿Cómo funciona?",
+    "howItWorksStep1Title": "Publica tu trabajo",
+    "howItWorksStep1Desc": "Describe lo que necesitas en segundos. Es gratis y sencillo.",
+    "howItWorksStep2Title": "Elige tu profesional",
+    "howItWorksStep2Desc": "Revisa perfiles y propuestas, y elige al mejor para tu proyecto.",
+    "howItWorksStep3Title": "Pago seguro",
+    "howItWorksStep3Desc": "Tu pago queda retenido de forma segura hasta que el trabajo esté listo.",
+    "categories": {
+      "carpenter": "Carpintero",
+      "bricklayer": "Albañil",
+      "electrician": "Electricista",
+      "plumber": "Plomero",
+      "housekeeper": "Ama de llaves",
+      "painter": "Pintor",
+      "teacher": "Maestro",
+      "delivery": "Delivery"
+    },
+    "serviceCategory": {
+      "PLUMBING": "Plomero",
+      "TEACHING": "Maestro",
+      "DELIVERY": "Delivery",
+      "CLEANING": "Limpieza",
+      "DESIGN": "Diseñador",
+      "DIGITAL": "Digital"
+    },
+    "timeAgo": {
+      "minutesAgo": "{count} min",
+      "hoursAgo": "{count} h",
+      "daysAgo": "{count} d"
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Bienvenido de vuelta. Ingresa tus credenciales.",
+      "button": "Iniciar sesión",
+      "noAccount": "¿No tienes cuenta?",
+      "registerLink": "Regístrate"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Únete a ServiLocal — contrata u ofrece servicios.",
+      "button": "Crear cuenta",
+      "roleLabel": "Quiero…",
+      "roleClient": "Contratar (Cliente)",
+      "roleProvider": "Trabajar (Proveedor)",
+      "haveAccount": "¿Ya tienes cuenta?",
+      "loginLink": "Iniciar sesión"
+    },
+    "fields": {
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "fullName": "Nombre completo"
+    },
+    "errors": {
+      "invalidEmail": "Correo electrónico inválido",
+      "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+      "nameTooShort": "El nombre debe tener al menos 2 caracteres",
+      "INVALID_CREDENTIALS": "Correo o contraseña incorrectos",
+      "EMAIL_EXISTS": "Ya existe una cuenta con este correo",
+      "SIGNUP_SIGNIN_FAILED": "Cuenta creada, pero no se pudo iniciar sesión. Por favor inicia sesión manualmente.",
+      "UNKNOWN": "Algo salió mal. Intenta de nuevo."
+    }
+  }
+}

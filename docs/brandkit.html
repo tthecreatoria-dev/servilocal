@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiLocal — Brand Identity System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --canvas:    #080809;
+      --panel:     #101012;
+      --panel-alt: #141416;
+      --border:    #222226;
+      --amber:     #F2A22A;
+      --coral:     #E05A38;
+      --ivory:     #F4F3EE;
+      --muted:     #5A5A62;
+      --muted-2:   #3A3A42;
+      --gap:       10px;
+      --r:         10px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--canvas);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 32px 64px;
+      min-height: 100vh;
+    }
+
+    /* ─── header ─── */
+    .page-header {
+      width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 20px;
+    }
+    .page-title {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .page-meta {
+      font-size: 10px;
+      color: var(--muted-2);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── board ─── */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 300px);
+      gap: var(--gap);
+      width: 1200px;
+    }
+
+    /* ─── panel base ─── */
+    .p {
+      background: var(--panel);
+      border-radius: var(--r);
+      padding: 28px 28px 42px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .p-label {
+      position: absolute;
+      bottom: 16px;
+      left: 28px;
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      font-weight: 500;
+    }
+    .p-num {
+      position: absolute;
+      bottom: 16px;
+      right: 28px;
+      font-size: 9px;
+      color: var(--muted-2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .p-section {
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    /* ════════════════════════════════════
+       P1 — Logo Cover
+    ════════════════════════════════════ */
+    .p-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--panel-alt);
+    }
+
+    .logo-mark {
+      width: 68px;
+      height: 68px;
+      margin-bottom: 22px;
+    }
+
+    .wordmark {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--ivory);
+      letter-spacing: -0.04em;
+    }
+    .wordmark em {
+      font-style: normal;
+      color: var(--amber);
+    }
+
+    .tagline-small {
+      margin-top: 10px;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ════════════════════════════════════
+       P2 — Logo Construction
+    ════════════════════════════════════ */
+    .p-construction {
+      background: var(--canvas);
+      border: 1px solid var(--border);
+    }
+
+    .construction-svg {
+      width: 100%;
+      height: calc(100% - 40px);
+    }
+
+    /* ════════════════════════════════════
+       P3 — Digital App
+    ════════════════════════════════════ */
+    .p-digital {
+      background: #0C0D10;
+      padding: 0;
+      padding-bottom: 42px;
+    }
+
+    .browser-chrome {
+      background: #18181C;
+      border-bottom: 1px solid #222228;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-r { background: #FF5F57; }
+    .dot-y { background: #FEBC2E; }
+    .dot-g { background: #28C840; }
+
+    .url-bar {
+      flex: 1;
+      background: #222228;
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: 9px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0 8px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .app-body {
+      padding: 16px 20px 0;
+    }
+
+    .app-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .app-wm { font-size: 13px; font-weight: 700; color: var(--ivory); letter-spacing: -0.03em; }
+    .app-wm em { font-style: normal; color: var(--amber); }
+
+    .nav-btns { display: flex; gap: 5px; }
+    .nav-btn {
+      font-size: 8px;
+      padding: 3px 9px;
+      border-radius: 3px;
+      background: #222228;
+      color: var(--muted);
+    }
+    .nav-btn-cta {
+      background: var(--amber);
+      color: #080809;
+      font-weight: 600;
+    }
+
+    .search {
+      background: #18181C;
+      border-radius: 6px;
+      padding: 7px 12px;
+      font-size: 9px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #222228;
+    }
+
+    .chips { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+    .chip {
+      font-size: 8px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: #18181C;
+      color: var(--muted);
+      border: 1px solid #222228;
+    }
+    .chip-on {
+      background: var(--amber);
+      color: #080809;
+      font-weight: 600;
+      border-color: transparent;
+    }
+
+    .cards-row { display: flex; gap: 8px; }
+    .svc-card {
+      flex: 1;
+      background: #18181C;
+      border-radius: 6px;
+      padding: 10px;
+      border: 1px solid #222228;
+    }
+    .svc-thumb {
+      width: 100%;
+      height: 32px;
+      background: #222228;
+      border-radius: 4px;
+      margin-bottom: 7px;
+    }
+    .svc-title { font-size: 8.5px; color: var(--ivory); font-weight: 600; }
+    .svc-sub { font-size: 7.5px; color: var(--muted); margin-top: 2px; }
+    .svc-price { font-size: 9px; color: var(--amber); font-weight: 700; margin-top: 5px; font-family: 'JetBrains Mono', monospace; }
+
+    /* ════════════════════════════════════
+       P4 — Brand Essence
+    ════════════════════════════════════ */
+    .p-essence {
+      background: radial-gradient(ellipse at 30% 60%, #1E1406 0%, #0A0A0B 65%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-line {
+      font-size: 56px;
+      font-weight: 300;
+      color: var(--ivory);
+      line-height: 1.0;
+      letter-spacing: -0.04em;
+    }
+    .hero-accent { color: var(--amber); font-weight: 800; }
+    .hero-sub {
+      margin-top: 16px;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ════════════════════════════════════
+       P5 — Color System
+    ════════════════════════════════════ */
+    .p-colors {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .swatches {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      margin-top: 8px;
+    }
+    .sw {
+      flex: 1;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 10px 10px 8px;
+    }
+    .sw-name { font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .sw-hex  { font-size: 8px; margin-top: 3px; font-family: 'JetBrains Mono', monospace; opacity: 0.6; }
+    .sw-role { font-size: 7px; margin-top: 2px; opacity: 0.45; text-transform: uppercase; letter-spacing: 0.12em; }
+
+    /* ════════════════════════════════════
+       P6 — Typography
+    ════════════════════════════════════ */
+    .p-type {
+      background: var(--panel-alt);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .type-hero {
+      font-size: 96px;
+      font-weight: 900;
+      color: var(--ivory);
+      line-height: 0.85;
+      letter-spacing: -0.05em;
+      opacity: 0.9;
+    }
+    .type-details { display: flex; flex-direction: column; gap: 5px; }
+    .type-row-item { font-size: 9px; color: var(--muted); }
+    .type-row-item strong { color: var(--ivory); font-weight: 600; }
+    .type-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--amber);
+      margin-top: 4px;
+    }
+
+    /* ════════════════════════════════════
+       P7 — Physical Application
+    ════════════════════════════════════ */
+    .p-physical {
+      background: #0C0C0E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-wrap {
+      position: relative;
+      width: 220px;
+    }
+    .biz-card {
+      width: 220px;
+      height: 130px;
+      background: #1A1A1E;
+      border-radius: 10px;
+      padding: 22px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow:
+        0 2px 0 #2A2A30,
+        0 4px 0 #222228,
+        0 20px 60px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+    }
+    .biz-card::before {
+      content: '';
+      position: absolute;
+      top: -20px; right: -20px;
+      width: 80px; height: 80px;
+      background: var(--amber);
+      border-radius: 50%;
+      opacity: 0.05;
+    }
+
+    .card-logo-wm { font-size: 14px; font-weight: 700; color: var(--ivory); letter-spacing: -0.03em; }
+    .card-logo-wm em { font-style: normal; color: var(--amber); }
+
+    .card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+    .card-person-name { font-size: 9px; color: var(--ivory); font-weight: 600; }
+    .card-person-role { font-size: 8px; color: var(--muted); margin-top: 2px; }
+    .card-symbol { opacity: 0.35; }
+
+    /* Stacked card behind */
+    .biz-card-back {
+      position: absolute;
+      top: -6px;
+      left: 4px;
+      width: 220px;
+      height: 130px;
+      background: #141416;
+      border-radius: 10px;
+      z-index: 1;
+    }
+
+    /* ════════════════════════════════════
+       P8 — Image Direction
+    ════════════════════════════════════ */
+    .p-image {
+      background: #080E08;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+    }
+
+    .network-bg {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+    }
+
+    .img-text { position: relative; z-index: 1; }
+    .img-location {
+      font-size: 8px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 7px;
+    }
+    .img-headline {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ivory);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    /* ════════════════════════════════════
+       P9 — System Detail
+    ════════════════════════════════════ */
+    .p-system {
+      background: #09090C;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .states-row { display: flex; gap: 5px; margin-bottom: 14px; }
+    .state-pill {
+      font-size: 8px;
+      padding: 4px 10px;
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+    .state-pending  { background: #201808; color: #F2A22A; }
+    .state-held     { background: #081420; color: #2AA0F2; }
+    .state-released { background: #08200A; color: #2AF268; }
+    .state-disputed { background: #200808; color: #F22A2A; }
+
+    .commission-list { display: flex; flex-direction: column; gap: 4px; }
+    .comm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 10px;
+      background: var(--panel);
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .comm-cat {
+      font-size: 8.5px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .comm-pct {
+      font-size: 9px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--amber);
+    }
+
+    .tkiero-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      background: var(--panel);
+      border-radius: 5px;
+      border: 1px solid var(--border);
+    }
+    .tkiero-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 6px var(--amber);
+    }
+    .tkiero-text {
+      font-size: 9px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ─── footer ─── */
+    .page-footer {
+      width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .footer-text {
+      font-size: 9px;
+      color: var(--muted-2);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .footer-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--muted-2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="page-title">ServiLocal — Brand Identity System</div>
+    <div class="page-meta">v1.0 · 2026</div>
+  </div>
+
+  <div class="board">
+
+    <!-- ═══════════════════════════
+         P1 — Logo Cover
+    ═══════════════════════════ -->
+    <div class="p p-logo">
+      <!-- S-path mark: amber node → midpoint → coral node -->
+      <svg class="logo-mark" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Amber node: provider -->
+        <circle cx="50" cy="16" r="9" fill="#F2A22A" opacity="0.15"/>
+        <circle cx="50" cy="16" r="6" fill="#F2A22A"/>
+        <!-- Coral node: client -->
+        <circle cx="18" cy="52" r="9" fill="#E05A38" opacity="0.15"/>
+        <circle cx="18" cy="52" r="6" fill="#E05A38"/>
+        <!-- S-curve path -->
+        <path d="M50 22 C50 34, 34 34, 34 34 C34 34, 18 34, 18 46"
+              stroke="url(#pathgrad)" stroke-width="2.5" fill="none"
+              stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Mid node -->
+        <circle cx="34" cy="34" r="3" fill="#F4F3EE" opacity="0.5"/>
+        <defs>
+          <linearGradient id="pathgrad" x1="50" y1="22" x2="18" y2="46" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#F2A22A"/>
+            <stop offset="1" stop-color="#E05A38"/>
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div class="wordmark">servi<em>local</em></div>
+      <div class="tagline-small">Servicios · El Salvador · Tkiero</div>
+
+      <div class="p-label">Brand Mark</div>
+      <div class="p-num">01</div>
+    </div>
+
+    <!-- ═══════════════════════════
+         P2 — Logo Construction
+    ═══════════════════════════ -->
+    <div class="p p-construction">
+      <div class="p-section">Logo System</div>
+
+      <svg class="construction-svg" viewBox="0 0 380 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Grid -->
+        <defs>
+          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1E1E24" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="380" height="230" fill="url(#grid)"/>
+
+        <!-- ── Large mark ── -->
+        <!-- Construction circles -->
+        <circle cx="88" cy="50" r="28" fill="none" stroke="#F2A22A" stroke-width="0.5" stroke-dasharray="3 4" opacity="0.4"/>
+        <circle cx="48" cy="170" r="28" fill="none" stroke="#E05A38" stroke-width="0.5" stroke-dasharray="3 4" opacity="0.4"/>
+
+        <!-- Nodes -->
+        <circle cx="88" cy="50"  r="16" fill="#F2A22A" opacity="0.12"/>
+        <circle cx="88" cy="50"  r="10" fill="#F2A22A"/>
+        <circle cx="48" cy="170" r="16" fill="#E05A38" opacity="0.12"/>
+        <circle cx="48" cy="170" r="10" fill="#E05A38"/>
+
+        <!-- S path -->
+        <path d="M88 60 C88 95, 68 110, 68 110 C68 110, 48 125, 48 160"
+              stroke="url(#cg)" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="68" cy="110" r="5" fill="#F4F3EE" opacity="0.45"/>
+
+        <!-- Measurement lines -->
+        <line x1="108" y1="40" x2="108" y2="60" stroke="#F2A22A" stroke-width="0.6" opacity="0.5"/>
+        <text x="112" y="53" fill="#5A5A62" font-size="8" font-family="JetBrains Mono, monospace">⌀20</text>
+
+        <!-- Center axis -->
+        <line x1="68" y1="20" x2="68" y2="210" stroke="#2A2A32" stroke-width="0.5" stroke-dasharray="4 4"/>
+
+        <!-- ── Small scale ── -->
+        <g transform="translate(165, 30) scale(0.55)">
+          <circle cx="88" cy="50"  r="10" fill="#F2A22A" opacity="0.8"/>
+          <circle cx="48" cy="170" r="10" fill="#E05A38" opacity="0.8"/>
+          <path d="M88 60 C88 95, 68 110, 68 110 C68 110, 48 125, 48 160"
+                stroke="url(#cg2)" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <circle cx="68" cy="110" r="5" fill="#F4F3EE" opacity="0.4"/>
+        </g>
+        <text x="190" y="155" fill="#5A5A62" font-size="8" font-family="JetBrains Mono, monospace">small</text>
+
+        <!-- ── Wordmarks ── -->
+        <text x="240" y="70"  fill="#F4F3EE" font-size="26" font-weight="700"
+              font-family="Inter, sans-serif" letter-spacing="-1.2">servi</text>
+        <text x="330" y="70"  fill="#F2A22A" font-size="26" font-weight="700"
+              font-family="Inter, sans-serif" letter-spacing="-1.2">local</text>
+
+        <text x="240" y="100" fill="#3A3A42" font-size="13" font-weight="300"
+              font-family="Inter, sans-serif" letter-spacing="-0.4">servilocal</text>
+
+        <!-- Color chips -->
+        <rect x="240" y="130" width="10" height="10" rx="2" fill="#F2A22A"/>
+        <text x="254" y="139" fill="#5A5A62" font-size="8" font-family="JetBrains Mono, monospace">Amber  #F2A22A</text>
+        <rect x="240" y="150" width="10" height="10" rx="2" fill="#E05A38"/>
+        <text x="254" y="159" fill="#5A5A62" font-size="8" font-family="JetBrains Mono, monospace">Coral  #E05A38</text>
+        <rect x="240" y="170" width="10" height="10" rx="2" fill="#F4F3EE" opacity="0.8"/>
+        <text x="254" y="179" fill="#5A5A62" font-size="8" font-family="JetBrains Mono, monospace">Ivory  #F4F3EE</text>
+
+        <defs>
+          <linearGradient id="cg"  x1="88" y1="60"  x2="48" y2="160" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#F2A22A"/><stop offset="1" stop-color="#E05A38"/>
+          </linearGradient>
+          <linearGradient id="cg2" x1="88" y1="60"  x2="48" y2="160" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#F2A22A"/><stop offset="1" stop-color="#E05A38"/>
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div class="p-label">Construction</div>
+      <div class="p-num">02</div>
+    </div>
+
+    <!-- ═══════════════════════════
+         P3 — Digital Application
+    ═══════════════════════════ -->
+    <div class="p p-digital">
+      <div class="browser-chrome">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <div class="url-bar">servilocal.sv / inicio</div>
+      </div>
+
+      <div class="app-body">
+        <div class="app-nav">
+          <div class="app-wm">servi<em>local</em></div>
+          <div class="nav-btns">
+            <div class="nav-btn">Ingresar</div>
+            <div class="nav-btn nav-btn-cta">Publicar servicio</div>
+          </div>
+        </div>
+
+        <div class="search">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <circle cx="4.2" cy="4.2" r="3" stroke="#5A5A62" stroke-width="1.2"/>
+            <line x1="6.3" y1="6.3" x2="9" y2="9" stroke="#5A5A62" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          Busca plomeros, diseñadores, maestros…
+        </div>
+
+        <div class="chips">
+          <div class="chip chip-on">Todos</div>
+          <div class="chip">Plomería</div>
+          <div class="chip">Diseño</div>
+          <div class="chip">Limpieza</div>
+          <div class="chip">Clases</div>
+          <div class="chip">Entrega</div>
+          <div class="chip">Digital</div>
+        </div>
+
+        <div class="cards-row">
+          <div class="svc-card">
+            <div class="svc-thumb" style="background: linear-gradient(135deg, #1E1408 0%, #2A1C0A 100%);"></div>
+            <div class="svc-title">Reparación baño</div>
+            <div class="svc-sub">Carlos M. · ⭐ 4.8 · 32 trabajos</div>
+            <div class="svc-price">45 TKR</div>
+          </div>
+          <div class="svc-card">
+            <div class="svc-thumb" style="background: linear-gradient(135deg, #0A1020 0%, #0E1830 100%);"></div>
+            <div class="svc-title">Logo & Branding</div>
+            <div class="svc-sub">Ana R. · ⭐ 5.0 · 87 trabajos</div>
+            <div class="svc-price">80 TKR</div>
+          </div>
+          <div class="svc-card">
+            <div class="svc-thumb" style="background: linear-gradient(135deg, #080E08 0%, #0C140C 100%);"></div>
+            <div class="svc-title">Clases de inglés</div>
+            <div class="svc-sub">Luis F. · ⭐ 4.9 · 51 trabajos</div>
+            <div class="svc-price">30 TKR</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-label" style="color: #3A3A42;">Digital App</div>
+      <div class="p-num"   style="color: #3A3A42;">03</div>
+    </div>
+
+    <!-- ═══════════════════════════
+         P4 — Brand Essence
+    ═══════════════════════════ -->
+    <div class="p p-essence">
+      <div class="hero-line">Cerca<br>de <span class="hero-accent">ti.</span></div>
+      <div class="hero-sub">Tu servicio. Tu barrio. Tu economía.</div>
+      <div class="p-label">Brand Essence</div>
+      <div class="p-num">04</div>
+    </div>
+
+    <!-- ═══════════════════════════
+         P5 — Color System
+    ═══════════════════════════ -->
+    <div class="p p-colors">
+      <div class="p-section">Color System</div>
+      <div class="swatches">
+        <div class="sw" style="background:#0A0A0B; border: 1px solid #222226;">
+          <div class="sw-name" style="color:#3A3A42;">Canvas</div>
+          <div class="sw-hex"  style="color:#3A3A42;">#0A0A0B</div>
+          <div class="sw-role" style="color:#3A3A42;">Base</div>
+        </div>
+        <div class="sw" style="background:#F2A22A;">
+          <div class="sw-name" style="color:#080809;">Amber</div>
+          <div class="sw-hex"  style="color:rgba(8,8,9,0.55);">#F2A22A</div>
+          <div class="sw-role" style="color:rgba(8,8,9,0.4);">Primary</div>
+        </div>
+        <div class="sw" style="background:#E05A38;">
+          <div class="sw-name" style="color:#F4F3EE;">Coral</div>
+          <div class="sw-hex"  style="color:rgba(244,243,238,0.55);">#E05A38</div>
+          <div class="sw-role" style="color:rgba(244,243,238,0.4);">Accent</div>
+        </div>
+        <div class="sw" style="background:#F4F3EE; border: 1px solid #E8E7E2;">
+          <div class="sw-name" style="color:#111;">Ivory</div>
+          <div class="sw-hex"  style="color:rgba(17,17,17,0.45);">#F4F3EE</div>
+          <div class="sw-role" style="color:rgba(17,17,17,0.3);">Type</div>
+        </div>
+      </div>
+      <div class="p-label">Palette</div>
+      <div class="p-num">05</div>
+    </div>
+
+    <!-- ═══════════════════════════
+         P6 — Typography
+    ═══════════════════════════ -->
+    <div class="p p-type">
+      <div class="type-hero">Ag</div>
+      <div class="type-details">
+        <div class="type-row-item"><strong>Inter</strong> — Typeface principal</div>
+        <div class="type-row-item">Light 300 · Regular · Medium · <strong>Bold 700 · Black 900</strong></div>
+        <div class="type-mono">JetBrains Mono — Precios · Códigos</div>
+        <div class="type-row-item" style="margin-top:3px; color:#3A3A42;">Numbers, status, technical copy</div>
+      </div>
+      <div class="p-label">Typography</div>
+      <div class="p-num">06</div>
+    </div>
+
+    <!-- ═══════════════════════════
+         P7 — Physical Application
+    ═══════════════════════════ -->
+    <div class="p p-physical">
+      <div class="card-wrap">
+        <div class="biz-card-back"></div>
+        <div class="biz-card">
+          <div class="card-logo-wm">servi<em>local</em></div>
+          <div class="card-footer">
+            <div>
+              <div class="card-person-name">María González</div>
+              <div class="card-person-role">Proveedora · Diseño Gráfico</div>
+            </div>
+            <svg class="card-symbol" width="24" height="24" viewBox="0 0 68 68" fill="none">
+              <circle cx="50" cy="16" r="6" fill="#F2A22A"/>
+              <circle cx="18" cy="52" r="6" fill="#E05A38"/>
+              <path d="M50 22 C50 34, 34 34, 34 34 C34 34, 18 34, 18 46"
+                    stroke="url(#cg3)" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <circle cx="34" cy="34" r="3" fill="#F4F3EE"/>
+              <defs>
+                <linearGradient id="cg3" x1="50" y1="22" x2="18" y2="46" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#F2A22A"/><stop offset="1" stop-color="#E05A38"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="p-label">Card Mockup</div>
+      <div class="p-num">07</div>
+    </div>
+
+    <!-- ═══════════════════════════
+         P8 — Image Direction
+    ═══════════════════════════ -->
+    <div class="p p-image">
+      <!-- Network / city map SVG -->
+      <svg class="network-bg" viewBox="0 0 380 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ambient glow -->
+        <radialGradient id="glow1" cx="60%" cy="40%" r="40%">
+          <stop offset="0%" stop-color="#F2A22A" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#F2A22A" stop-opacity="0"/>
+        </radialGradient>
+        <rect width="380" height="260" fill="url(#glow1)"/>
+
+        <!-- Node network -->
+        <g opacity="0.5">
+          <circle cx="80"  cy="60"  r="4" fill="#F2A22A"/>
+          <circle cx="160" cy="90"  r="4" fill="#F2A22A"/>
+          <circle cx="240" cy="50"  r="4" fill="#F2A22A"/>
+          <circle cx="310" cy="110" r="4" fill="#F2A22A"/>
+          <circle cx="120" cy="155" r="4" fill="#E05A38"/>
+          <circle cx="200" cy="170" r="4" fill="#E05A38"/>
+          <circle cx="290" cy="180" r="4" fill="#E05A38"/>
+          <circle cx="60"  cy="200" r="3" fill="#F2A22A" opacity="0.4"/>
+          <circle cx="350" cy="70"  r="3" fill="#F2A22A" opacity="0.4"/>
+        </g>
+
+        <g stroke="#F2A22A" stroke-width="0.7" opacity="0.25">
+          <line x1="80"  y1="60"  x2="160" y2="90"/>
+          <line x1="160" y1="90"  x2="240" y2="50"/>
+          <line x1="240" y1="50"  x2="310" y2="110"/>
+          <line x1="160" y1="90"  x2="120" y2="155"/>
+          <line x1="120" y1="155" x2="200" y2="170"/>
+          <line x1="200" y1="170" x2="290" y2="180"/>
+          <line x1="200" y1="170" x2="310" y2="110"/>
+          <line x1="80"  y1="60"  x2="60"  y2="200"/>
+          <line x1="310" y1="110" x2="350" y2="70"/>
+        </g>
+
+        <!-- Pin on San Salvador -->
+        <circle cx="200" cy="170" r="10" fill="#F2A22A" opacity="0.15"/>
+        <circle cx="200" cy="170" r="5"  fill="#F2A22A"/>
+
+        <!-- Gradient bottom fade -->
+        <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="40%" stop-color="#080E08" stop-opacity="0"/>
+          <stop offset="100%" stop-color="#080E08" stop-opacity="1"/>
+        </linearGradient>
+        <rect width="380" height="260" fill="url(#fade)"/>
+      </svg>
+
+      <div class="img-text">
+        <div class="img-location">San Salvador · El Salvador</div>
+        <div class="img-headline">Tu barrio,<br>tu economía.</div>
+      </div>
+
+      <div class="p-label">Image Direction</div>
+      <div class="p-num">08</div>
+    </div>
+
+    <!-- ═══════════════════════════
+         P9 — System Detail
+    ═══════════════════════════ -->
+    <div class="p p-system">
+      <div>
+        <div class="p-section">Transaction States</div>
+        <div class="states-row">
+          <div class="state-pill state-pending">PENDING</div>
+          <div class="state-pill state-held">HELD</div>
+          <div class="state-pill state-released">RELEASED</div>
+          <div class="state-pill state-disputed">DISPUTED</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="p-section" style="margin-bottom: 6px;">Commission Rates</div>
+        <div class="commission-list">
+          <div class="comm-row">
+            <span class="comm-cat">Delivery</span>
+            <span class="comm-pct">15%</span>
+          </div>
+          <div class="comm-row">
+            <span class="comm-cat">Plomería · Limpieza</span>
+            <span class="comm-pct">12%</span>
+          </div>
+          <div class="comm-row">
+            <span class="comm-cat">Diseño · Clases</span>
+            <span class="comm-pct">10%</span>
+          </div>
+          <div class="comm-row">
+            <span class="comm-cat">Digital</span>
+            <span class="comm-pct">8%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tkiero-badge">
+        <div class="tkiero-dot"></div>
+        <div class="tkiero-text">Powered by Tkiero</div>
+      </div>
+
+      <div class="p-label">System Detail</div>
+      <div class="p-num">09</div>
+    </div>
+
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-text">servilocal.sv</div>
+    <div class="footer-dot"></div>
+    <div class="footer-text">Brand Identity System · 2026</div>
+    <div class="footer-dot"></div>
+    <div class="footer-text">Confidential</div>
+  </div>
+
+</body>
+</html>

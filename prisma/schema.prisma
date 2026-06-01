@@ -1,0 +1,228 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+enum ServiceCategory {
+  PLUMBING
+  TEACHING
+  DELIVERY
+  CLEANING
+  DESIGN
+  DIGITAL
+}
+
+enum TransactionStatus {
+  PENDING
+  HELD
+  RELEASED
+  DISPUTED
+  REFUNDED
+}
+
+enum ServiceRequestStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum JobPostStatus {
+  PENDING_PAYMENT
+  OPEN
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  TKIERO
+  PAYPAL
+}
+
+enum JobApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum JobPaymentStatus {
+  PENDING
+  HELD
+  RELEASED
+  REFUNDED
+}
+
+model CategoryConfig {
+  category ServiceCategory @id
+  icon     String
+}
+
+model JobPost {
+  id             String           @id @default(cuid())
+  title          String
+  description    String
+  category       ServiceCategory
+  budget         Decimal          @db.Decimal(10, 2)
+  deadline       DateTime
+  status         JobPostStatus    @default(PENDING_PAYMENT)
+  paymentMethod  PaymentMethod?
+  clientId       String
+  client         User             @relation("ClientJobPosts", fields: [clientId], references: [id])
+  applications   JobApplication[]
+  payment        JobPayment?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([clientId])
+  @@index([category])
+  @@index([status])
+}
+
+model JobApplication {
+  id                    String               @id @default(cuid())
+  jobPostId             String
+  providerId            String
+  message               String
+  proposedPrice         Decimal              @db.Decimal(10, 2)
+  status                JobApplicationStatus @default(PENDING)
+  jobPost               JobPost              @relation(fields: [jobPostId], references: [id], onDelete: Restrict)
+  provider              User                 @relation("ProviderApplications", fields: [providerId], references: [id], onDelete: Restrict)
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  @@unique([jobPostId, providerId])
+  @@index([jobPostId])
+  @@index([providerId])
+}
+
+model JobPayment {
+  id              String           @id @default(cuid())
+  jobPostId       String           @unique
+  amount          Decimal          @db.Decimal(10, 2)
+  method          PaymentMethod
+  status          JobPaymentStatus @default(PENDING)
+  tkieroPaymentId String?
+  paypalOrderId   String?
+  qrCodeUrl       String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  jobPost         JobPost          @relation(fields: [jobPostId], references: [id], onDelete: Restrict)
+
+  @@index([tkieroPaymentId])
+  @@index([paypalOrderId])
+}
+
+model User {
+  id              String               @id @default(cuid())
+  email           String               @unique
+  passwordHash    String
+  name            String
+  phone           String?
+  role            UserRole             @default(CLIENT)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  providerProfile ProviderProfile?
+  serviceRequests ServiceRequest[]     @relation("ClientRequests")
+  reviews         Review[]             @relation("ClientReviews")
+  transactions    Transaction[]        @relation("ClientTransactions")
+  jobPosts        JobPost[]            @relation("ClientJobPosts")
+  applications    JobApplication[]     @relation("ProviderApplications")
+}
+
+model ProviderProfile {
+  id           String            @id @default(cuid())
+  userId       String            @unique
+  bio          String            @default("")
+  skills       ServiceCategory[]
+  rating       Float             @default(0)
+  totalReviews Int             @default(0)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services     Service[]
+}
+
+model Service {
+  id            String           @id @default(cuid())
+  title         String
+  description   String
+  price         Decimal          @db.Decimal(10, 2)
+  category      ServiceCategory
+  providerId    String
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  provider      ProviderProfile  @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  requests      ServiceRequest[]
+
+  @@index([providerId])
+  @@index([category])
+}
+
+model ServiceRequest {
+  id          String               @id @default(cuid())
+  serviceId   String
+  clientId    String
+  message     String
+  status      ServiceRequestStatus @default(PENDING)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  service     Service              @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  client      User                 @relation("ClientRequests", fields: [clientId], references: [id])
+  transaction Transaction?
+
+  @@index([clientId])
+  @@index([serviceId])
+}
+
+model Transaction {
+  id               String            @id @default(cuid())
+  serviceRequestId String            @unique
+  clientId         String
+  amount           Decimal           @db.Decimal(18, 8)
+  tkieroPaymentId  String?
+  status           TransactionStatus @default(PENDING)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  serviceRequest   ServiceRequest    @relation(fields: [serviceRequestId], references: [id], onDelete: Restrict)
+  client           User              @relation("ClientTransactions", fields: [clientId], references: [id])
+  commission       Commission?
+  review           Review?
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model Commission {
+  id            String          @id @default(cuid())
+  transactionId String          @unique
+  amount        Decimal         @db.Decimal(18, 8)
+  rate          Decimal         @db.Decimal(5, 4)
+  category      ServiceCategory
+  createdAt     DateTime        @default(now())
+  transaction   Transaction     @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+}
+
+model Review {
+  id            String      @id @default(cuid())
+  transactionId String      @unique
+  clientId      String
+  rating        Int
+  comment       String
+  createdAt     DateTime    @default(now())
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  client        User        @relation("ClientReviews", fields: [clientId], references: [id])
+}

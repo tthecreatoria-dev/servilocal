@@ -1,0 +1,106 @@
+{
+  "Header": {
+    "findWork": "Find Work",
+    "postJob": "Post a Job",
+    "about": "About Us",
+    "login": "Login"
+  },
+  "Footer": {
+    "tagline": "© 2024 ServiLocal. Built for the community.",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "help": "Help Center",
+    "safety": "Safety Tips"
+  },
+  "BottomNav": {
+    "home": "Home",
+    "jobs": "Jobs",
+    "messages": "Messages",
+    "profile": "Profile"
+  },
+  "HomePage": {
+    "heroTitle": "Find trusted local workers",
+    "heroSubtitle": "Connect with skilled artisans and tradespeople in your community. Secure, simple, and locally driven.",
+    "searchService": "What service?",
+    "searchLocation": "Where?",
+    "searchButton": "Search",
+    "postJob": "Post a Job",
+    "findWork": "Find Work",
+    "browseCategoriesTitle": "Browse by Category",
+    "seeAll": "See all",
+    "activeJobsTitle": "Active Jobs in your area",
+    "activeJobsSubtitle": "Apply directly to these open requests.",
+    "sortNewest": "Newest",
+    "sortBudget": "Highest Budget",
+    "viewAllJobs": "View All Jobs",
+    "viewJob": "View",
+    "noJobsTitle": "No jobs posted yet",
+    "noJobsSubtitle": "Be the first to post a job in your area.",
+    "trustVerified": "Verified services",
+    "trustPayment": "Secure payments via Tkiero",
+    "trustLocal": "El Salvador only",
+    "howItWorksTitle": "How it works",
+    "howItWorksStep1Title": "Post your job",
+    "howItWorksStep1Desc": "Describe what you need in seconds. It's free and simple.",
+    "howItWorksStep2Title": "Choose your pro",
+    "howItWorksStep2Desc": "Browse profiles and proposals, then pick the best fit.",
+    "howItWorksStep3Title": "Pay securely",
+    "howItWorksStep3Desc": "Your payment is held securely until the job is done.",
+    "categories": {
+      "carpenter": "Carpenter",
+      "bricklayer": "Bricklayer",
+      "electrician": "Electrician",
+      "plumber": "Plumber",
+      "housekeeper": "Housekeeper",
+      "painter": "Painter",
+      "teacher": "Teacher",
+      "delivery": "Delivery"
+    },
+    "serviceCategory": {
+      "PLUMBING": "Plumber",
+      "TEACHING": "Teacher",
+      "DELIVERY": "Delivery",
+      "CLEANING": "Housekeeper",
+      "DESIGN": "Designer",
+      "DIGITAL": "Digital"
+    },
+    "timeAgo": {
+      "minutesAgo": "{count} min ago",
+      "hoursAgo": "{count} h ago",
+      "daysAgo": "{count} d ago"
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Welcome back. Enter your credentials.",
+      "button": "Sign in",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register"
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Join ServiLocal — hire or offer services.",
+      "button": "Create account",
+      "roleLabel": "I want to…",
+      "roleClient": "🔍 Hire (Client)",
+      "roleProvider": "🔧 Work (Provider)",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "fullName": "Full name"
+    },
+    "errors": {
+      "invalidEmail": "Invalid email address",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "nameTooShort": "Name must be at least 2 characters",
+      "INVALID_CREDENTIALS": "Invalid email or password",
+      "EMAIL_EXISTS": "An account with this email already exists",
+      "SIGNUP_SIGNIN_FAILED": "Account created but sign-in failed. Please sign in manually.",
+      "UNKNOWN": "Something went wrong. Please try again."
+    }
+  }
+}

@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-primary: #1d4ed8;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #dbeafe;
+  --color-on-primary-container: #1e40af;
+  --color-secondary: #2563eb;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #dbeafe;
+  --color-on-secondary-container: #1e40af;
+  --color-background: #eff6ff;
+  --color-on-background: #172554;
+  --color-surface: #eff6ff;
+  --color-on-surface: #172554;
+  --color-surface-variant: #dbeafe;
+  --color-on-surface-variant: #1e3a8a;
+  --color-surface-container: #dbeafe;
+  --color-surface-container-low: #eff6ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-outline: #93c5fd;
+  --color-outline-variant: #bfdbfe;
+  --color-secondary-fixed: #dbeafe;
+  --color-on-secondary-fixed: #1e40af;
+
+  /* Fonts */
+  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  --font-display: var(--font-montserrat), "Montserrat", sans-serif;
+
+  /* Spacing */
+  --spacing-gutter: 1rem;
+  --spacing-margin-desktop: 4rem;
+  --spacing-margin-mobile: 1rem;
+  --spacing-base: 0.5rem;
+  --spacing-app-md: 1.5rem;
+  --spacing-app-lg: 3rem;
+  --spacing-app-xl: 5rem;
+}
+
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* ---- Typography utilities ---- */
+
+@utility text-display-lg {
+  font-size: 3rem;
+  line-height: 3.5rem;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+@utility text-headline-lg {
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+}
+
+@utility text-headline-lg-mobile {
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+}
+
+@utility text-headline-md {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+}
+
+@utility text-body-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 400;
+}
+
+@utility text-body-md {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+}
+
+@utility text-label-md {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+@utility text-label-sm {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+}
+
+/* ---- Icon font ---- */
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ---- Buttons: press feedback (Emil: scale on :active, 160ms) ---- */
+
+.btn-press {
+  transition: transform 160ms var(--ease-out), opacity 160ms var(--ease-out);
+}
+
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* ---- Hero entrance: stagger with @starting-style ---- */
+
+.hero-item {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+}
+
+.hero-item-1 { transition-delay: 0ms; }
+.hero-item-2 { transition-delay: 80ms; }
+.hero-item-3 { transition-delay: 160ms; }
+.hero-item-4 { transition-delay: 240ms; }
+.hero-item-5 { transition-delay: 320ms; }
+
+@starting-style {
+  .hero-item {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* ---- Job card stagger entrance ---- */
+
+@keyframes fadeSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-enter {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeSlideUp 400ms var(--ease-out) forwards;
+}
+
+.card-enter-1 { animation-delay: 0ms; }
+.card-enter-2 { animation-delay: 60ms; }
+.card-enter-3 { animation-delay: 120ms; }
+.card-enter-4 { animation-delay: 180ms; }
+.card-enter-5 { animation-delay: 240ms; }
+.card-enter-6 { animation-delay: 300ms; }
+
+/* ---- Card hover lift — pointer devices only ---- */
+
+.card-hover {
+  transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px -4px rgb(0 0 0 / 0.10);
+  }
+}
+
+/* ---- How it works step animation ---- */
+
+.step-enter {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeSlideUp 400ms var(--ease-out) forwards;
+}
+
+.step-enter-1 { animation-delay: 0ms; }
+.step-enter-2 { animation-delay: 80ms; }
+.step-enter-3 { animation-delay: 160ms; }
+
+/* ---- Category icon hover: only on pointer devices ---- */
+
+@media (hover: hover) and (pointer: fine) {
+  .category-icon:hover {
+    transform: scale(1.07);
+  }
+}
+
+.category-icon {
+  transition: transform 200ms var(--ease-out);
+}
+
+/* ---- Reduced motion ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-item,
+  .card-enter,
+  .step-enter,
+  .category-icon,
+  .card-hover {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
