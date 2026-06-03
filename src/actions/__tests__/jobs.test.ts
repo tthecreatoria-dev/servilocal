@@ -42,7 +42,10 @@ const validJobPostData = {
   category: 'PLUMBING' as const,
   budget: 50,
   deadline: '2026-12-31T00:00:00.000Z',
-  isRemote: true,
+  isRemote: false,
+  address: 'Col. Escalón, San Salvador',
+  latitude: 13.7,
+  longitude: -89.22,
 }
 
 const validApplicationData = {
@@ -101,6 +104,41 @@ describe('createJobPost()', () => {
         budget: 50,
         deadline: new Date('2026-12-31T00:00:00.000Z'),
         clientId: 'client-1',
+        isRemote: false,
+        address: 'Col. Escalón, San Salvador',
+        latitude: 13.7,
+        longitude: -89.22,
+      },
+    })
+  })
+
+  it('nulls location fields for a remote job', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    const created = { id: 'job-2', status: 'PENDING_PAYMENT', clientId: 'client-1' }
+    mockJobPostCreate.mockResolvedValueOnce(created)
+
+    const result = await createJobPost({
+      title: 'Design a logo',
+      description: 'I need a clean logo for my new bakery brand',
+      category: 'DESIGN',
+      budget: 80,
+      deadline: '2026-12-31T00:00:00.000Z',
+      isRemote: true,
+    })
+
+    expect(result).toEqual({ success: true, data: created })
+    expect(mockJobPostCreate).toHaveBeenCalledWith({
+      data: {
+        title: 'Design a logo',
+        description: 'I need a clean logo for my new bakery brand',
+        category: 'DESIGN',
+        budget: 80,
+        deadline: new Date('2026-12-31T00:00:00.000Z'),
+        clientId: 'client-1',
+        isRemote: true,
+        address: null,
+        latitude: null,
+        longitude: null,
       },
     })
   })

@@ -32,6 +32,10 @@ export async function createJobPost(
       budget: parsed.data.budget,
       deadline: new Date(parsed.data.deadline),
       clientId: session.user.id,
+      isRemote: parsed.data.isRemote,
+      address: parsed.data.isRemote ? null : parsed.data.address,
+      latitude: parsed.data.isRemote ? null : parsed.data.latitude,
+      longitude: parsed.data.isRemote ? null : parsed.data.longitude,
     },
   })
 
