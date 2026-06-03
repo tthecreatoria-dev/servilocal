@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createJobPost } from '@/actions/jobs'
+import { LocationPicker, type LocationValue } from '@/components/features/location-picker'
 
 type Category = 'PLUMBING' | 'TEACHING' | 'DELIVERY' | 'CLEANING' | 'DESIGN' | 'DIGITAL'
 
@@ -19,6 +20,7 @@ const ERROR_LABELS: Record<string, string> = {
   unauthorized: 'Debes iniciar sesión para publicar.',
   forbidden:    'Solo los clientes pueden publicar proyectos.',
   validation:   'Revisa los datos del formulario.',
+  location:     'Marca la ubicación en el mapa o activa trabajo remoto.',
 }
 
 export function NewJobForm() {
@@ -26,11 +28,21 @@ export function NewJobForm() {
   const [error, setError]       = useState<string | null>(null)
   const [pending, setPending]   = useState(false)
   const [category, setCategory] = useState<Category | null>(null)
+  const [location, setLocation] = useState<LocationValue>({
+    isRemote:  false,
+    address:   '',
+    latitude:  null,
+    longitude: null,
+  })
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (!category) {
       setError('Selecciona una categoría antes de continuar.')
+      return
+    }
+    if (!location.isRemote && (location.latitude === null || location.longitude === null || location.address.trim().length < 5)) {
+      setError(ERROR_LABELS.location)
       return
     }
     setPending(true)
@@ -44,7 +56,10 @@ export function NewJobForm() {
       category,
       budget:   Number(fd.get('budget')),
       deadline: new Date(deadlineRaw).toISOString(),
-      isRemote: true, // TODO Task 6: replace with LocationPicker state
+      isRemote:  location.isRemote,
+      address:   location.isRemote ? undefined : location.address,
+      latitude:  location.isRemote ? undefined : location.latitude ?? undefined,
+      longitude: location.isRemote ? undefined : location.longitude ?? undefined,
     })
 
     if (!result.success) {
@@ -140,6 +155,12 @@ export function NewJobForm() {
             )
           })}
         </div>
+      </div>
+
+      {/* Ubicación */}
+      <div className="space-y-3">
+        <span className="block text-label-md text-on-surface">Ubicación</span>
+        <LocationPicker value={location} onChange={setLocation} />
       </div>
 
       {/* Presupuesto + Fecha */}
