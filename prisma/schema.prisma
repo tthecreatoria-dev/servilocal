@@ -79,6 +79,10 @@ model JobPost {
   deadline       DateTime
   status         JobPostStatus    @default(PENDING_PAYMENT)
   paymentMethod  PaymentMethod?
+  isRemote       Boolean          @default(false)
+  address        String?
+  latitude       Float?
+  longitude      Float?
   clientId       String
   client         User             @relation("ClientJobPosts", fields: [clientId], references: [id])
   applications   JobApplication[]
