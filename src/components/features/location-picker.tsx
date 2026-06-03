@@ -26,7 +26,7 @@ export type LocationValue = {
 
 type LocationPickerProps = {
   value: LocationValue
-  onChange: (next: LocationValue) => void
+  onChange: (next: LocationValue | ((prev: LocationValue) => LocationValue)) => void
 }
 
 async function reverseGeocode(lat: number, lng: number): Promise<string | null> {
@@ -54,13 +54,13 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
   }, [])
 
   function handlePick(lat: number, lng: number) {
-    onChange({ ...value, latitude: lat, longitude: lng })
+    onChange((prev) => ({ ...prev, latitude: lat, longitude: lng }))
     if (addressEdited.current) return
     if (geocodeTimer.current) clearTimeout(geocodeTimer.current)
     geocodeTimer.current = setTimeout(async () => {
       const found = await reverseGeocode(lat, lng)
       if (found && !addressEdited.current) {
-        onChange({ ...value, latitude: lat, longitude: lng, address: found })
+        onChange((prev) => ({ ...prev, address: found }))
       }
     }, 600)
   }
@@ -74,7 +74,7 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
         <input
           type="checkbox"
           checked={value.isRemote}
-          onChange={(e) => onChange({ ...value, isRemote: e.target.checked })}
+          onChange={(e) => onChange((prev) => ({ ...prev, isRemote: e.target.checked }))}
           className="h-4 w-4 accent-primary"
         />
         <span className="text-label-md text-on-surface">Trabajo remoto / en línea</span>
@@ -96,7 +96,8 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
                 value={value.address}
                 onChange={(e) => {
                   addressEdited.current = true
-                  onChange({ ...value, address: e.target.value })
+                  const next = e.target.value
+                  onChange((prev) => ({ ...prev, address: next }))
                 }}
                 placeholder="Ej: Col. Escalón, San Salvador"
                 className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
