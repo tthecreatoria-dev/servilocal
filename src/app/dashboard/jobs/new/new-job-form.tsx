@@ -44,6 +44,7 @@ export function NewJobForm() {
       category,
       budget:   Number(fd.get('budget')),
       deadline: new Date(deadlineRaw).toISOString(),
+      isRemote: true, // TODO Task 6: replace with LocationPicker state
     })
 
     if (!result.success) {

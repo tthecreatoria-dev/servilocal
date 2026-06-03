@@ -40,16 +40,34 @@ export const TkieroWebhookSchema = z.object({
   timestamp: z.string(),
 })
 
-export const CreateJobPostSchema = z.object({
-  title: z.string().min(5, 'Title must be at least 5 characters').max(150, 'Title must be at most 150 characters'),
-  description: z.string().min(20, 'Description must be at least 20 characters').max(2000, 'Description must be at most 2000 characters'),
-  category: z.enum(['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'DESIGN', 'DIGITAL']),
-  budget: z.number().positive('Budget must be positive'),
-  deadline: z.string().datetime('Deadline must be a valid ISO datetime').refine(
-    (d) => new Date(d) > new Date(),
-    'Deadline must be in the future',
-  ),
-})
+export const CreateJobPostSchema = z
+  .object({
+    title: z.string().min(5, 'Title must be at least 5 characters').max(150, 'Title must be at most 150 characters'),
+    description: z.string().min(20, 'Description must be at least 20 characters').max(2000, 'Description must be at most 2000 characters'),
+    category: z.enum(['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'DESIGN', 'DIGITAL']),
+    budget: z.number().positive('Budget must be positive'),
+    deadline: z.string().datetime('Deadline must be a valid ISO datetime').refine(
+      (d) => new Date(d) > new Date(),
+      'Deadline must be in the future',
+    ),
+    isRemote: z.boolean(),
+    address: z.string().min(5, 'Address must be at least 5 characters').max(200, 'Address must be at most 200 characters').optional(),
+    latitude: z.number().min(-90, 'Invalid latitude').max(90, 'Invalid latitude').optional(),
+    longitude: z.number().min(-180, 'Invalid longitude').max(180, 'Invalid longitude').optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.isRemote) {
+      if (data.address === undefined) {
+        ctx.addIssue({ code: 'custom', path: ['address'], message: 'Address is required for non-remote jobs' })
+      }
+      if (data.latitude === undefined) {
+        ctx.addIssue({ code: 'custom', path: ['latitude'], message: 'Latitude is required for non-remote jobs' })
+      }
+      if (data.longitude === undefined) {
+        ctx.addIssue({ code: 'custom', path: ['longitude'], message: 'Longitude is required for non-remote jobs' })
+      }
+    }
+  })
 
 export const CreateJobApplicationSchema = z.object({
   jobPostId: z.string().cuid('Invalid job post ID'),

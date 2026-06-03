@@ -42,6 +42,7 @@ const validJobPostData = {
   category: 'PLUMBING' as const,
   budget: 50,
   deadline: '2026-12-31T00:00:00.000Z',
+  isRemote: true,
 }
 
 const validApplicationData = {
