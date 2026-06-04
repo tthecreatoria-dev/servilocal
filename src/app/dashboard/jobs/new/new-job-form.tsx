@@ -5,15 +5,27 @@ import { useRouter } from 'next/navigation'
 import { createJobPost } from '@/actions/jobs'
 import { LocationPicker, type LocationValue } from '@/components/features/location-picker'
 
-type Category = 'PLUMBING' | 'TEACHING' | 'DELIVERY' | 'CLEANING' | 'DESIGN' | 'DIGITAL'
+type Category =
+    | 'PLUMBING'
+    | 'TEACHING'
+    | 'DELIVERY'
+    | 'CLEANING'
+    | 'MASONRY'
+    | 'ELECTRICAL'
+    | 'WELDING'
+    | 'ELECTRONICS'
+    | 'APPLIANCE_REPAIR'
 
 const CATEGORIES: { value: Category; label: string; icon: string }[] = [
-  { value: 'PLUMBING',  label: 'Fontanería', icon: 'plumbing' },
-  { value: 'TEACHING',  label: 'Enseñanza',  icon: 'school' },
-  { value: 'DELIVERY',  label: 'Delivery',   icon: 'local_shipping' },
-  { value: 'CLEANING',  label: 'Limpieza',   icon: 'cleaning_services' },
-  { value: 'DESIGN',    label: 'Diseño',     icon: 'palette' },
-  { value: 'DIGITAL',   label: 'Digital',    icon: 'computer' },
+  { value: 'PLUMBING',        label: 'Fontanería',          icon: 'plumbing' },
+  { value: 'TEACHING',        label: 'Enseñanza',           icon: 'school' },
+  { value: 'DELIVERY',        label: 'Delivery',            icon: 'local_shipping' },
+  { value: 'CLEANING',        label: 'Limpieza',            icon: 'cleaning_services' },
+  { value: 'MASONRY',         label: 'Albañilería',         icon: 'foundation' },
+  { value: 'ELECTRICAL',      label: 'Electricistas',       icon: 'electrical_services' },
+  { value: 'WELDING',         label: 'Soldadura',           icon: 'local_fire_department' },
+  { value: 'ELECTRONICS',     label: 'Electrónica',         icon: 'memory' },
+  { value: 'APPLIANCE_REPAIR', label: 'Refrigeración y lavadoras', icon: 'home_repair_service' },
 ]
 
 const ERROR_LABELS: Record<string, string> = {

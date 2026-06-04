@@ -44,7 +44,7 @@ export const CreateJobPostSchema = z
   .object({
     title: z.string().min(5, 'Title must be at least 5 characters').max(150, 'Title must be at most 150 characters'),
     description: z.string().min(20, 'Description must be at least 20 characters').max(2000, 'Description must be at most 2000 characters'),
-    category: z.enum(['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'DESIGN', 'DIGITAL']),
+      category: z.enum(['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'MASONRY', 'ELECTRICAL', 'WELDING', 'ELECTRONICS', 'APPLIANCE_REPAIR']),
     budget: z.number().positive('Budget must be positive'),
     deadline: z.string().datetime('Deadline must be a valid ISO datetime').refine(
       (d) => new Date(d) > new Date(),
