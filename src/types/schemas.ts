@@ -8,14 +8,31 @@ export const LoginSchema = z.object({
 
 const SKILL_VALUES = ['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'DESIGN', 'DIGITAL'] as const
 
-export const RegisterSchema = z.object({
-  email:    z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  name:     z.string().min(2, 'Name must be at least 2 characters'),
-  role:     z.enum(['CLIENT', 'PROVIDER']),
-  phone:    z.string().min(7, 'Número de teléfono inválido'),
-  skills:   z.array(z.enum(SKILL_VALUES)).optional(),
-})
+export const RegisterSchema = z
+  .object({
+    email:     z.string().email('Invalid email address'),
+    password:  z.string().min(8, 'Password must be at least 8 characters'),
+    name:      z.string().min(2, 'Name must be at least 2 characters'),
+    role:      z.enum(['CLIENT', 'PROVIDER']),
+    phone:     z.string().min(7, 'Número de teléfono inválido'),
+    skills:    z.array(z.enum(SKILL_VALUES)).optional(),
+    isRemote:  z.boolean().optional().default(false),
+    address:   z.string().min(5, 'Address must be at least 5 characters').max(200, 'Address must be at most 200 characters').optional(),
+    latitude:  z.number().min(-90, 'Invalid latitude').max(90, 'Invalid latitude').optional(),
+    longitude: z.number().min(-180, 'Invalid longitude').max(180, 'Invalid longitude').optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.role !== 'PROVIDER' || data.isRemote) return
+    if (data.address === undefined) {
+      ctx.addIssue({ code: 'custom', path: ['address'], message: 'Address is required for non-remote providers' })
+    }
+    if (data.latitude === undefined) {
+      ctx.addIssue({ code: 'custom', path: ['latitude'], message: 'Latitude is required for non-remote providers' })
+    }
+    if (data.longitude === undefined) {
+      ctx.addIssue({ code: 'custom', path: ['longitude'], message: 'Longitude is required for non-remote providers' })
+    }
+  })
 
 export const CreateServiceSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters'),

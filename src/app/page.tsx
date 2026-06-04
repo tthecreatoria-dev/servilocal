@@ -136,19 +136,28 @@ export default async function HomePage() {
 
             {/* Search bar */}
             <form
-              action="/jobs"
+              method="GET"
+              action="/providers"
               className="hero-item hero-item-3 w-full max-w-2xl bg-surface-container-lowest rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row gap-0 md:gap-2 shadow-sm border border-outline-variant"
             >
               <div className="flex-1 flex items-center px-4 py-3 border-b md:border-b-0 md:border-r border-outline-variant">
                 <span className="material-symbols-outlined text-outline mr-2 flex-shrink-0">
                   search
                 </span>
-                <input
-                  name="q"
-                  type="text"
-                  placeholder={t('searchService')}
-                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface text-body-md outline-none placeholder:text-on-surface-variant/60"
-                />
+                <select
+                  name="category"
+                  defaultValue=""
+                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface text-body-md outline-none"
+                >
+                  <option value="">{t('searchService')}</option>
+                  {(['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'DESIGN', 'DIGITAL'] as const).map(
+                    (cat) => (
+                      <option key={cat} value={cat}>
+                        {t(`serviceCategory.${cat}`)}
+                      </option>
+                    ),
+                  )}
+                </select>
               </div>
               <div className="flex-1 flex items-center px-4 py-3 border-b md:border-b-0 border-outline-variant">
                 <span className="material-symbols-outlined text-outline mr-2 flex-shrink-0">
