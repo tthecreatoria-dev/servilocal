@@ -302,4 +302,44 @@ describe('registerAndLogin()', () => {
     expect(result.error).toBeUndefined()
     expect(mockFindUnique).not.toHaveBeenCalled()
   })
+
+  it('persists provider location on registration', async () => {
+    mockFindUnique.mockResolvedValue(null)
+    const providerCreate = vi.fn().mockResolvedValue(undefined)
+    const userCreate = vi.fn().mockResolvedValue({ id: 'u1' })
+    mockTransaction.mockImplementation(async (cb: (tx: unknown) => unknown) =>
+      cb({
+        user: { create: userCreate },
+        providerProfile: { create: providerCreate },
+      }),
+    )
+
+    const fd = makeFormData({
+      email: 'worker@example.com',
+      password: 'password123',
+      name: 'Worker One',
+      role: 'PROVIDER',
+      phone: '+50379000000',
+      isRemote: 'false',
+      address: 'Col. Escalón, San Salvador',
+      latitude: '13.6929',
+      longitude: '-89.2182',
+    })
+    fd.append('skills', 'PLUMBING')
+
+    mockSignIn.mockResolvedValue(undefined)
+
+    await registerAndLogin(null, fd)
+
+    expect(providerCreate).toHaveBeenCalledWith({
+      data: {
+        userId: 'u1',
+        skills: ['PLUMBING'],
+        isRemote: false,
+        address: 'Col. Escalón, San Salvador',
+        latitude: 13.6929,
+        longitude: -89.2182,
+      },
+    })
+  })
 })

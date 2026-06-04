@@ -25,6 +25,7 @@ export type AuthState = {
     name?: string
     phone?: string
     skills?: string
+    address?: string
   }
   error?: string
 }
@@ -65,8 +66,16 @@ export async function register(input: RegisterInput): Promise<RegisterResult> {
       },
     })
     if (parsed.data.role === 'PROVIDER') {
+      const isRemote = parsed.data.isRemote ?? false
       await tx.providerProfile.create({
-        data: { userId: created.id, skills },
+        data: {
+          userId:    created.id,
+          skills,
+          isRemote,
+          address:   isRemote ? null : (parsed.data.address ?? null),
+          latitude:  isRemote ? null : (parsed.data.latitude ?? null),
+          longitude: isRemote ? null : (parsed.data.longitude ?? null),
+        },
       })
     }
     return created
@@ -128,13 +137,22 @@ export async function registerAndLogin(
 
   const skillsRaw = formData.getAll('skills').filter((v): v is string => typeof v === 'string')
 
+  const latRaw = formData.get('latitude')
+  const lngRaw = formData.get('longitude')
+
   const raw = {
-    email:    (formData.get('email')    ?? '') as string,
-    password: (formData.get('password') ?? '') as string,
-    name:     (formData.get('name')     ?? '') as string,
-    role:     (formData.get('role')     ?? '') as string,
-    phone:    (formData.get('phone')    ?? '') as string,
-    skills:   skillsRaw,
+    email:     (formData.get('email')    ?? '') as string,
+    password:  (formData.get('password') ?? '') as string,
+    name:      (formData.get('name')     ?? '') as string,
+    role:      (formData.get('role')     ?? '') as string,
+    phone:     (formData.get('phone')    ?? '') as string,
+    skills:    skillsRaw,
+    isRemote:  formData.get('isRemote') === 'true',
+    address:   typeof formData.get('address') === 'string' && (formData.get('address') as string).length > 0
+      ? (formData.get('address') as string)
+      : undefined,
+    latitude:  typeof latRaw === 'string' && latRaw.length > 0 ? Number(latRaw) : undefined,
+    longitude: typeof lngRaw === 'string' && lngRaw.length > 0 ? Number(lngRaw) : undefined,
   }
 
   const parsed = RegisterSchema.safeParse(raw)
@@ -146,6 +164,9 @@ export async function registerAndLogin(
       else if (field === 'password') fieldErrors.password = t('errors.passwordTooShort')
       else if (field === 'name')     fieldErrors.name     = t('errors.nameTooShort')
       else if (field === 'phone')    fieldErrors.phone    = 'Número de teléfono inválido'
+      else if (field === 'address' || field === 'latitude' || field === 'longitude') {
+        fieldErrors.address = 'Marca tu ubicación en el mapa o activa trabajo remoto'
+      }
     }
     return { fieldErrors }
   }
