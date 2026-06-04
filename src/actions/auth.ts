@@ -139,6 +139,7 @@ export async function registerAndLogin(
 
   const latRaw = formData.get('latitude')
   const lngRaw = formData.get('longitude')
+  const addressRaw = formData.get('address')
 
   const raw = {
     email:     (formData.get('email')    ?? '') as string,
@@ -148,9 +149,7 @@ export async function registerAndLogin(
     phone:     (formData.get('phone')    ?? '') as string,
     skills:    skillsRaw,
     isRemote:  formData.get('isRemote') === 'true',
-    address:   typeof formData.get('address') === 'string' && (formData.get('address') as string).length > 0
-      ? (formData.get('address') as string)
-      : undefined,
+    address:   typeof addressRaw === 'string' && addressRaw.length > 0 ? addressRaw : undefined,
     latitude:  typeof latRaw === 'string' && latRaw.length > 0 ? Number(latRaw) : undefined,
     longitude: typeof lngRaw === 'string' && lngRaw.length > 0 ? Number(lngRaw) : undefined,
   }

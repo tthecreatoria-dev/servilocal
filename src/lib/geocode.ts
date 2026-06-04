@@ -16,6 +16,9 @@ export async function geocodeAddress(query: string): Promise<LatLng | null> {
         'Accept-Language': 'es',
         'User-Agent': 'ServiLocal/1.0 (provider-search)',
       },
+      // Geocoding results for a given address are stable; cache for a day so
+      // repeated identical searches don't hammer Nominatim.
+      next: { revalidate: 86400 },
     })
     if (!res.ok) return null
     const data = (await res.json()) as Array<{ lat?: string; lon?: string }>
