@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import { registerAndLogin } from '@/actions/auth'
 import type { AuthState } from '@/actions/auth'
 import { SubmitButton } from '@/components/ui/submit-button'
+import { LocationPicker, type LocationValue } from '@/components/features/location-picker'
 
 type Skill = 'PLUMBING' | 'TEACHING' | 'DELIVERY' | 'CLEANING' | 'DESIGN' | 'DIGITAL'
 
@@ -43,6 +44,12 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
   const [skills, setSkills]           = useState<Skill[]>([])
   const [countryCode, setCountryCode] = useState('+503')
   const [phoneNumber, setPhoneNumber] = useState('')
+  const [location, setLocation] = useState<LocationValue>({
+    isRemote:  false,
+    address:   '',
+    latitude:  null,
+    longitude: null,
+  })
 
   function toggleSkill(skill: Skill) {
     setSkills((prev) =>
@@ -218,6 +225,26 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
               <p className="text-on-surface-variant/60 text-label-sm mt-1">
                 Selecciona al menos una habilidad para continuar.
               </p>
+            )}
+          </div>
+        )}
+
+        {role === 'PROVIDER' && (
+          <div>
+            <label className="text-label-md text-on-surface-variant block mb-2">
+              Mi ubicación
+              <span className="text-label-sm text-on-surface-variant/60 ml-1">(dónde ofreces tus servicios)</span>
+            </label>
+            <input type="hidden" name="isRemote" value={location.isRemote ? 'true' : 'false'} />
+            {location.latitude !== null && (
+              <input type="hidden" name="latitude" value={location.latitude} />
+            )}
+            {location.longitude !== null && (
+              <input type="hidden" name="longitude" value={location.longitude} />
+            )}
+            <LocationPicker value={location} onChange={setLocation} />
+            {state?.fieldErrors?.address && (
+              <p className="text-red-600 text-label-sm mt-1">{state.fieldErrors.address}</p>
             )}
           </div>
         )}
