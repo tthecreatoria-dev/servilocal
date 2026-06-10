@@ -4,24 +4,7 @@ import { db } from '@/lib/db'
 import Link from 'next/link'
 import { ApplyForm } from './apply-form'
 import type { ServiceCategory } from '@/types/index'
-
-const CATEGORY_LABELS: Record<ServiceCategory, string> = {
-  PLUMBING: 'Fontanería',
-  TEACHING: 'Enseñanza',
-  DELIVERY: 'Delivery',
-  CLEANING: 'Limpieza',
-  DESIGN:   'Diseño',
-  DIGITAL:  'Digital',
-}
-
-const CATEGORY_ICONS: Record<ServiceCategory, string> = {
-  PLUMBING: 'plumbing',
-  TEACHING: 'school',
-  DELIVERY: 'local_shipping',
-  CLEANING: 'cleaning_services',
-  DESIGN:   'palette',
-  DIGITAL:  'computer',
-}
+import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/lib/categories'
 
 export default async function MarketplaceJobDetailPage({
   params,

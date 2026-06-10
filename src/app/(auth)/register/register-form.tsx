@@ -8,15 +8,14 @@ import type { AuthState } from '@/actions/auth'
 import { SubmitButton } from '@/components/ui/submit-button'
 import { LocationPicker, type LocationValue } from '@/components/features/location-picker'
 
-type Skill = 'PLUMBING' | 'TEACHING' | 'DELIVERY' | 'CLEANING' | 'DESIGN' | 'DIGITAL'
+type Skill = 'PLUMBING' | 'TEACHING' | 'DELIVERY' | 'CLEANING' | 'ELECTRICAL'
 
 const SKILLS: { value: Skill; label: string; icon: string }[] = [
-  { value: 'PLUMBING',  label: 'Fontanería',      icon: 'plumbing' },
-  { value: 'TEACHING',  label: 'Enseñanza',        icon: 'school' },
-  { value: 'DELIVERY',  label: 'Delivery',         icon: 'local_shipping' },
-  { value: 'CLEANING',  label: 'Limpieza',         icon: 'cleaning_services' },
-  { value: 'DESIGN',    label: 'Diseño',           icon: 'palette' },
-  { value: 'DIGITAL',   label: 'Digital / Tech',   icon: 'computer' },
+  { value: 'PLUMBING',   label: 'Fontanería',  icon: 'plumbing' },
+  { value: 'TEACHING',   label: 'Enseñanza',   icon: 'school' },
+  { value: 'DELIVERY',   label: 'Delivery',    icon: 'local_shipping' },
+  { value: 'CLEANING',   label: 'Limpieza',    icon: 'cleaning_services' },
+  { value: 'ELECTRICAL', label: 'Electricista', icon: 'electrical_services' },
 ]
 
 const COUNTRY_CODES = [

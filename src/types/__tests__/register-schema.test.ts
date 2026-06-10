@@ -42,7 +42,7 @@ describe('RegisterSchema location rules', () => {
     const parsed = RegisterSchema.safeParse({
       ...base,
       role: 'PROVIDER',
-      skills: ['DIGITAL'],
+      skills: ['TEACHING'],
       isRemote: true,
     })
     expect(parsed.success).toBe(true)

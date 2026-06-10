@@ -6,7 +6,16 @@ export const LoginSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
 })
 
-const SKILL_VALUES = ['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'DESIGN', 'DIGITAL'] as const
+// Skills a provider can register with (curated subset shown on /register).
+const SKILL_VALUES = ['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'ELECTRICAL'] as const
+
+// Every valid ServiceCategory. Single source of truth for category validation —
+// must stay in sync with the `ServiceCategory` enum in prisma/schema.prisma and
+// the `ServiceCategory` type in src/types/index.ts.
+const SERVICE_CATEGORY_VALUES = [
+  'PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'ELECTRICAL',
+  'MASONRY', 'WELDING', 'ELECTRONICS', 'APPLIANCE_REPAIR', 'DESIGN', 'DIGITAL',
+] as const
 
 export const RegisterSchema = z
   .object({
@@ -38,7 +47,7 @@ export const CreateServiceSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters'),
   description: z.string().min(20, 'Description must be at least 20 characters'),
   price: z.number().positive('Price must be positive'),
-  category: z.enum(['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'DESIGN', 'DIGITAL']),
+  category: z.enum(SERVICE_CATEGORY_VALUES),
 })
 
 export const CreateServiceRequestSchema = z.object({
@@ -61,7 +70,7 @@ export const CreateJobPostSchema = z
   .object({
     title: z.string().min(5, 'Title must be at least 5 characters').max(150, 'Title must be at most 150 characters'),
     description: z.string().min(20, 'Description must be at least 20 characters').max(2000, 'Description must be at most 2000 characters'),
-      category: z.enum(['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'MASONRY', 'ELECTRICAL', 'WELDING', 'ELECTRONICS', 'APPLIANCE_REPAIR']),
+    category: z.enum(SERVICE_CATEGORY_VALUES),
     budget: z.number().positive('Budget must be positive'),
     deadline: z.string().datetime('Deadline must be a valid ISO datetime').refine(
       (d) => new Date(d) > new Date(),

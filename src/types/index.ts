@@ -6,6 +6,11 @@ export type ServiceCategory =
   | 'TEACHING'
   | 'DELIVERY'
   | 'CLEANING'
+  | 'ELECTRICAL'
+  | 'MASONRY'
+  | 'WELDING'
+  | 'ELECTRONICS'
+  | 'APPLIANCE_REPAIR'
   | 'DESIGN'
   | 'DIGITAL'
 

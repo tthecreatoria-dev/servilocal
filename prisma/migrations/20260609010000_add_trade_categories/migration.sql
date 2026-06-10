@@ -1,0 +1,5 @@
+-- AlterEnum
+ALTER TYPE "ServiceCategory" ADD VALUE 'MASONRY';
+ALTER TYPE "ServiceCategory" ADD VALUE 'WELDING';
+ALTER TYPE "ServiceCategory" ADD VALUE 'ELECTRONICS';
+ALTER TYPE "ServiceCategory" ADD VALUE 'APPLIANCE_REPAIR';

@@ -3,15 +3,7 @@ import { redirect } from 'next/navigation'
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import type { ServiceCategory } from '@/types'
-
-const CATEGORY_LABELS: Record<ServiceCategory, string> = {
-  PLUMBING: 'Fontanería',
-  TEACHING: 'Enseñanza',
-  DELIVERY: 'Delivery',
-  CLEANING: 'Limpieza',
-  DESIGN:   'Diseño',
-  DIGITAL:  'Digital',
-}
+import { CATEGORY_LABELS } from '@/lib/categories'
 
 const STATUS_CONFIG = {
   PENDING_PAYMENT: { label: 'Pago pendiente', className: 'bg-primary-container text-on-primary-container' },

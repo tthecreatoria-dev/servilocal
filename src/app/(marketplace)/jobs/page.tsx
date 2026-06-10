@@ -1,26 +1,7 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import type { ServiceCategory } from '@/types/index'
-
-const CATEGORY_LABELS: Record<ServiceCategory, string> = {
-  PLUMBING: 'Fontanería',
-  TEACHING: 'Enseñanza',
-  DELIVERY: 'Delivery',
-  CLEANING: 'Limpieza',
-  DESIGN:   'Diseño',
-  DIGITAL:  'Digital',
-}
-
-const CATEGORY_ICONS: Record<ServiceCategory, string> = {
-  PLUMBING: 'plumbing',
-  TEACHING: 'school',
-  DELIVERY: 'local_shipping',
-  CLEANING: 'cleaning_services',
-  DESIGN:   'palette',
-  DIGITAL:  'computer',
-}
-
-const CATEGORIES = Object.keys(CATEGORY_LABELS) as ServiceCategory[]
+import { CATEGORY_LABELS, CATEGORY_ICONS, CATEGORY_KEYS as CATEGORIES } from '@/lib/categories'
 
 export default async function JobsPage({
   searchParams,

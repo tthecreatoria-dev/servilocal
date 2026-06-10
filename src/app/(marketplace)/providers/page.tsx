@@ -4,17 +4,7 @@ import { geocodeAddress } from '@/lib/geocode'
 import { rankProviders, type ProviderForRanking } from '@/lib/provider-search'
 import { ProviderCard } from '@/components/features/provider-card'
 import type { ServiceCategory } from '@/types/index'
-
-const CATEGORY_LABELS: Record<ServiceCategory, string> = {
-  PLUMBING: 'Fontanería',
-  TEACHING: 'Enseñanza',
-  DELIVERY: 'Delivery',
-  CLEANING: 'Limpieza',
-  DESIGN:   'Diseño',
-  DIGITAL:  'Digital',
-}
-
-const CATEGORIES = Object.keys(CATEGORY_LABELS) as ServiceCategory[]
+import { CATEGORY_LABELS, CATEGORY_KEYS as CATEGORIES } from '@/lib/categories'
 
 export default async function ProvidersPage({
   searchParams,

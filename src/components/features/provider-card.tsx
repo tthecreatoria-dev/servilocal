@@ -1,23 +1,5 @@
-import type { ServiceCategory } from '@/types/index'
 import type { RankedProvider } from '@/lib/provider-search'
-
-const CATEGORY_LABELS: Record<ServiceCategory, string> = {
-  PLUMBING: 'Fontanería',
-  TEACHING: 'Enseñanza',
-  DELIVERY: 'Delivery',
-  CLEANING: 'Limpieza',
-  DESIGN:   'Diseño',
-  DIGITAL:  'Digital',
-}
-
-const CATEGORY_ICONS: Record<ServiceCategory, string> = {
-  PLUMBING: 'plumbing',
-  TEACHING: 'school',
-  DELIVERY: 'local_shipping',
-  CLEANING: 'cleaning_services',
-  DESIGN:   'palette',
-  DIGITAL:  'computer',
-}
+import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/lib/categories'
 
 export function ProviderCard({ provider }: { provider: RankedProvider }) {
   const locationLabel =

@@ -95,6 +95,11 @@ These are not preferences. They are invariants that protect real user funds.
 | DELIVERY | 15% |
 | PLUMBING | 12% |
 | CLEANING | 12% |
+| ELECTRICAL | 10% |
+| MASONRY | 10% |
+| WELDING | 10% |
+| ELECTRONICS | 10% |
+| APPLIANCE_REPAIR | 10% |
 | TEACHING | 10% |
 | DESIGN | 10% |
 | DIGITAL | 8% |

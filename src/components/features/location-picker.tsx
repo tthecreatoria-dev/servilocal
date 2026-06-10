@@ -1,7 +1,11 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
+import {
+  searchAddressSuggestions,
+  type AddressSuggestion,
+} from '@/lib/address-suggestions'
 
 const LocationMap = dynamic(
   () => import('./location-map').then((m) => m.LocationMap),
@@ -46,12 +50,51 @@ async function reverseGeocode(lat: number, lng: number): Promise<string | null> 
 export function LocationPicker({ value, onChange }: LocationPickerProps) {
   const geocodeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const addressEdited = useRef(false)
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const searchAbort = useRef<AbortController | null>(null)
+  // null = dropdown closed; [] = open showing "Sin resultados"
+  const [suggestions, setSuggestions] = useState<AddressSuggestion[] | null>(null)
 
   useEffect(() => {
     return () => {
       if (geocodeTimer.current) clearTimeout(geocodeTimer.current)
+      if (searchTimer.current) clearTimeout(searchTimer.current)
+      searchAbort.current?.abort()
     }
   }, [])
+
+  function handleAddressChange(next: string) {
+    addressEdited.current = true
+    onChange((prev) => ({ ...prev, address: next }))
+
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+    searchAbort.current?.abort()
+
+    const q = next.trim()
+    if (q.length < 3) {
+      setSuggestions(null)
+      return
+    }
+    searchTimer.current = setTimeout(async () => {
+      const controller = new AbortController()
+      searchAbort.current = controller
+      const results = await searchAddressSuggestions(q, controller.signal)
+      if (controller.signal.aborted) return
+      setSuggestions(results)
+    }, 700)
+  }
+
+  function handleSelect(suggestion: AddressSuggestion) {
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+    searchAbort.current?.abort()
+    onChange((prev) => ({
+      ...prev,
+      address: suggestion.label,
+      latitude: suggestion.lat,
+      longitude: suggestion.lng,
+    }))
+    setSuggestions(null)
+  }
 
   function handlePick(lat: number, lng: number) {
     onChange((prev) => ({ ...prev, latitude: lat, longitude: lng }))
@@ -94,14 +137,58 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
                 id="address"
                 name="address"
                 value={value.address}
-                onChange={(e) => {
-                  addressEdited.current = true
-                  const next = e.target.value
-                  onChange((prev) => ({ ...prev, address: next }))
+                onChange={(e) => handleAddressChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (suggestions === null) return
+                  if (e.key === 'Escape') {
+                    setSuggestions(null)
+                  } else if (e.key === 'Enter') {
+                    e.preventDefault()
+                    const first = suggestions[0]
+                    if (first) handleSelect(first)
+                  }
                 }}
+                onBlur={() => setSuggestions(null)}
+                autoComplete="off"
+                role="combobox"
+                aria-expanded={suggestions !== null}
+                aria-controls="address-suggestions"
                 placeholder="Ej: Col. Escalón, San Salvador"
                 className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               />
+              {suggestions !== null && (
+                <ul
+                  id="address-suggestions"
+                  role="listbox"
+                  className="absolute z-[1100] top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-md overflow-hidden"
+                >
+                  {suggestions.length === 0 ? (
+                    <li className="px-4 py-3 text-body-md text-on-surface-variant">
+                      Sin resultados
+                    </li>
+                  ) : (
+                    suggestions.map((s) => (
+                      <li key={`${s.lat},${s.lng}`} role="option" aria-selected={false}>
+                        <button
+                          type="button"
+                          // mousedown fires before the input's blur, so selection
+                          // wins over the blur-close
+                          onMouseDown={(e) => {
+                            e.preventDefault()
+                            handleSelect(s)
+                          }}
+                          className="w-full flex items-start gap-2 px-4 py-3 text-left text-body-md text-on-surface hover:bg-surface-container transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[18px] text-on-surface-variant shrink-0 mt-0.5">
+                            location_on
+                          </span>
+                          <span className="line-clamp-2">{s.label}</span>
+                        </button>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              )}
             </div>
           </div>
 

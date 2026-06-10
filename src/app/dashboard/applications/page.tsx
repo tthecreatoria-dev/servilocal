@@ -3,15 +3,7 @@ import { redirect } from 'next/navigation'
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import type { ServiceCategory } from '@/types/index'
-
-const CATEGORY_LABELS: Record<ServiceCategory, string> = {
-  PLUMBING: 'Fontanería',
-  TEACHING: 'Enseñanza',
-  DELIVERY: 'Delivery',
-  CLEANING: 'Limpieza',
-  DESIGN:   'Diseño',
-  DIGITAL:  'Digital',
-}
+import { CATEGORY_LABELS } from '@/lib/categories'
 
 const STATUS_CONFIG = {
   PENDING:  { label: 'En revisión', icon: 'hourglass_empty', className: 'bg-surface-container text-on-surface-variant' },
