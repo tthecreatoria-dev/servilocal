@@ -40,6 +40,8 @@ export type JobApplicationStatus =
   | 'ACCEPTED'
   | 'REJECTED'
 
+export type PayoutMethod = 'PAYPAL' | 'TKIERO'
+
 export type CommissionResult = {
   commissionAmount: number
   rate: number
