@@ -199,3 +199,80 @@ Do not implement, scaffold, or reference these unless explicitly asked:
 - Ask before changing transaction sta
 - tus logic
 - Never move money without a recorded commission
+
+---
+
+## Roadmap to production
+
+Phases to complete before launch, in order. Work on ONE phase at a time —
+do not start a phase until the previous one is merged. Mark items as done
+as they land. (Audit date: 2026-06-09; build, tests, and auth were green.)
+
+### Phase 1 — Complete the money loop (CRITICAL, blocks launch)
+
+The escrow flow currently stops at `HELD`: money comes in but can never reach
+the provider. `releaseToProvider()` and `recordCommission()` exist in `lib/`
+but nothing calls them.
+
+- [x] Server action: provider marks job `IN_PROGRESS` (from `ASSIGNED`)
+- [x] Server action: client marks job `COMPLETED` — records the commission
+      FIRST, then advances `JobPayment` `HELD → PENDING_PAYOUT` atomically in
+      one `$transaction` (abort if commission recording fails). Final release
+      to `RELEASED` happens via the admin payout flow below.
+- [x] Release path for PayPal payments — documented manual process: admin
+      `/dashboard/payouts` page + `markPayoutPaid` action creates an auditable
+      `Payout` row and moves `PENDING_PAYOUT → RELEASED`. (Tkiero auto-release
+      deferred until their API contract is confirmed.)
+- [x] Dashboard UI: state transition buttons for both roles
+- [x] Tests for every state transition, including the forbidden backwards ones
+
+### Phase 2 — Reviews
+
+The `Review` model exists with zero UI/actions. Per the business rules, the
+client review is part of the completion flow.
+
+- [ ] Server action: client leaves rating + comment after `COMPLETED`
+- [ ] Recalculate and store provider rating on `ProviderProfile`
+- [ ] Show reviews on provider cards and provider search results
+- [ ] One review per transaction, client-only, enforced server-side
+
+### Phase 3 — Account recovery + transactional email
+
+Credentials auth with no email layer: a user who forgets their password
+loses the account, and neither party is notified of marketplace events.
+
+- [ ] Pick email provider (Resend suggested — ask before adding the dependency)
+- [ ] Password reset flow (token, expiry, single-use)
+- [ ] Email verification on signup
+- [ ] Event emails: application received, application accepted, payment
+      received, job completed / funds released
+
+### Phase 4 — Cancellations & refunds
+
+`refund()` exists in `lib/tkiero.ts` but is never called; `CANCELLED` status
+is never assigned; webhook ignores `payment.failed` for `JobPayment`.
+
+- [ ] Client cancels a job before assignment → refund + `CANCELLED`
+- [ ] Define and implement cancellation policy after assignment
+- [ ] Handle `payment.failed` for `JobPayment` in the webhook
+- [ ] Refund path for PayPal payments
+
+### Phase 5 — Operations: CI, deploy, monitoring, rate limiting
+
+- [ ] GitHub Actions: `tsc --noEmit` + `npm test` + `npm run build` on every PR
+- [ ] Deploy target (Vercel + Supabase fits the stack) with env vars set
+- [ ] Error monitoring (Sentry or similar) — payment flows and webhook
+      failures must alert, not die in `console.error`
+- [ ] Rate limiting on `/login`, `/register`, and payment endpoints
+- [ ] Guard `prisma/seed.ts` so it can never run against production
+
+### Phase 6 — Launch hardening
+
+- [ ] Terms of service + privacy policy pages (required — the platform
+      holds third-party funds in escrow)
+- [ ] Confirm Tkiero API contract (webhook signature header name, base URL)
+      and remove the TODO in `api/payments/webhook/route.ts` — or formally
+      defer Tkiero to post-launch
+- [ ] ESLint cleanup: ignore `src/generated/`, fix remaining real errors
+- [ ] Update this file: document PayPal, the `JobPost`/`JobApplication`/
+      `JobPayment` models, and `proxy.ts` (this file still says `middleware.ts`)
