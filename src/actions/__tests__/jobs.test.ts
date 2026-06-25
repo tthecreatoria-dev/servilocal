@@ -22,7 +22,7 @@ vi.mock('@/lib/db', () => ({
   },
 }))
 
-import { createJobPost, createJobApplication, selectJobApplication, startJob } from '@/actions/jobs'
+import { createJobPost, createJobApplication, selectJobApplication, startJob, completeJob } from '@/actions/jobs'
 
 beforeEach(() => {
   mockAuth.mockClear()
@@ -371,5 +371,80 @@ describe('startJob()', () => {
     const result = await startJob({ jobPostId: JOB_ID })
     expect(result.success).toBe(true)
     expect(update).toHaveBeenCalledWith({ where: { id: JOB_ID }, data: { status: 'IN_PROGRESS' } })
+  })
+})
+
+describe('completeJob()', () => {
+  const CLIENT_SESSION = { user: { id: 'client_1', role: 'CLIENT' } }
+  const JOB_ID = 'cjld2cjxh0000qzrmn831i7rn'
+
+  function makeTx(overrides: Record<string, unknown> = {}) {
+    return {
+      jobPost: {
+        findUnique: vi.fn().mockResolvedValue({
+          id: JOB_ID, clientId: 'client_1', status: 'IN_PROGRESS', category: 'PLUMBING',
+          payment: { id: 'pay_1', status: 'HELD', amount: 100 },
+        }),
+        update: vi.fn().mockResolvedValue({ id: JOB_ID, status: 'COMPLETED' }),
+      },
+      jobPayment: { update: vi.fn().mockResolvedValue({ id: 'pay_1', status: 'PENDING_PAYOUT' }) },
+      commission: { create: vi.fn().mockResolvedValue({ id: 'comm_1' }) },
+      ...overrides,
+    }
+  }
+
+  it('rejects a non-owner client', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'other', role: 'CLIENT' } })
+    mockTransaction.mockImplementation(async (fn) => fn(makeTx()))
+    expect(await completeJob({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'post_not_owned' })
+  })
+
+  it('rejects when the post is not IN_PROGRESS', async () => {
+    mockAuth.mockResolvedValue(CLIENT_SESSION)
+    const tx = makeTx()
+    tx.jobPost.findUnique = vi.fn().mockResolvedValue({
+      id: JOB_ID, clientId: 'client_1', status: 'ASSIGNED', category: 'PLUMBING',
+      payment: { id: 'pay_1', status: 'HELD', amount: 100 },
+    })
+    mockTransaction.mockImplementation(async (fn) => fn(tx))
+    expect(await completeJob({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'post_not_in_progress' })
+  })
+
+  it('rejects when the payment is not HELD (no backwards transitions)', async () => {
+    mockAuth.mockResolvedValue(CLIENT_SESSION)
+    const tx = makeTx()
+    tx.jobPost.findUnique = vi.fn().mockResolvedValue({
+      id: JOB_ID, clientId: 'client_1', status: 'IN_PROGRESS', category: 'PLUMBING',
+      payment: { id: 'pay_1', status: 'RELEASED', amount: 100 },
+    })
+    mockTransaction.mockImplementation(async (fn) => fn(tx))
+    expect(await completeJob({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'payment_not_held' })
+  })
+
+  it('records the commission and advances payment + post atomically', async () => {
+    mockAuth.mockResolvedValue(CLIENT_SESSION)
+    const tx = makeTx()
+    mockTransaction.mockImplementation(async (fn) => fn(tx))
+    const result = await completeJob({ jobPostId: JOB_ID })
+    expect(result.success).toBe(true)
+    expect(tx.commission.create).toHaveBeenCalledWith({
+      data: { jobPaymentId: 'pay_1', amount: 12, rate: 0.12, category: 'PLUMBING' },
+    })
+    expect(tx.jobPayment.update).toHaveBeenCalledWith({
+      where: { id: 'pay_1' }, data: { status: 'PENDING_PAYOUT' },
+    })
+    expect(tx.jobPost.update).toHaveBeenCalledWith({
+      where: { id: JOB_ID }, data: { status: 'COMPLETED' },
+    })
+  })
+
+  it('aborts everything when commission recording fails', async () => {
+    mockAuth.mockResolvedValue(CLIENT_SESSION)
+    const tx = makeTx({ commission: { create: vi.fn().mockRejectedValue(new Error('db down')) } })
+    // emulate Prisma: a throw inside the callback rejects the whole transaction
+    mockTransaction.mockImplementation(async (fn) => fn(tx))
+    await expect(completeJob({ jobPostId: JOB_ID })).rejects.toThrow('db down')
+    expect(tx.jobPayment.update).not.toHaveBeenCalled()
+    expect(tx.jobPost.update).not.toHaveBeenCalled()
   })
 })

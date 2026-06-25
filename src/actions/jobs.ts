@@ -183,3 +183,52 @@ export async function startJob(
     throw error
   }
 }
+
+export async function completeJob(
+  data: CompleteJobInput,
+): Promise<ActionResult<Awaited<ReturnType<typeof db.jobPost.update>>>> {
+  const session = await auth()
+  if (!session) return { success: false, error: 'unauthorized' }
+  if (session.user.role !== 'CLIENT') return { success: false, error: 'forbidden' }
+
+  const parsed = CompleteJobSchema.safeParse(data)
+  if (!parsed.success) return { success: false, error: 'validation' }
+
+  try {
+    const updated = await db.$transaction(async (tx) => {
+      const post = await tx.jobPost.findUnique({
+        where: { id: parsed.data.jobPostId },
+        include: { payment: true },
+      })
+      if (!post) throw new Error('post_not_found')
+      if (post.clientId !== session.user.id) throw new Error('post_not_owned')
+      if (post.status !== 'IN_PROGRESS') throw new Error('post_not_in_progress')
+      if (!post.payment) throw new Error('payment_not_found')
+      if (post.payment.status !== 'HELD') throw new Error('payment_not_held')
+
+      // Business rule: commission is recorded BEFORE the payment advances.
+      // A failure here rolls back the entire transaction — no funds move.
+      await recordJobCommission(tx, post.payment.id, Number(post.payment.amount), post.category)
+      await tx.jobPayment.update({
+        where: { id: post.payment.id },
+        data: { status: 'PENDING_PAYOUT' },
+      })
+      return tx.jobPost.update({
+        where: { id: post.id },
+        data: { status: 'COMPLETED' },
+      })
+    })
+    return { success: true, data: updated }
+  } catch (error) {
+    if (error instanceof Error) {
+      const known = [
+        'post_not_found', 'post_not_owned', 'post_not_in_progress',
+        'payment_not_found', 'payment_not_held',
+      ]
+      if (known.includes(error.message)) {
+        return { success: false, error: error.message }
+      }
+    }
+    throw error
+  }
+}
