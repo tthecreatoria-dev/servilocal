@@ -46,3 +46,30 @@ export async function recordCommission(
     },
   })
 }
+
+// Minimal structural type so the function works with both the real Prisma
+// transaction client and test doubles.
+type CommissionWriter = {
+  commission: {
+    create: (args: {
+      data: { jobPaymentId: string; amount: number; rate: number; category: ServiceCategory }
+    }) => Promise<unknown>
+  }
+}
+
+/**
+ * Records the commission for a job payment INSIDE the caller's transaction.
+ * Must be called before the payment advances past HELD — if this throws, the
+ * caller's $transaction rolls back and no funds move.
+ */
+export async function recordJobCommission(
+  tx: CommissionWriter,
+  jobPaymentId: string,
+  amount: number,
+  category: ServiceCategory,
+) {
+  const { commissionAmount, rate } = calculateCommission(amount, category)
+  return tx.commission.create({
+    data: { jobPaymentId, amount: commissionAmount, rate, category },
+  })
+}

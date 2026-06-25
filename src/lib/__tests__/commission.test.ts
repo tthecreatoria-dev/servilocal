@@ -115,3 +115,27 @@ describe('recordCommission', () => {
     )
   })
 })
+
+import { recordJobCommission } from '@/lib/commission'
+
+describe('recordJobCommission()', () => {
+  it('creates a commission row linked to the job payment with the category rate', async () => {
+    const create = vi.fn().mockResolvedValue({ id: 'comm_1' })
+    const tx = { commission: { create } }
+    await recordJobCommission(tx, 'payment_1', 100, 'PLUMBING')
+    expect(create).toHaveBeenCalledWith({
+      data: {
+        jobPaymentId: 'payment_1',
+        amount: 12,
+        rate: 0.12,
+        category: 'PLUMBING',
+      },
+    })
+  })
+
+  it('propagates a create failure (caller must abort the release)', async () => {
+    const create = vi.fn().mockRejectedValue(new Error('db down'))
+    const tx = { commission: { create } }
+    await expect(recordJobCommission(tx, 'payment_1', 100, 'PLUMBING')).rejects.toThrow('db down')
+  })
+})
