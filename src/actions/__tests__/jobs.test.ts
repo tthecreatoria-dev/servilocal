@@ -22,7 +22,7 @@ vi.mock('@/lib/db', () => ({
   },
 }))
 
-import { createJobPost, createJobApplication, selectJobApplication } from '@/actions/jobs'
+import { createJobPost, createJobApplication, selectJobApplication, startJob } from '@/actions/jobs'
 
 beforeEach(() => {
   mockAuth.mockClear()
@@ -309,5 +309,67 @@ describe('selectJobApplication()', () => {
       where: { id: validSelectData.jobPostId },
       data: { status: 'ASSIGNED' },
     })
+  })
+})
+
+describe('startJob()', () => {
+  const PROVIDER_SESSION = { user: { id: 'prov_1', role: 'PROVIDER' } }
+  const JOB_ID = 'cjld2cjxh0000qzrmn831i7rn'
+
+  it('rejects unauthenticated callers', async () => {
+    mockAuth.mockResolvedValue(null)
+    expect(await startJob({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'unauthorized' })
+  })
+
+  it('rejects non-provider roles', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'c1', role: 'CLIENT' } })
+    expect(await startJob({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'forbidden' })
+  })
+
+  it('rejects invalid ids', async () => {
+    mockAuth.mockResolvedValue(PROVIDER_SESSION)
+    expect(await startJob({ jobPostId: 'nope' })).toEqual({ success: false, error: 'validation' })
+  })
+
+  it('rejects when the post is not ASSIGNED', async () => {
+    mockAuth.mockResolvedValue(PROVIDER_SESSION)
+    mockTransaction.mockImplementation(async (fn) => fn({
+      jobPost: {
+        findUnique: vi.fn().mockResolvedValue({ id: JOB_ID, status: 'OPEN', applications: [] }),
+        update: vi.fn(),
+      },
+    }))
+    expect(await startJob({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'post_not_assigned' })
+  })
+
+  it('rejects a provider who is not the accepted applicant', async () => {
+    mockAuth.mockResolvedValue(PROVIDER_SESSION)
+    mockTransaction.mockImplementation(async (fn) => fn({
+      jobPost: {
+        findUnique: vi.fn().mockResolvedValue({
+          id: JOB_ID, status: 'ASSIGNED',
+          applications: [{ providerId: 'someone_else' }],
+        }),
+        update: vi.fn(),
+      },
+    }))
+    expect(await startJob({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'not_assigned_provider' })
+  })
+
+  it('moves ASSIGNED → IN_PROGRESS for the accepted provider', async () => {
+    mockAuth.mockResolvedValue(PROVIDER_SESSION)
+    const update = vi.fn().mockResolvedValue({ id: JOB_ID, status: 'IN_PROGRESS' })
+    mockTransaction.mockImplementation(async (fn) => fn({
+      jobPost: {
+        findUnique: vi.fn().mockResolvedValue({
+          id: JOB_ID, status: 'ASSIGNED',
+          applications: [{ providerId: 'prov_1' }],
+        }),
+        update,
+      },
+    }))
+    const result = await startJob({ jobPostId: JOB_ID })
+    expect(result.success).toBe(true)
+    expect(update).toHaveBeenCalledWith({ where: { id: JOB_ID }, data: { status: 'IN_PROGRESS' } })
   })
 })

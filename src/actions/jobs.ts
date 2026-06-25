@@ -6,12 +6,17 @@ import {
   CreateJobPostSchema,
   CreateJobApplicationSchema,
   SelectJobApplicationSchema,
+  StartJobSchema,
+  CompleteJobSchema,
 } from '@/types/schemas'
 import type {
   CreateJobPostInput,
   CreateJobApplicationInput,
   SelectJobApplicationInput,
+  StartJobInput,
+  CompleteJobInput,
 } from '@/types/schemas'
+import { recordJobCommission } from '@/lib/commission'
 import type { ActionResult } from '@/types/index'
 
 export async function createJobPost(
@@ -132,6 +137,45 @@ export async function selectJobApplication(
   } catch (error) {
     if (error instanceof Error) {
       const known = ['post_not_open', 'application_not_pending']
+      if (known.includes(error.message)) {
+        return { success: false, error: error.message }
+      }
+    }
+    throw error
+  }
+}
+
+export async function startJob(
+  data: StartJobInput,
+): Promise<ActionResult<Awaited<ReturnType<typeof db.jobPost.update>>>> {
+  const session = await auth()
+  if (!session) return { success: false, error: 'unauthorized' }
+  if (session.user.role !== 'PROVIDER') return { success: false, error: 'forbidden' }
+
+  const parsed = StartJobSchema.safeParse(data)
+  if (!parsed.success) return { success: false, error: 'validation' }
+
+  try {
+    const updated = await db.$transaction(async (tx) => {
+      const post = await tx.jobPost.findUnique({
+        where: { id: parsed.data.jobPostId },
+        include: { applications: { where: { status: 'ACCEPTED' }, select: { providerId: true } } },
+      })
+      if (!post) throw new Error('post_not_found')
+      if (post.status !== 'ASSIGNED') throw new Error('post_not_assigned')
+      const accepted = post.applications[0]
+      if (!accepted || accepted.providerId !== session.user.id) {
+        throw new Error('not_assigned_provider')
+      }
+      return tx.jobPost.update({
+        where: { id: post.id },
+        data: { status: 'IN_PROGRESS' },
+      })
+    })
+    return { success: true, data: updated }
+  } catch (error) {
+    if (error instanceof Error) {
+      const known = ['post_not_found', 'post_not_assigned', 'not_assigned_provider']
       if (known.includes(error.message)) {
         return { success: false, error: error.message }
       }
