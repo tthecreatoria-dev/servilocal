@@ -87,3 +87,103 @@ describe('CreateJobPostSchema location rules', () => {
     expect(result.success).toBe(false)
   })
 })
+
+import {
+  UpdatePayoutSettingsSchema,
+  UpdateProfileSchema,
+  StartJobSchema,
+  MarkPayoutPaidSchema,
+} from '@/types/schemas'
+
+describe('UpdatePayoutSettingsSchema', () => {
+  it('accepts PAYPAL with a valid email', () => {
+    const r = UpdatePayoutSettingsSchema.safeParse({
+      payoutMethod: 'PAYPAL',
+      paypalEmail: 'pedro@example.com',
+    })
+    expect(r.success).toBe(true)
+  })
+
+  it('rejects PAYPAL with an invalid email', () => {
+    const r = UpdatePayoutSettingsSchema.safeParse({
+      payoutMethod: 'PAYPAL',
+      paypalEmail: 'not-an-email',
+    })
+    expect(r.success).toBe(false)
+  })
+
+  it('accepts TKIERO with an account id', () => {
+    const r = UpdatePayoutSettingsSchema.safeParse({
+      payoutMethod: 'TKIERO',
+      tkieroAccount: '@pedro-sv',
+    })
+    expect(r.success).toBe(true)
+  })
+
+  it('rejects TKIERO with a blank account', () => {
+    const r = UpdatePayoutSettingsSchema.safeParse({
+      payoutMethod: 'TKIERO',
+      tkieroAccount: '  ',
+    })
+    expect(r.success).toBe(false)
+  })
+
+  it('rejects an unknown method', () => {
+    const r = UpdatePayoutSettingsSchema.safeParse({
+      payoutMethod: 'ZELLE',
+      paypalEmail: 'x@y.com',
+    })
+    expect(r.success).toBe(false)
+  })
+})
+
+describe('UpdateProfileSchema', () => {
+  it('accepts minimal client data', () => {
+    const r = UpdateProfileSchema.safeParse({ name: 'Ana López', phone: '+50379000000' })
+    expect(r.success).toBe(true)
+  })
+
+  it('accepts provider fields', () => {
+    const r = UpdateProfileSchema.safeParse({
+      name: 'Pedro',
+      phone: '+50379000001',
+      bio: 'Fontanero con 10 años de experiencia',
+      skills: ['PLUMBING', 'ELECTRICAL'],
+      isRemote: false,
+      address: 'Col. Escalón, San Salvador',
+      latitude: 13.7,
+      longitude: -89.24,
+    })
+    expect(r.success).toBe(true)
+  })
+
+  it('rejects a too-short name', () => {
+    expect(UpdateProfileSchema.safeParse({ name: 'A', phone: '+50379000000' }).success).toBe(false)
+  })
+
+  it('rejects an unknown skill', () => {
+    const r = UpdateProfileSchema.safeParse({
+      name: 'Pedro', phone: '+50379000001', skills: ['HACKING'],
+    })
+    expect(r.success).toBe(false)
+  })
+})
+
+describe('StartJobSchema / MarkPayoutPaidSchema', () => {
+  it('accepts a cuid jobPostId', () => {
+    expect(StartJobSchema.safeParse({ jobPostId: 'cjld2cjxh0000qzrmn831i7rn' }).success).toBe(true)
+  })
+
+  it('rejects a non-cuid id', () => {
+    expect(StartJobSchema.safeParse({ jobPostId: '123' }).success).toBe(false)
+  })
+
+  it('accepts payout id with optional reference', () => {
+    expect(MarkPayoutPaidSchema.safeParse({
+      jobPaymentId: 'cjld2cjxh0000qzrmn831i7rn', reference: 'PAYPAL-TX-1',
+    }).success).toBe(true)
+    expect(MarkPayoutPaidSchema.safeParse({
+      jobPaymentId: 'cjld2cjxh0000qzrmn831i7rn',
+    }).success).toBe(true)
+  })
+})

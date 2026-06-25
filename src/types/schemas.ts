@@ -106,6 +106,41 @@ export const SelectJobApplicationSchema = z.object({
   applicationId: z.string().cuid('Invalid application ID'),
 })
 
+export const StartJobSchema = z.object({
+  jobPostId: z.string().cuid('Invalid job post ID'),
+})
+
+export const CompleteJobSchema = z.object({
+  jobPostId: z.string().cuid('Invalid job post ID'),
+})
+
+export const MarkPayoutPaidSchema = z.object({
+  jobPaymentId: z.string().cuid('Invalid job payment ID'),
+  reference: z.string().max(100, 'Reference must be at most 100 characters').optional(),
+})
+
+export const UpdatePayoutSettingsSchema = z.discriminatedUnion('payoutMethod', [
+  z.object({
+    payoutMethod: z.literal('PAYPAL'),
+    paypalEmail: z.string().email('Email de PayPal inválido'),
+  }),
+  z.object({
+    payoutMethod: z.literal('TKIERO'),
+    tkieroAccount: z.string().trim().min(3, 'Cuenta Tkiero inválida'),
+  }),
+])
+
+export const UpdateProfileSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  phone: z.string().min(7, 'Número de teléfono inválido'),
+  bio: z.string().max(500, 'Bio must be at most 500 characters').optional(),
+  skills: z.array(z.enum(SERVICE_CATEGORY_VALUES)).optional(),
+  isRemote: z.boolean().optional(),
+  address: z.string().min(5, 'Address must be at least 5 characters').max(200, 'Address must be at most 200 characters').optional(),
+  latitude: z.number().min(-90, 'Invalid latitude').max(90, 'Invalid latitude').optional(),
+  longitude: z.number().min(-180, 'Invalid longitude').max(180, 'Invalid longitude').optional(),
+})
+
 export type LoginInput = z.infer<typeof LoginSchema>
 export type RegisterInput = z.infer<typeof RegisterSchema>
 export type CreateServiceInput = z.infer<typeof CreateServiceSchema>
@@ -114,3 +149,8 @@ export type TkieroWebhookPayload = z.infer<typeof TkieroWebhookSchema>
 export type CreateJobPostInput = z.infer<typeof CreateJobPostSchema>
 export type CreateJobApplicationInput = z.infer<typeof CreateJobApplicationSchema>
 export type SelectJobApplicationInput = z.infer<typeof SelectJobApplicationSchema>
+export type StartJobInput = z.infer<typeof StartJobSchema>
+export type CompleteJobInput = z.infer<typeof CompleteJobSchema>
+export type MarkPayoutPaidInput = z.infer<typeof MarkPayoutPaidSchema>
+export type UpdatePayoutSettingsInput = z.infer<typeof UpdatePayoutSettingsSchema>
+export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>
