@@ -76,6 +76,23 @@ async function main() {
     }),
   ])
 
+  // ---- Admin (only when credentials are provided via env) ----
+  const adminEmail = process.env.ADMIN_EMAIL
+  const adminPassword = process.env.ADMIN_PASSWORD
+  if (adminEmail && adminPassword) {
+    await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {},
+      create: {
+        email: adminEmail,
+        passwordHash: await hash(adminPassword),
+        name: 'Admin',
+        role: 'ADMIN',
+      },
+    })
+    console.log(`Admin user ensured: ${adminEmail}`)
+  }
+
   // ---- Provider profiles ----
   const [pedroProfile, mariaProfile, robertoProfile, anaProfile] = await Promise.all([
     prisma.providerProfile.create({
