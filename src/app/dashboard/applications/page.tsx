@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import Link from 'next/link'
 import type { ServiceCategory } from '@/types/index'
 import { CATEGORY_LABELS } from '@/lib/categories'
+import { StartJobButton } from './start-job-button'
 
 const STATUS_CONFIG = {
   PENDING:  { label: 'En revisión', icon: 'hourglass_empty', className: 'bg-surface-container text-on-surface-variant' },
@@ -116,6 +117,17 @@ export default async function ProviderApplicationsPage() {
                     <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                   </Link>
                 </div>
+
+                {app.status === 'ACCEPTED' && job.status === 'ASSIGNED' && (
+                  <div className="pt-3">
+                    <StartJobButton jobPostId={job.id} />
+                  </div>
+                )}
+                {app.status === 'ACCEPTED' && job.status === 'IN_PROGRESS' && (
+                  <p className="pt-3 text-label-sm text-on-surface-variant">
+                    En progreso — el cliente lo marcará como completado
+                  </p>
+                )}
               </li>
             )
           })}

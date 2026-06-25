@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation'
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import { SelectApplicationButton } from './select-application-button'
+import { CompleteJobButton } from './complete-job-button'
 
 export default async function JobDetailPage({
   params,
@@ -40,6 +41,11 @@ export default async function JobDetailPage({
       <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 mb-4">
         {job.status}
       </span>
+      {job.status === 'IN_PROGRESS' && (
+        <div className="mb-4">
+          <CompleteJobButton jobPostId={job.id} />
+        </div>
+      )}
       <p className="text-zinc-700 mb-8">{job.description}</p>
 
       <h2 className="text-lg font-semibold mb-4">
