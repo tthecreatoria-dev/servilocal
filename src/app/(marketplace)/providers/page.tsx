@@ -28,6 +28,7 @@ export default async function ProvidersPage({
 
   const candidates: ProviderForRanking[] = rows.map((row) => ({
     id:           row.id,
+    slug:         row.slug,
     name:         row.user.name,
     bio:          row.bio,
     skills:       row.skills as ServiceCategory[],

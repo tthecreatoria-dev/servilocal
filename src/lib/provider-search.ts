@@ -5,6 +5,7 @@ export const DEFAULT_RADIUS_KM = 25
 
 export type ProviderForRanking = {
   id: string
+  slug: string
   name: string
   bio: string
   skills: ServiceCategory[]

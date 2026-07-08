@@ -4,6 +4,7 @@ import { rankProviders, DEFAULT_RADIUS_KM, type ProviderForRanking } from '@/lib
 function provider(overrides: Partial<ProviderForRanking>): ProviderForRanking {
   return {
     id: 'p',
+    slug: 'provider',
     name: 'Provider',
     bio: '',
     skills: ['PLUMBING'],
