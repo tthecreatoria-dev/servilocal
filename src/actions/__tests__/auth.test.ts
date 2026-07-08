@@ -310,7 +310,7 @@ describe('registerAndLogin()', () => {
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => unknown) =>
       cb({
         user: { create: userCreate },
-        providerProfile: { create: providerCreate },
+        providerProfile: { create: providerCreate, findMany: vi.fn().mockResolvedValue([]) },
       }),
     )
 
@@ -334,6 +334,7 @@ describe('registerAndLogin()', () => {
     expect(providerCreate).toHaveBeenCalledWith({
       data: {
         userId: 'u1',
+        slug: 'worker-one',
         skills: ['PLUMBING'],
         isRemote: false,
         address: 'Col. Escalón, San Salvador',
@@ -341,5 +342,56 @@ describe('registerAndLogin()', () => {
         longitude: -89.2182,
       },
     })
+  })
+
+  function providerRegistrationForm(name: string): FormData {
+    const fd = makeFormData({
+      email: 'worker@example.com',
+      password: 'password123',
+      name,
+      role: 'PROVIDER',
+      phone: '+50379000000',
+      isRemote: 'true',
+    })
+    fd.append('skills', 'PLUMBING')
+    return fd
+  }
+
+  it('genera el slug a partir del nombre al registrar un proveedor', async () => {
+    mockFindUnique.mockResolvedValue(null)
+    const providerCreate = vi.fn().mockResolvedValue(undefined)
+    const providerFindMany = vi.fn().mockResolvedValue([])
+    mockTransaction.mockImplementation(async (cb: (tx: unknown) => unknown) =>
+      cb({
+        user: { create: vi.fn().mockResolvedValue({ id: 'u1' }) },
+        providerProfile: { create: providerCreate, findMany: providerFindMany },
+      }),
+    )
+    mockSignIn.mockResolvedValue(undefined)
+
+    await registerAndLogin(null, providerRegistrationForm('José Muñoz'))
+
+    expect(providerCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ slug: 'jose-munoz' }) }),
+    )
+  })
+
+  it('añade sufijo numérico cuando el slug base ya está tomado', async () => {
+    mockFindUnique.mockResolvedValue(null)
+    const providerCreate = vi.fn().mockResolvedValue(undefined)
+    const providerFindMany = vi.fn().mockResolvedValue([{ slug: 'jose-munoz' }])
+    mockTransaction.mockImplementation(async (cb: (tx: unknown) => unknown) =>
+      cb({
+        user: { create: vi.fn().mockResolvedValue({ id: 'u1' }) },
+        providerProfile: { create: providerCreate, findMany: providerFindMany },
+      }),
+    )
+    mockSignIn.mockResolvedValue(undefined)
+
+    await registerAndLogin(null, providerRegistrationForm('José Muñoz'))
+
+    expect(providerCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ slug: 'jose-munoz-2' }) }),
+    )
   })
 })

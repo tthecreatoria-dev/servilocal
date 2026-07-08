@@ -164,6 +164,8 @@ model User {
 model ProviderProfile {
   id           String            @id @default(cuid())
   userId       String            @unique
+  slug         String            @unique
+  showPhone    Boolean           @default(false)
   bio          String            @default("")
   skills       ServiceCategory[]
   rating       Float             @default(0)

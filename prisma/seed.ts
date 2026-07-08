@@ -2,6 +2,7 @@ import 'dotenv/config'
 import bcrypt from 'bcryptjs'
 import { PrismaClient } from '../src/generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
+import { slugify } from '../src/lib/slug'
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
 const prisma = new PrismaClient({ adapter })
@@ -47,6 +48,7 @@ async function main() {
         email: 'pedro@test.com',
         passwordHash: await hash('test1234'),
         name: 'Pedro García',
+        phone: '+503 7900 0001',
         role: 'PROVIDER',
       },
     }),
@@ -96,16 +98,16 @@ async function main() {
   // ---- Provider profiles ----
   const [pedroProfile, mariaProfile, robertoProfile, anaProfile] = await Promise.all([
     prisma.providerProfile.create({
-      data: { userId: pedro.id, bio: 'Plomero certificado con 10 años de experiencia.', skills: ['PLUMBING'], rating: 4.8, totalReviews: 32 },
+      data: { userId: pedro.id, slug: slugify('Pedro García'), showPhone: true, bio: 'Plomero certificado con 10 años de experiencia.', skills: ['PLUMBING'], rating: 4.8, totalReviews: 32 },
     }),
     prisma.providerProfile.create({
-      data: { userId: maria.id, bio: 'Maestra de matemáticas y ciencias para primaria y secundaria.', skills: ['TEACHING'], rating: 4.9, totalReviews: 58 },
+      data: { userId: maria.id, slug: slugify('María López'), bio: 'Maestra de matemáticas y ciencias para primaria y secundaria.', skills: ['TEACHING'], rating: 4.9, totalReviews: 58 },
     }),
     prisma.providerProfile.create({
-      data: { userId: roberto.id, bio: 'Delivery express en toda el área metropolitana de San Salvador.', skills: ['DELIVERY'], rating: 4.6, totalReviews: 120 },
+      data: { userId: roberto.id, slug: slugify('Roberto Hernández'), bio: 'Delivery express en toda el área metropolitana de San Salvador.', skills: ['DELIVERY'], rating: 4.6, totalReviews: 120 },
     }),
     prisma.providerProfile.create({
-      data: { userId: ana.id, bio: 'Diseñadora gráfica y web con 6 años de experiencia.', skills: ['DESIGN'], rating: 4.7, totalReviews: 21 },
+      data: { userId: ana.id, slug: slugify('Ana Martínez'), bio: 'Diseñadora gráfica y web con 6 años de experiencia.', skills: ['DESIGN'], rating: 4.7, totalReviews: 21 },
     }),
   ])
 

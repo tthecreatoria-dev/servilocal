@@ -5,6 +5,7 @@ import { signIn } from '@/lib/auth'
 import { AuthError } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 import { db } from '@/lib/db'
+import { slugify, uniqueSlug } from '@/lib/slug'
 import { LoginSchema, RegisterSchema } from '@/types/schemas'
 import type { RegisterInput } from '@/types/schemas'
 
@@ -67,9 +68,20 @@ export async function register(input: RegisterInput): Promise<RegisterResult> {
     })
     if (parsed.data.role === 'PROVIDER') {
       const isRemote = parsed.data.isRemote ?? false
+      // Slug estable de por vida: se genera una única vez aquí y nunca se
+      // regenera aunque el usuario cambie de nombre. Dos registros simultáneos
+      // con el mismo nombre pueden colisionar; el unique constraint aborta la
+      // transacción y el usuario reintenta.
+      const base = slugify(parsed.data.name)
+      const existing = await tx.providerProfile.findMany({
+        where: { slug: { startsWith: base } },
+        select: { slug: true },
+      })
+      const slug = uniqueSlug(base, new Set(existing.map((p) => p.slug)))
       await tx.providerProfile.create({
         data: {
           userId:    created.id,
+          slug,
           skills,
           isRemote,
           address:   isRemote ? null : (parsed.data.address ?? null),
