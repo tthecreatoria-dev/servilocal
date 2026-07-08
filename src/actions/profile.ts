@@ -31,6 +31,7 @@ export async function updateProfile(data: UpdateProfileInput): Promise<ActionRes
       data: {
         bio: parsed.data.bio ?? '',
         skills: parsed.data.skills ?? [],
+        showPhone: parsed.data.showPhone ?? false,
         isRemote,
         address: isRemote ? null : parsed.data.address ?? null,
         latitude: isRemote ? null : parsed.data.latitude ?? null,

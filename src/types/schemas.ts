@@ -136,6 +136,7 @@ export const UpdateProfileSchema = z.object({
   bio: z.string().max(500, 'Bio must be at most 500 characters').optional(),
   skills: z.array(z.enum(SERVICE_CATEGORY_VALUES)).optional(),
   isRemote: z.boolean().optional(),
+  showPhone: z.boolean().optional(),
   address: z.string().min(5, 'Address must be at least 5 characters').max(200, 'Address must be at most 200 characters').optional(),
   latitude: z.number().min(-90, 'Invalid latitude').max(90, 'Invalid latitude').optional(),
   longitude: z.number().min(-180, 'Invalid longitude').max(180, 'Invalid longitude').optional(),

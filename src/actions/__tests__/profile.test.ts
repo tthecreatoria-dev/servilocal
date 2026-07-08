@@ -60,9 +60,49 @@ describe('updateProfile()', () => {
     expect(mockProfileUpdate).toHaveBeenCalledWith({
       where: { userId: 'prov_1' },
       data: {
-        bio: 'Fontanero', skills: ['PLUMBING'], isRemote: false,
+        bio: 'Fontanero', skills: ['PLUMBING'], showPhone: false, isRemote: false,
         address: 'Col. Escalón, San Salvador', latitude: 13.7, longitude: -89.24,
       },
     })
+  })
+
+  it('persists showPhone=true for a PROVIDER', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'prov_1', role: 'PROVIDER' } })
+    mockUserUpdate.mockReturnValue(Promise.resolve({}))
+    mockProfileUpdate.mockReturnValue(Promise.resolve({}))
+    const result = await updateProfile({
+      name: 'Pedro', phone: '+50379000001', isRemote: true, showPhone: true,
+    })
+    expect(result.success).toBe(true)
+    expect(mockProfileUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ showPhone: true }) }),
+    )
+  })
+
+  it('defaults showPhone to false when omitted', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'prov_1', role: 'PROVIDER' } })
+    mockUserUpdate.mockReturnValue(Promise.resolve({}))
+    mockProfileUpdate.mockReturnValue(Promise.resolve({}))
+    await updateProfile({ name: 'Pedro', phone: '+50379000001', isRemote: true })
+    expect(mockProfileUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ showPhone: false }) }),
+    )
+  })
+
+  it('ignores showPhone for a CLIENT (never touches providerProfile)', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'u1', role: 'CLIENT' } })
+    mockUserUpdate.mockReturnValue(Promise.resolve({}))
+    const result = await updateProfile({ name: 'Ana López', phone: '+50379000000', showPhone: true })
+    expect(result.success).toBe(true)
+    expect(mockProfileUpdate).not.toHaveBeenCalled()
+  })
+
+  it('rejects a non-boolean showPhone', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'prov_1', role: 'PROVIDER' } })
+    const result = await updateProfile({
+      // @ts-expect-error — validación en runtime de entrada externa
+      name: 'Pedro', phone: '+50379000001', isRemote: true, showPhone: 'yes',
+    })
+    expect(result).toEqual({ success: false, error: 'validation' })
   })
 })
