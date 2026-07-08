@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server'
 const NAV_ITEMS = [
   { href: '/', icon: 'home', key: 'home', fill: true },
   { href: '/services', icon: 'work', key: 'jobs', fill: false },
-  { href: '/messages', icon: 'chat_bubble', key: 'messages', fill: false },
+  { href: '/providers', icon: 'engineering', key: 'providers', fill: false },
   { href: '/profile', icon: 'person', key: 'profile', fill: false },
 ] as const
 
