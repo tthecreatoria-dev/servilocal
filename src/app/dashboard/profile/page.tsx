@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { db } from '@/lib/db'
 import { ProfileForm } from './profile-form'
 import { PayoutForm } from './payout-form'
+import { PublicProfileLink } from './public-profile-link'
 
 export default async function ProfilePage() {
   const session = await auth()
@@ -21,6 +22,7 @@ export default async function ProfilePage() {
           select: {
             bio: true, skills: true, isRemote: true,
             address: true, latitude: true, longitude: true,
+            slug: true, showPhone: true,
             payoutMethod: true, paypalEmail: true, tkieroAccount: true,
           },
         })
@@ -46,8 +48,15 @@ export default async function ProfilePage() {
           address: profile?.address ?? '',
           latitude: profile?.latitude ?? null,
           longitude: profile?.longitude ?? null,
+          showPhone: profile?.showPhone ?? false,
         }}
       />
+
+      {profile && (
+        <PublicProfileLink
+          url={`${(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000').replace(/['"]/g, '').trimEnd()}/providers/${profile.slug}`}
+        />
+      )}
 
       {profile && (
         <PayoutForm

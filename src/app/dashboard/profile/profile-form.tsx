@@ -19,6 +19,7 @@ type ProfileInitial = {
   address: string
   latitude: number | null
   longitude: number | null
+  showPhone: boolean
 }
 
 export function ProfileForm({ role, initial }: { role: UserRole; initial: ProfileInitial }) {
@@ -33,6 +34,7 @@ export function ProfileForm({ role, initial }: { role: UserRole; initial: Profil
     latitude: initial.latitude,
     longitude: initial.longitude,
   })
+  const [showPhone, setShowPhone] = useState(initial.showPhone)
   const [pending, setPending] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
@@ -53,6 +55,7 @@ export function ProfileForm({ role, initial }: { role: UserRole; initial: Profil
         ? {
             bio,
             skills,
+            showPhone,
             isRemote: location.isRemote,
             address: location.isRemote ? undefined : location.address || undefined,
             latitude: location.isRemote ? undefined : location.latitude ?? undefined,
@@ -117,6 +120,24 @@ export function ProfileForm({ role, initial }: { role: UserRole; initial: Profil
             <span className="text-label-md text-on-surface-variant block mb-2">Mi ubicación</span>
             <LocationPicker value={location} onChange={setLocation} />
           </div>
+
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showPhone}
+              onChange={(e) => setShowPhone(e.target.checked)}
+              className="mt-1 h-4 w-4 accent-primary"
+            />
+            <span>
+              <span className="text-label-md text-on-surface block">
+                Mostrar mi teléfono en mi perfil público
+              </span>
+              <span className="text-body-md text-on-surface-variant">
+                Los clientes podrán contactarte directamente. El contacto directo ocurre fuera
+                de ServiLocal, sin garantía ni protección de pago.
+              </span>
+            </span>
+          </label>
         </>
       )}
 
