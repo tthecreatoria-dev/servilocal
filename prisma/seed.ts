@@ -27,6 +27,15 @@ async function main() {
   })
 
   // ---- Clean existing test data ----
+  // El orden respeta las FKs: primero las tablas que referencian, luego las referenciadas.
+  await prisma.commission.deleteMany()
+  await prisma.payout.deleteMany()
+  await prisma.jobPayment.deleteMany()
+  await prisma.jobApplication.deleteMany()
+  await prisma.jobPost.deleteMany()
+  await prisma.review.deleteMany()
+  await prisma.transaction.deleteMany()
+  await prisma.serviceRequest.deleteMany()
   await prisma.service.deleteMany()
   await prisma.providerProfile.deleteMany()
   await prisma.user.deleteMany()
