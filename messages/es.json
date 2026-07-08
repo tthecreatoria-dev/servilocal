@@ -2,11 +2,13 @@
   "Header": {
     "findWork": "Buscar trabajo",
     "postJob": "Publicar trabajo",
+    "providers": "Trabajadores",
     "about": "Acerca de",
     "login": "Entrar"
   },
   "Footer": {
     "tagline": "© 2024 ServiLocal. Hecho para la comunidad.",
+    "providers": "Directorio de trabajadores",
     "terms": "Términos de servicio",
     "privacy": "Política de privacidad",
     "help": "Centro de ayuda",

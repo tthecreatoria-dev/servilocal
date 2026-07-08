@@ -45,6 +45,12 @@ export async function SiteHeader() {
             {t('postJob')}
           </Link>
           <Link
+            href="/providers"
+            className="text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
+          >
+            {t('providers')}
+          </Link>
+          <Link
             href="/about"
             className="text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
           >

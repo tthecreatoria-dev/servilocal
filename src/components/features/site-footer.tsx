@@ -5,6 +5,7 @@ export async function SiteFooter() {
   const t = await getTranslations('Footer')
 
   const links = [
+    { key: 'providers' as const, href: '/providers' },
     { key: 'terms' as const, href: '/terms' },
     { key: 'privacy' as const, href: '/privacy' },
     { key: 'help' as const, href: '/help' },

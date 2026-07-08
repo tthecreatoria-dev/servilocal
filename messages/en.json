@@ -2,11 +2,13 @@
   "Header": {
     "findWork": "Find Work",
     "postJob": "Post a Job",
+    "providers": "Workers",
     "about": "About Us",
     "login": "Login"
   },
   "Footer": {
     "tagline": "© 2024 ServiLocal. Built for the community.",
+    "providers": "Worker directory",
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
     "help": "Help Center",
