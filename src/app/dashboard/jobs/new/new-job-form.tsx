@@ -4,29 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createJobPost } from '@/actions/jobs'
 import { LocationPicker, type LocationValue } from '@/components/features/location-picker'
-
-type Category =
-    | 'PLUMBING'
-    | 'TEACHING'
-    | 'DELIVERY'
-    | 'CLEANING'
-    | 'MASONRY'
-    | 'ELECTRICAL'
-    | 'WELDING'
-    | 'ELECTRONICS'
-    | 'APPLIANCE_REPAIR'
-
-const CATEGORIES: { value: Category; label: string; icon: string }[] = [
-  { value: 'PLUMBING',        label: 'Fontanería',          icon: 'plumbing' },
-  { value: 'TEACHING',        label: 'Enseñanza',           icon: 'school' },
-  { value: 'DELIVERY',        label: 'Delivery',            icon: 'local_shipping' },
-  { value: 'CLEANING',        label: 'Limpieza',            icon: 'cleaning_services' },
-  { value: 'MASONRY',         label: 'Albañilería',         icon: 'foundation' },
-  { value: 'ELECTRICAL',      label: 'Electricistas',       icon: 'electrical_services' },
-  { value: 'WELDING',         label: 'Soldadura',           icon: 'local_fire_department' },
-  { value: 'ELECTRONICS',     label: 'Electrónica',         icon: 'memory' },
-  { value: 'APPLIANCE_REPAIR', label: 'Refrigeración y lavadoras', icon: 'home_repair_service' },
-]
+import { CATEGORY_KEYS, CATEGORY_LABELS, CATEGORY_ICONS } from '@/lib/categories'
+import type { ServiceCategory } from '@/types/index'
 
 const ERROR_LABELS: Record<string, string> = {
   unauthorized: 'Debes iniciar sesión para publicar.',
@@ -35,11 +14,11 @@ const ERROR_LABELS: Record<string, string> = {
   location:     'Marca la ubicación en el mapa o activa trabajo remoto.',
 }
 
-export function NewJobForm() {
+export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCategory | null }) {
   const router = useRouter()
   const [error, setError]       = useState<string | null>(null)
   const [pending, setPending]   = useState(false)
-  const [category, setCategory] = useState<Category | null>(null)
+  const [category, setCategory] = useState<ServiceCategory | null>(initialCategory ?? null)
   const [location, setLocation] = useState<LocationValue>({
     isRemote:  false,
     address:   '',
@@ -143,7 +122,7 @@ export function NewJobForm() {
       <div className="space-y-3">
         <label className="block text-label-md text-on-surface">Categoría</label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {CATEGORIES.map(({ value, label, icon }) => {
+          {CATEGORY_KEYS.map((value) => {
             const active = category === value
             return (
               <button
@@ -160,9 +139,9 @@ export function NewJobForm() {
                   className="material-symbols-outlined text-[22px] shrink-0"
                   style={{ fontVariationSettings: `'FILL' ${active ? 1 : 0}` }}
                 >
-                  {icon}
+                  {CATEGORY_ICONS[value]}
                 </span>
-                <span className="text-label-md">{label}</span>
+                <span className="text-label-md">{CATEGORY_LABELS[value]}</span>
               </button>
             )
           })}

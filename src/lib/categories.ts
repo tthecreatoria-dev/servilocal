@@ -32,3 +32,10 @@ export const CATEGORY_ICONS: Record<ServiceCategory, string> = {
 }
 
 export const CATEGORY_KEYS = Object.keys(CATEGORY_LABELS) as ServiceCategory[]
+
+// Valida un valor externo (p. ej. un query param) contra las categorías canónicas.
+export function parseCategoryParam(value: string | undefined): ServiceCategory | null {
+  return value !== undefined && (CATEGORY_KEYS as string[]).includes(value)
+    ? (value as ServiceCategory)
+    : null
+}

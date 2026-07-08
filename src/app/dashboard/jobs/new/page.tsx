@@ -1,11 +1,23 @@
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { parseCategoryParam } from '@/lib/categories'
 import { NewJobForm } from './new-job-form'
 
-export default async function NewJobPage() {
+export default async function NewJobPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>
+}) {
+  const initialCategory = parseCategoryParam((await searchParams).category)
+
   const session = await auth()
-  if (!session) redirect('/login')
+  if (!session) {
+    const callbackUrl = initialCategory
+      ? `/dashboard/jobs/new?category=${initialCategory}`
+      : '/dashboard/jobs/new'
+    redirect(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`)
+  }
   if (session.user.role !== 'CLIENT') redirect('/dashboard')
 
   return (
@@ -25,7 +37,7 @@ export default async function NewJobPage() {
             Describe lo que necesitas y recibe propuestas de proveedores locales.
           </p>
         </div>
-        <NewJobForm />
+        <NewJobForm initialCategory={initialCategory} />
       </div>
     </div>
   )
