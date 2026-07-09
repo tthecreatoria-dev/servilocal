@@ -84,6 +84,7 @@ export default async function ProfilePage() {
             title: s.title,
             description: s.description,
             price: Number(s.price),
+            // El enum de Prisma y la unión de la app son estructuralmente idénticos.
             category: s.category as ServiceCategory,
             isActive: s.isActive,
           }))}

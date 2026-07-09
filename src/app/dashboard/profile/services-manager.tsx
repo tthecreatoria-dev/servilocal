@@ -235,7 +235,10 @@ export function ServicesManager({ services }: { services: ManagedService[] }) {
               <select
                 id="service-category"
                 value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value as ServiceCategory })}
+                onChange={(e) =>
+                  // Los <option> se generan solo desde CATEGORY_KEYS; el server action revalida con Zod.
+                  setForm({ ...form, category: e.target.value as ServiceCategory })
+                }
                 className={inputClass}
               >
                 {CATEGORY_KEYS.map((key) => (
