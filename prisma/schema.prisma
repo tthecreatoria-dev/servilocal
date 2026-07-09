@@ -96,6 +96,8 @@ model JobPost {
   longitude      Float?
   clientId       String
   client         User             @relation("ClientJobPosts", fields: [clientId], references: [id])
+  invitedProviderId String?
+  invitedProvider   User?            @relation("ProviderInvitations", fields: [invitedProviderId], references: [id])
   applications   JobApplication[]
   payment        JobPayment?
   createdAt      DateTime         @default(now())
@@ -104,6 +106,7 @@ model JobPost {
   @@index([clientId])
   @@index([category])
   @@index([status])
+  @@index([invitedProviderId])
 }
 
 model JobApplication {
@@ -157,6 +160,7 @@ model User {
   transactions    Transaction[]        @relation("ClientTransactions")
   jobPosts        JobPost[]            @relation("ClientJobPosts")
   applications    JobApplication[]     @relation("ProviderApplications")
+  invitations     JobPost[]            @relation("ProviderInvitations")
   payouts         Payout[]             @relation("ProviderPayouts")
   paidPayouts     Payout[]             @relation("AdminPayouts")
 }
