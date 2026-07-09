@@ -50,6 +50,15 @@ export const CreateServiceSchema = z.object({
   category: z.enum(SERVICE_CATEGORY_VALUES),
 })
 
+export const UpdateServiceSchema = CreateServiceSchema.extend({
+  id: z.string().cuid('Invalid service ID'),
+})
+
+export const ToggleServiceActiveSchema = z.object({
+  id: z.string().cuid('Invalid service ID'),
+  isActive: z.boolean(),
+})
+
 export const CreateServiceRequestSchema = z.object({
   serviceId: z.string().cuid('Invalid service ID'),
   message: z.string().min(10, 'Message must be at least 10 characters'),
@@ -145,6 +154,8 @@ export const UpdateProfileSchema = z.object({
 export type LoginInput = z.infer<typeof LoginSchema>
 export type RegisterInput = z.infer<typeof RegisterSchema>
 export type CreateServiceInput = z.infer<typeof CreateServiceSchema>
+export type UpdateServiceInput = z.infer<typeof UpdateServiceSchema>
+export type ToggleServiceActiveInput = z.infer<typeof ToggleServiceActiveSchema>
 export type CreateServiceRequestInput = z.infer<typeof CreateServiceRequestSchema>
 export type TkieroWebhookPayload = z.infer<typeof TkieroWebhookSchema>
 export type CreateJobPostInput = z.infer<typeof CreateJobPostSchema>

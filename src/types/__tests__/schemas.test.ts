@@ -93,6 +93,8 @@ import {
   UpdateProfileSchema,
   StartJobSchema,
   MarkPayoutPaidSchema,
+  UpdateServiceSchema,
+  ToggleServiceActiveSchema,
 } from '@/types/schemas'
 
 describe('UpdatePayoutSettingsSchema', () => {
@@ -185,5 +187,49 @@ describe('StartJobSchema / MarkPayoutPaidSchema', () => {
     expect(MarkPayoutPaidSchema.safeParse({
       jobPaymentId: 'cjld2cjxh0000qzrmn831i7rn',
     }).success).toBe(true)
+  })
+})
+
+describe('UpdateServiceSchema', () => {
+  const valid = {
+    id: 'cjld2cjxh0000qzrmn831i7rn',
+    title: 'Reparación de fugas',
+    description: 'Detección y reparación de fugas de agua en tuberías residenciales.',
+    price: 25,
+    category: 'PLUMBING',
+  }
+
+  it('accepts a valid update', () => {
+    expect(UpdateServiceSchema.safeParse(valid).success).toBe(true)
+  })
+
+  it('rejects a non-cuid id', () => {
+    expect(UpdateServiceSchema.safeParse({ ...valid, id: 'nope' }).success).toBe(false)
+  })
+
+  it('rejects a short title', () => {
+    expect(UpdateServiceSchema.safeParse({ ...valid, title: 'Fix' }).success).toBe(false)
+  })
+
+  it('rejects a non-positive price', () => {
+    expect(UpdateServiceSchema.safeParse({ ...valid, price: 0 }).success).toBe(false)
+  })
+
+  it('rejects an unknown category', () => {
+    expect(UpdateServiceSchema.safeParse({ ...valid, category: 'MAGIC' }).success).toBe(false)
+  })
+})
+
+describe('ToggleServiceActiveSchema', () => {
+  it('accepts a valid toggle', () => {
+    expect(
+      ToggleServiceActiveSchema.safeParse({ id: 'cjld2cjxh0000qzrmn831i7rn', isActive: false }).success,
+    ).toBe(true)
+  })
+
+  it('rejects a non-boolean isActive', () => {
+    expect(
+      ToggleServiceActiveSchema.safeParse({ id: 'cjld2cjxh0000qzrmn831i7rn', isActive: 'yes' }).success,
+    ).toBe(false)
   })
 })
