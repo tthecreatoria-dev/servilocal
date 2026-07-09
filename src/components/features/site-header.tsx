@@ -12,8 +12,7 @@ export async function SiteHeader() {
   ])
   const typedLocale = locale as Locale
 
-  const dashboardHref =
-    session?.user?.role === 'PROVIDER' ? '/dashboard/applications' : '/dashboard/jobs'
+  const dashboardHref = '/dashboard/profile'
 
   return (
     <header className="motion-nav bg-surface sticky top-0 z-40">

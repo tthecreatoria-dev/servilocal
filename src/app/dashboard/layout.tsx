@@ -13,6 +13,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
             ServiLocal
           </Link>
           <div className="flex items-center gap-1">
+            <Link
+              href="/dashboard/profile"
+              className="flex items-center gap-1.5 px-3 py-4 text-label-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-primary"
+            >
+              <span className="material-symbols-outlined text-[18px]">person</span>
+              Mi perfil
+            </Link>
             {role === 'CLIENT' && (
               <Link
                 href="/dashboard/jobs"
