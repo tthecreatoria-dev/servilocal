@@ -4,6 +4,8 @@ import { db } from '@/lib/db'
 import { ProfileForm } from './profile-form'
 import { PayoutForm } from './payout-form'
 import { PublicProfileLink } from './public-profile-link'
+import { ServicesManager } from './services-manager'
+import type { ServiceCategory } from '@/types/index'
 
 export default async function ProfilePage() {
   const session = await auth()
@@ -24,6 +26,13 @@ export default async function ProfilePage() {
             address: true, latitude: true, longitude: true,
             slug: true, showPhone: true,
             payoutMethod: true, paypalEmail: true, tkieroAccount: true,
+            services: {
+              select: {
+                id: true, title: true, description: true,
+                price: true, category: true, isActive: true,
+              },
+              orderBy: { createdAt: 'desc' },
+            },
           },
         })
       : null
@@ -65,6 +74,19 @@ export default async function ProfilePage() {
             paypalEmail: profile.paypalEmail ?? '',
             tkieroAccount: profile.tkieroAccount ?? '',
           }}
+        />
+      )}
+
+      {profile && (
+        <ServicesManager
+          services={profile.services.map((s) => ({
+            id: s.id,
+            title: s.title,
+            description: s.description,
+            price: Number(s.price),
+            category: s.category as ServiceCategory,
+            isActive: s.isActive,
+          }))}
         />
       )}
     </div>
