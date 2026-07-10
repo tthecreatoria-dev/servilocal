@@ -8,6 +8,7 @@ import {
   SelectJobApplicationSchema,
   StartJobSchema,
   CompleteJobSchema,
+  DeclineInvitationSchema,
 } from '@/types/schemas'
 import type {
   CreateJobPostInput,
@@ -15,6 +16,7 @@ import type {
   SelectJobApplicationInput,
   StartJobInput,
   CompleteJobInput,
+  DeclineInvitationInput,
 } from '@/types/schemas'
 import { recordJobCommission } from '@/lib/commission'
 import type { ActionResult } from '@/types/index'
@@ -239,6 +241,47 @@ export async function completeJob(
         'post_not_found', 'post_not_owned', 'post_not_in_progress',
         'payment_not_found', 'payment_not_held',
       ]
+      if (known.includes(error.message)) {
+        return { success: false, error: error.message }
+      }
+    }
+    throw error
+  }
+}
+
+export async function declineInvitation(
+  data: DeclineInvitationInput,
+): Promise<ActionResult<Awaited<ReturnType<typeof db.jobPost.update>>>> {
+  const session = await auth()
+  if (!session) return { success: false, error: 'unauthorized' }
+  if (session.user.role !== 'PROVIDER') return { success: false, error: 'forbidden' }
+
+  const parsed = DeclineInvitationSchema.safeParse(data)
+  if (!parsed.success) return { success: false, error: 'validation' }
+
+  try {
+    const updated = await db.$transaction(async (tx) => {
+      const post = await tx.jobPost.findUnique({ where: { id: parsed.data.jobPostId } })
+      if (!post) throw new Error('post_not_found')
+      if (post.invitedProviderId !== session.user.id) throw new Error('not_invited')
+      if (post.status !== 'OPEN') throw new Error('post_not_open')
+
+      const existing = await tx.jobApplication.findUnique({
+        where: {
+          jobPostId_providerId: { jobPostId: post.id, providerId: session.user.id },
+        },
+      })
+      if (existing) throw new Error('already_applied')
+
+      return tx.jobPost.update({
+        where: { id: post.id },
+        data: { invitedProviderId: null },
+      })
+    })
+    return { success: true, data: updated }
+  } catch (error) {
+    if (error instanceof Error) {
+      const known = ['post_not_found', 'not_invited', 'post_not_open', 'already_applied']
       if (known.includes(error.message)) {
         return { success: false, error: error.message }
       }

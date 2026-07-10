@@ -124,6 +124,10 @@ export const CompleteJobSchema = z.object({
   jobPostId: z.string().cuid('Invalid job post ID'),
 })
 
+export const DeclineInvitationSchema = z.object({
+  jobPostId: z.string().cuid('Invalid job post ID'),
+})
+
 export const MarkPayoutPaidSchema = z.object({
   jobPaymentId: z.string().cuid('Invalid job payment ID'),
   reference: z.string().max(100, 'Reference must be at most 100 characters').optional(),
@@ -164,6 +168,7 @@ export type CreateJobApplicationInput = z.infer<typeof CreateJobApplicationSchem
 export type SelectJobApplicationInput = z.infer<typeof SelectJobApplicationSchema>
 export type StartJobInput = z.infer<typeof StartJobSchema>
 export type CompleteJobInput = z.infer<typeof CompleteJobSchema>
+export type DeclineInvitationInput = z.infer<typeof DeclineInvitationSchema>
 export type MarkPayoutPaidInput = z.infer<typeof MarkPayoutPaidSchema>
 export type UpdatePayoutSettingsInput = z.infer<typeof UpdatePayoutSettingsSchema>
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>

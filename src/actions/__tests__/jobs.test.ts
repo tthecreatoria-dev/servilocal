@@ -26,7 +26,7 @@ vi.mock('@/lib/db', () => ({
   },
 }))
 
-import { createJobPost, createJobApplication, selectJobApplication, startJob, completeJob } from '@/actions/jobs'
+import { createJobPost, createJobApplication, selectJobApplication, startJob, completeJob, declineInvitation } from '@/actions/jobs'
 
 beforeEach(() => {
   mockAuth.mockClear()
@@ -547,5 +547,86 @@ describe('completeJob()', () => {
     await expect(completeJob({ jobPostId: JOB_ID })).rejects.toThrow('db down')
     expect(tx.jobPayment.update).not.toHaveBeenCalled()
     expect(tx.jobPost.update).not.toHaveBeenCalled()
+  })
+})
+
+describe('declineInvitation()', () => {
+  const JOB_ID = 'cjld2cjxh0000qzrmn831i7rn'
+
+  function makeTx(post: Record<string, unknown> | null, existingApp: unknown = null) {
+    return {
+      jobPost: {
+        findUnique: vi.fn().mockResolvedValue(post),
+        update: vi.fn().mockResolvedValue({ id: JOB_ID, invitedProviderId: null }),
+      },
+      jobApplication: { findUnique: vi.fn().mockResolvedValue(existingApp) },
+    }
+  }
+
+  it('rejects unauthenticated callers', async () => {
+    mockAuth.mockResolvedValueOnce(null)
+    expect(await declineInvitation({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'unauthorized' })
+  })
+
+  it('rejects non-provider roles', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    expect(await declineInvitation({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'forbidden' })
+  })
+
+  it('rejects invalid ids', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    expect(await declineInvitation({ jobPostId: 'nope' })).toEqual({ success: false, error: 'validation' })
+  })
+
+  it('returns post_not_found when the post does not exist', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) => fn(makeTx(null)))
+    expect(await declineInvitation({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'post_not_found' })
+  })
+
+  it('returns not_invited when the caller is not the invited provider', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) =>
+      fn(makeTx({ id: JOB_ID, status: 'OPEN', invitedProviderId: 'someone-else' }))
+    )
+    expect(await declineInvitation({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'not_invited' })
+  })
+
+  it('returns not_invited when the post has no invitation', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) =>
+      fn(makeTx({ id: JOB_ID, status: 'OPEN', invitedProviderId: null }))
+    )
+    expect(await declineInvitation({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'not_invited' })
+  })
+
+  it('returns post_not_open when the post is not OPEN', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) =>
+      fn(makeTx({ id: JOB_ID, status: 'ASSIGNED', invitedProviderId: 'provider-1' }))
+    )
+    expect(await declineInvitation({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'post_not_open' })
+  })
+
+  it('returns already_applied when the provider already applied', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) =>
+      fn(makeTx({ id: JOB_ID, status: 'OPEN', invitedProviderId: 'provider-1' }, { id: 'app-1' }))
+    )
+    expect(await declineInvitation({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'already_applied' })
+  })
+
+  it('clears invitedProviderId so the post becomes public', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    const tx = makeTx({ id: JOB_ID, status: 'OPEN', invitedProviderId: 'provider-1' })
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) => fn(tx))
+
+    const result = await declineInvitation({ jobPostId: JOB_ID })
+
+    expect(result.success).toBe(true)
+    expect(tx.jobPost.update).toHaveBeenCalledWith({
+      where: { id: JOB_ID },
+      data: { invitedProviderId: null },
+    })
   })
 })
