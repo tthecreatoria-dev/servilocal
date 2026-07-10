@@ -37,6 +37,7 @@ export default async function JobsPage({
   const jobs = await db.jobPost.findMany({
     where: {
       status: 'OPEN',
+      invitedProviderId: null,
       ...(validCategory ? { category: validCategory } : {}),
       ...(searchQuery
         ? {

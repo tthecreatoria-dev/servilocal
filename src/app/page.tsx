@@ -35,7 +35,7 @@ function secondsAgo(date: Date): number {
 async function getActiveCategories(): Promise<ActiveCategory[]> {
   try {
     const jobs = await db.jobPost.findMany({
-      where: { status: 'OPEN' },
+      where: { status: 'OPEN', invitedProviderId: null },
       select: { category: true },
     })
     const uniqueCategories = [...new Set(jobs.map((j) => j.category))]
@@ -56,7 +56,7 @@ async function getActiveCategories(): Promise<ActiveCategory[]> {
 async function getActiveJobPosts(sort: JobSort): Promise<JobPostListing[]> {
   try {
     const rows = await db.jobPost.findMany({
-      where: { status: 'OPEN' },
+      where: { status: 'OPEN', invitedProviderId: null },
       include: { client: { select: { name: true } } },
       orderBy: sort === 'budget' ? { budget: 'desc' } : { createdAt: 'desc' },
       take: 6,
