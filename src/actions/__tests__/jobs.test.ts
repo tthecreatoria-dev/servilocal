@@ -26,7 +26,7 @@ vi.mock('@/lib/db', () => ({
   },
 }))
 
-import { createJobPost, createJobApplication, selectJobApplication, startJob, completeJob, declineInvitation } from '@/actions/jobs'
+import { createJobPost, createJobApplication, selectJobApplication, startJob, completeJob, declineInvitation, openJobToPublic } from '@/actions/jobs'
 
 beforeEach(() => {
   mockAuth.mockClear()
@@ -622,6 +622,78 @@ describe('declineInvitation()', () => {
     mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) => fn(tx))
 
     const result = await declineInvitation({ jobPostId: JOB_ID })
+
+    expect(result.success).toBe(true)
+    expect(tx.jobPost.update).toHaveBeenCalledWith({
+      where: { id: JOB_ID },
+      data: { invitedProviderId: null },
+    })
+  })
+})
+
+describe('openJobToPublic()', () => {
+  const JOB_ID = 'cjld2cjxh0000qzrmn831i7rn'
+
+  function makeTx(post: Record<string, unknown> | null) {
+    return {
+      jobPost: {
+        findUnique: vi.fn().mockResolvedValue(post),
+        update: vi.fn().mockResolvedValue({ id: JOB_ID, invitedProviderId: null }),
+      },
+    }
+  }
+
+  it('rejects unauthenticated callers', async () => {
+    mockAuth.mockResolvedValueOnce(null)
+    expect(await openJobToPublic({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'unauthorized' })
+  })
+
+  it('rejects non-client roles', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    expect(await openJobToPublic({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'forbidden' })
+  })
+
+  it('rejects invalid ids', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    expect(await openJobToPublic({ jobPostId: 'nope' })).toEqual({ success: false, error: 'validation' })
+  })
+
+  it('returns post_not_found when the post does not exist', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) => fn(makeTx(null)))
+    expect(await openJobToPublic({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'post_not_found' })
+  })
+
+  it('returns post_not_owned when the post belongs to another client', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) =>
+      fn(makeTx({ id: JOB_ID, clientId: 'other-client', status: 'OPEN', invitedProviderId: 'prov-1' }))
+    )
+    expect(await openJobToPublic({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'post_not_owned' })
+  })
+
+  it('returns post_not_open when the post is not OPEN', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) =>
+      fn(makeTx({ id: JOB_ID, clientId: 'client-1', status: 'ASSIGNED', invitedProviderId: 'prov-1' }))
+    )
+    expect(await openJobToPublic({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'post_not_open' })
+  })
+
+  it('returns no_invitation when the post is already public', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) =>
+      fn(makeTx({ id: JOB_ID, clientId: 'client-1', status: 'OPEN', invitedProviderId: null }))
+    )
+    expect(await openJobToPublic({ jobPostId: JOB_ID })).toEqual({ success: false, error: 'no_invitation' })
+  })
+
+  it('clears invitedProviderId so the post becomes public', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    const tx = makeTx({ id: JOB_ID, clientId: 'client-1', status: 'OPEN', invitedProviderId: 'prov-1' })
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) => fn(tx))
+
+    const result = await openJobToPublic({ jobPostId: JOB_ID })
 
     expect(result.success).toBe(true)
     expect(tx.jobPost.update).toHaveBeenCalledWith({

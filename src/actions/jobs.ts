@@ -9,6 +9,7 @@ import {
   StartJobSchema,
   CompleteJobSchema,
   DeclineInvitationSchema,
+  OpenJobToPublicSchema,
 } from '@/types/schemas'
 import type {
   CreateJobPostInput,
@@ -17,6 +18,7 @@ import type {
   StartJobInput,
   CompleteJobInput,
   DeclineInvitationInput,
+  OpenJobToPublicInput,
 } from '@/types/schemas'
 import { recordJobCommission } from '@/lib/commission'
 import type { ActionResult } from '@/types/index'
@@ -282,6 +284,41 @@ export async function declineInvitation(
   } catch (error) {
     if (error instanceof Error) {
       const known = ['post_not_found', 'not_invited', 'post_not_open', 'already_applied']
+      if (known.includes(error.message)) {
+        return { success: false, error: error.message }
+      }
+    }
+    throw error
+  }
+}
+
+export async function openJobToPublic(
+  data: OpenJobToPublicInput,
+): Promise<ActionResult<Awaited<ReturnType<typeof db.jobPost.update>>>> {
+  const session = await auth()
+  if (!session) return { success: false, error: 'unauthorized' }
+  if (session.user.role !== 'CLIENT') return { success: false, error: 'forbidden' }
+
+  const parsed = OpenJobToPublicSchema.safeParse(data)
+  if (!parsed.success) return { success: false, error: 'validation' }
+
+  try {
+    const updated = await db.$transaction(async (tx) => {
+      const post = await tx.jobPost.findUnique({ where: { id: parsed.data.jobPostId } })
+      if (!post) throw new Error('post_not_found')
+      if (post.clientId !== session.user.id) throw new Error('post_not_owned')
+      if (post.status !== 'OPEN') throw new Error('post_not_open')
+      if (!post.invitedProviderId) throw new Error('no_invitation')
+
+      return tx.jobPost.update({
+        where: { id: post.id },
+        data: { invitedProviderId: null },
+      })
+    })
+    return { success: true, data: updated }
+  } catch (error) {
+    if (error instanceof Error) {
+      const known = ['post_not_found', 'post_not_owned', 'post_not_open', 'no_invitation']
       if (known.includes(error.message)) {
         return { success: false, error: error.message }
       }
