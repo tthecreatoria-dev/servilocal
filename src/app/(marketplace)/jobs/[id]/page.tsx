@@ -42,6 +42,7 @@ export default async function MarketplaceJobDetailPage({
     | 'unauthenticated'
     | 'owner'
     | 'client-not-owner'
+    | 'provider-not-invited'
     | 'provider-wrong-category'
     | 'provider-already-applied'
     | 'job-closed'
@@ -55,11 +56,16 @@ export default async function MarketplaceJobDetailPage({
     actionState = job.clientId === session.user.id ? 'owner' : 'client-not-owner'
   } else {
     // PROVIDER — check existing application first so status is always visible
+    const isInvitee = job.invitedProviderId === session.user.id
     if (existingApplication) {
       actionState = 'provider-already-applied'
     } else if (job.status !== 'OPEN') {
       actionState = 'job-closed'
-    } else if (providerProfile && !providerProfile.skills.includes(job.category)) {
+    } else if (job.invitedProviderId && !isInvitee) {
+      actionState = 'provider-not-invited'
+    } else if (!isInvitee && providerProfile && !providerProfile.skills.includes(job.category)) {
+      // El invitado puede aplicar aunque la categoría no esté en sus skills:
+      // el cliente lo eligió explícitamente.
       actionState = 'provider-wrong-category'
     } else {
       actionState = 'can-apply'
@@ -196,6 +202,18 @@ export default async function MarketplaceJobDetailPage({
           <p className="text-body-md text-on-surface-variant">
             Este proyecto requiere <strong className="text-on-surface">{CATEGORY_LABELS[category]}</strong>.
             Tus habilidades registradas no incluyen esa categoría.
+          </p>
+        </div>
+      )}
+
+      {actionState === 'provider-not-invited' && (
+        <div className="flex items-start gap-3 bg-surface-container border border-outline-variant rounded-2xl p-5">
+          <span className="material-symbols-outlined text-on-surface-variant text-[24px] mt-0.5 shrink-0">
+            mail_lock
+          </span>
+          <p className="text-body-md text-on-surface-variant">
+            Este proyecto es por invitación. El cliente eligió a un proveedor específico
+            para este trabajo.
           </p>
         </div>
       )}
