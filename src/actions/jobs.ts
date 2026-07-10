@@ -275,10 +275,13 @@ export async function declineInvitation(
       })
       if (existing) throw new Error('already_applied')
 
-      return tx.jobPost.update({
-        where: { id: post.id },
+      const result = await tx.jobPost.updateMany({
+        where: { id: post.id, status: 'OPEN', invitedProviderId: post.invitedProviderId },
         data: { invitedProviderId: null },
       })
+      if (result.count === 0) throw new Error('post_not_open')
+
+      return { ...post, invitedProviderId: null }
     })
     return { success: true, data: updated }
   } catch (error) {
@@ -310,10 +313,13 @@ export async function openJobToPublic(
       if (post.status !== 'OPEN') throw new Error('post_not_open')
       if (!post.invitedProviderId) throw new Error('no_invitation')
 
-      return tx.jobPost.update({
-        where: { id: post.id },
+      const result = await tx.jobPost.updateMany({
+        where: { id: post.id, status: 'OPEN', invitedProviderId: post.invitedProviderId },
         data: { invitedProviderId: null },
       })
+      if (result.count === 0) throw new Error('post_not_open')
+
+      return { ...post, invitedProviderId: null }
     })
     return { success: true, data: updated }
   } catch (error) {

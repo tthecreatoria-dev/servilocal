@@ -557,7 +557,7 @@ describe('declineInvitation()', () => {
     return {
       jobPost: {
         findUnique: vi.fn().mockResolvedValue(post),
-        update: vi.fn().mockResolvedValue({ id: JOB_ID, invitedProviderId: null }),
+        updateMany: vi.fn().mockResolvedValue({ count: 1 }),
       },
       jobApplication: { findUnique: vi.fn().mockResolvedValue(existingApp) },
     }
@@ -624,10 +624,21 @@ describe('declineInvitation()', () => {
     const result = await declineInvitation({ jobPostId: JOB_ID })
 
     expect(result.success).toBe(true)
-    expect(tx.jobPost.update).toHaveBeenCalledWith({
-      where: { id: JOB_ID },
+    expect(tx.jobPost.updateMany).toHaveBeenCalledWith({
+      where: { id: JOB_ID, status: 'OPEN', invitedProviderId: 'provider-1' },
       data: { invitedProviderId: null },
     })
+  })
+
+  it('returns post_not_open when a concurrent assignment wins the race', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    const tx = makeTx({ id: JOB_ID, status: 'OPEN', invitedProviderId: 'provider-1' })
+    tx.jobPost.updateMany = vi.fn().mockResolvedValue({ count: 0 })
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) => fn(tx))
+
+    const result = await declineInvitation({ jobPostId: JOB_ID })
+
+    expect(result).toEqual({ success: false, error: 'post_not_open' })
   })
 })
 
@@ -638,7 +649,7 @@ describe('openJobToPublic()', () => {
     return {
       jobPost: {
         findUnique: vi.fn().mockResolvedValue(post),
-        update: vi.fn().mockResolvedValue({ id: JOB_ID, invitedProviderId: null }),
+        updateMany: vi.fn().mockResolvedValue({ count: 1 }),
       },
     }
   }
@@ -696,9 +707,20 @@ describe('openJobToPublic()', () => {
     const result = await openJobToPublic({ jobPostId: JOB_ID })
 
     expect(result.success).toBe(true)
-    expect(tx.jobPost.update).toHaveBeenCalledWith({
-      where: { id: JOB_ID },
+    expect(tx.jobPost.updateMany).toHaveBeenCalledWith({
+      where: { id: JOB_ID, status: 'OPEN', invitedProviderId: 'prov-1' },
       data: { invitedProviderId: null },
     })
+  })
+
+  it('returns post_not_open when a concurrent assignment wins the race', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    const tx = makeTx({ id: JOB_ID, clientId: 'client-1', status: 'OPEN', invitedProviderId: 'prov-1' })
+    tx.jobPost.updateMany = vi.fn().mockResolvedValue({ count: 0 })
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) => fn(tx))
+
+    const result = await openJobToPublic({ jobPostId: JOB_ID })
+
+    expect(result).toEqual({ success: false, error: 'post_not_open' })
   })
 })
