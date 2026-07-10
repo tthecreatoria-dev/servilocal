@@ -5,6 +5,7 @@ const mockJobPostFindUnique = vi.hoisted(() => vi.fn())
 const mockJobPostCreate = vi.hoisted(() => vi.fn())
 const mockJobApplicationFindUnique = vi.hoisted(() => vi.fn())
 const mockJobApplicationCreate = vi.hoisted(() => vi.fn())
+const mockUserFindUnique = vi.hoisted(() => vi.fn())
 const mockTransaction = vi.hoisted(() => vi.fn())
 
 vi.mock('@/lib/auth', () => ({ auth: mockAuth }))
@@ -18,6 +19,9 @@ vi.mock('@/lib/db', () => ({
       findUnique: mockJobApplicationFindUnique,
       create: mockJobApplicationCreate,
     },
+    user: {
+      findUnique: mockUserFindUnique,
+    },
     $transaction: mockTransaction,
   },
 }))
@@ -30,6 +34,7 @@ beforeEach(() => {
   mockJobPostCreate.mockClear()
   mockJobApplicationFindUnique.mockClear()
   mockJobApplicationCreate.mockClear()
+  mockUserFindUnique.mockClear()
   mockTransaction.mockClear()
 })
 
@@ -108,6 +113,7 @@ describe('createJobPost()', () => {
         address: 'Col. Escalón, San Salvador',
         latitude: 13.7,
         longitude: -89.22,
+        invitedProviderId: null,
       },
     })
   })
@@ -139,8 +145,63 @@ describe('createJobPost()', () => {
         address: null,
         latitude: null,
         longitude: null,
+        invitedProviderId: null,
       },
     })
+  })
+
+  it('saves invitedProviderId when inviting a valid provider', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    mockUserFindUnique.mockResolvedValueOnce({ role: 'PROVIDER' })
+    const created = { id: 'job-3', status: 'PENDING_PAYMENT', clientId: 'client-1' }
+    mockJobPostCreate.mockResolvedValueOnce(created)
+
+    const result = await createJobPost({
+      ...validJobPostData,
+      invitedProviderId: 'clprv0000000000000000000000',
+    })
+
+    expect(result).toEqual({ success: true, data: created })
+    expect(mockUserFindUnique).toHaveBeenCalledWith({
+      where: { id: 'clprv0000000000000000000000' },
+      select: { role: true },
+    })
+    expect(mockJobPostCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ invitedProviderId: 'clprv0000000000000000000000' }),
+    })
+  })
+
+  it('returns invalid_invitee when the invited user does not exist', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    mockUserFindUnique.mockResolvedValueOnce(null)
+
+    const result = await createJobPost({
+      ...validJobPostData,
+      invitedProviderId: 'clprv0000000000000000000000',
+    })
+
+    expect(result).toEqual({ success: false, error: 'invalid_invitee' })
+    expect(mockJobPostCreate).not.toHaveBeenCalled()
+  })
+
+  it('returns invalid_invitee when the invited user is not a PROVIDER', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    mockUserFindUnique.mockResolvedValueOnce({ role: 'CLIENT' })
+
+    const result = await createJobPost({
+      ...validJobPostData,
+      invitedProviderId: 'clprv0000000000000000000000',
+    })
+
+    expect(result).toEqual({ success: false, error: 'invalid_invitee' })
+    expect(mockJobPostCreate).not.toHaveBeenCalled()
+  })
+
+  it('returns validation error when invitedProviderId is not a cuid', async () => {
+    mockAuth.mockResolvedValueOnce(clientSession)
+    const result = await createJobPost({ ...validJobPostData, invitedProviderId: 'not-a-cuid' })
+    expect(result).toEqual({ success: false, error: 'validation' })
+    expect(mockJobPostCreate).not.toHaveBeenCalled()
   })
 })
 

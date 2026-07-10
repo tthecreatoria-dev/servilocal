@@ -89,6 +89,7 @@ export const CreateJobPostSchema = z
     address: z.string().min(5, 'Address must be at least 5 characters').max(200, 'Address must be at most 200 characters').optional(),
     latitude: z.number().min(-90, 'Invalid latitude').max(90, 'Invalid latitude').optional(),
     longitude: z.number().min(-180, 'Invalid longitude').max(180, 'Invalid longitude').optional(),
+    invitedProviderId: z.string().cuid('Invalid provider ID').optional(),
   })
   .superRefine((data, ctx) => {
     if (!data.isRemote) {

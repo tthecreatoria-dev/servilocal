@@ -29,6 +29,16 @@ export async function createJobPost(
   const parsed = CreateJobPostSchema.safeParse(data)
   if (!parsed.success) return { success: false, error: 'validation' }
 
+  if (parsed.data.invitedProviderId) {
+    const invitee = await db.user.findUnique({
+      where: { id: parsed.data.invitedProviderId },
+      select: { role: true },
+    })
+    if (!invitee || invitee.role !== 'PROVIDER') {
+      return { success: false, error: 'invalid_invitee' }
+    }
+  }
+
   const jobPost = await db.jobPost.create({
     data: {
       title: parsed.data.title,
@@ -41,6 +51,7 @@ export async function createJobPost(
       address: parsed.data.isRemote ? null : parsed.data.address,
       latitude: parsed.data.isRemote ? null : parsed.data.latitude,
       longitude: parsed.data.isRemote ? null : parsed.data.longitude,
+      invitedProviderId: parsed.data.invitedProviderId ?? null,
     },
   })
 
