@@ -6,6 +6,7 @@ import type { ServiceCategory } from '@/types/index'
 import { CATEGORY_LABELS } from '@/lib/categories'
 import { SelectApplicationButton } from './select-application-button'
 import { CompleteJobButton } from './complete-job-button'
+import { OpenToPublicButton } from './open-to-public-button'
 
 const STATUS_CONFIG = {
   PENDING_PAYMENT: { label: 'Pago pendiente', className: 'bg-primary-container text-on-primary-container' },
@@ -39,6 +40,7 @@ export default async function JobDetailPage({
         include: { provider: { select: { name: true } } },
         orderBy: { createdAt: 'asc' },
       },
+      invitedProvider: { select: { name: true } },
     },
   })
 
@@ -81,7 +83,16 @@ export default async function JobDetailPage({
           </span>
         </div>
 
-        {job.status === 'IN_PROGRESS' && (
+        {job.invitedProviderId && job.invitedProvider && job.status === 'OPEN' && (
+        <div className="flex items-center justify-between gap-3 bg-zinc-50 border border-zinc-200 rounded-xl p-4 mb-4">
+          <p className="text-sm text-zinc-600">
+            Invitaste a <strong className="text-zinc-900">{job.invitedProvider.name}</strong>.
+            Solo esa persona puede ver este proyecto y enviarte una propuesta.
+          </p>
+          <OpenToPublicButton jobPostId={job.id} />
+        </div>
+      )}
+      {job.status === 'IN_PROGRESS' && (
           <div className="mb-4">
             <CompleteJobButton jobPostId={job.id} />
           </div>
