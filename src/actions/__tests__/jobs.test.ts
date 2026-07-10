@@ -281,6 +281,46 @@ describe('createJobApplication()', () => {
       },
     })
   })
+
+  it('returns not_invited when the post is invitation-only for another provider', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    const txCreate = vi.fn()
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) =>
+      fn({
+        jobPost: {
+          findUnique: vi.fn().mockResolvedValueOnce({
+            id: validApplicationData.jobPostId,
+            status: 'OPEN',
+            invitedProviderId: 'someone-else',
+          }),
+        },
+        jobApplication: { findUnique: vi.fn(), create: txCreate },
+      })
+    )
+    const result = await createJobApplication(validApplicationData)
+    expect(result).toEqual({ success: false, error: 'not_invited' })
+    expect(txCreate).not.toHaveBeenCalled()
+  })
+
+  it('lets the invited provider apply to an invitation-only post', async () => {
+    mockAuth.mockResolvedValueOnce(providerSession)
+    const created = { id: 'app-2', ...validApplicationData, providerId: 'provider-1', status: 'PENDING' }
+    const txCreate = vi.fn().mockResolvedValueOnce(created)
+    mockTransaction.mockImplementationOnce(async (fn: (tx: any) => Promise<any>) =>
+      fn({
+        jobPost: {
+          findUnique: vi.fn().mockResolvedValueOnce({
+            id: validApplicationData.jobPostId,
+            status: 'OPEN',
+            invitedProviderId: 'provider-1',
+          }),
+        },
+        jobApplication: { findUnique: vi.fn().mockResolvedValueOnce(null), create: txCreate },
+      })
+    )
+    const result = await createJobApplication(validApplicationData)
+    expect(result).toEqual({ success: true, data: created })
+  })
 })
 
 describe('selectJobApplication()', () => {

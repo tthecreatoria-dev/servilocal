@@ -73,6 +73,9 @@ export async function createJobApplication(
       const jobPost = await tx.jobPost.findUnique({ where: { id: parsed.data.jobPostId } })
       if (!jobPost) throw new Error('post_not_found')
       if (jobPost.status !== 'OPEN') throw new Error('post_not_open')
+      if (jobPost.invitedProviderId && jobPost.invitedProviderId !== session.user.id) {
+        throw new Error('not_invited')
+      }
 
       const existing = await tx.jobApplication.findUnique({
         where: {
@@ -96,7 +99,7 @@ export async function createJobApplication(
     return { success: true, data: application }
   } catch (error) {
     if (error instanceof Error) {
-      const known = ['post_not_found', 'post_not_open', 'already_applied']
+      const known = ['post_not_found', 'post_not_open', 'not_invited', 'already_applied']
       if (known.includes(error.message)) {
         return { success: false, error: error.message }
       }
