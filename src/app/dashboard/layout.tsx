@@ -30,13 +30,22 @@ export default async function DashboardLayout({ children }: { children: React.Re
               </Link>
             )}
             {role === 'PROVIDER' && (
-              <Link
-                href="/dashboard/applications"
-                className="motion-interactive flex items-center gap-1.5 px-3 py-4 text-label-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-primary"
-              >
-                <span className="material-symbols-outlined text-[18px]">description</span>
-                Mis propuestas
-              </Link>
+              <>
+                <Link
+                  href="/dashboard/invitations"
+                  className="flex items-center gap-1.5 px-3 py-4 text-label-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-primary"
+                >
+                  <span className="material-symbols-outlined text-[18px]">mail</span>
+                  Invitaciones
+                </Link>
+                <Link
+                  href="/dashboard/applications"
+                  className="motion-interactive flex items-center gap-1.5 px-3 py-4 text-label-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-primary"
+                >
+                  <span className="material-symbols-outlined text-[18px]">description</span>
+                  Mis propuestas
+                </Link>
+              </>
             )}
           </div>
           <form
