@@ -53,8 +53,8 @@ export default async function ProviderProfilePage({
     ? 'En línea'
     : (profile.address ?? 'Ubicación no especificada')
   const hireHref = profile.skills[0]
-    ? `/dashboard/jobs/new?category=${profile.skills[0]}`
-    : '/dashboard/jobs/new'
+    ? `/dashboard/jobs/new?invite=${profile.slug}&category=${profile.skills[0]}`
+    : `/dashboard/jobs/new?invite=${profile.slug}`
   const waNumber = profile.phone ? whatsappNumber(profile.phone) : null
 
   return (
