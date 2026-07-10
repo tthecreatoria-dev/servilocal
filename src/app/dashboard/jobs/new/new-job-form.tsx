@@ -12,9 +12,16 @@ const ERROR_LABELS: Record<string, string> = {
   forbidden:    'Solo los clientes pueden publicar proyectos.',
   validation:   'Revisa los datos del formulario.',
   location:     'Marca la ubicación en el mapa o activa trabajo remoto.',
+  invalid_invitee: 'El trabajador que intentas invitar ya no está disponible.',
 }
 
-export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCategory | null }) {
+export function NewJobForm({
+  initialCategory,
+  invitedProviderId = null,
+}: {
+  initialCategory?: ServiceCategory | null
+  invitedProviderId?: string | null
+}) {
   const router = useRouter()
   const [error, setError]       = useState<string | null>(null)
   const [pending, setPending]   = useState(false)
@@ -51,6 +58,7 @@ export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCateg
       address:   location.isRemote ? undefined : location.address,
       latitude:  location.isRemote ? undefined : location.latitude ?? undefined,
       longitude: location.isRemote ? undefined : location.longitude ?? undefined,
+      invitedProviderId: invitedProviderId ?? undefined,
     })
 
     if (!result.success) {
