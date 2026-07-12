@@ -29,7 +29,7 @@ export function SelectApplicationButton({
     <button
       onClick={handleSelect}
       disabled={pending}
-      className="bg-zinc-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50"
+      className="motion-interactive btn-press bg-primary text-on-primary px-4 py-1.5 rounded-full text-label-sm disabled:opacity-50"
     >
       {pending ? 'Seleccionando...' : 'Seleccionar'}
     </button>

@@ -43,9 +43,9 @@ export default async function ProvidersPage({
   const providers = rankProviders(candidates, searchPoint)
 
   return (
-    <div>
+    <div className="motion-section">
       {/* Header */}
-      <div className="mb-8">
+      <div className="motion-reveal mb-8">
         <h1 className="text-headline-lg-mobile md:text-headline-lg text-primary">
           Profesionales disponibles
         </h1>
@@ -55,11 +55,11 @@ export default async function ProvidersPage({
       </div>
 
       {/* Search bar — plain GET form, mirrors /jobs */}
-      <form method="GET" action="/providers" className="mb-6 flex flex-col sm:flex-row gap-3 max-w-2xl">
+      <form method="GET" action="/providers" className="motion-surface mb-6 flex flex-col sm:flex-row gap-3 max-w-2xl">
         <select
           name="category"
           defaultValue={validCategory ?? ''}
-          className="bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3.5 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+          className="motion-field bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3.5 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
         >
           <option value="">Todas las categorías</option>
           {CATEGORIES.map((cat) => (
@@ -76,11 +76,11 @@ export default async function ProvidersPage({
             name="location"
             defaultValue={locationQuery}
             placeholder="¿Dónde? Ej: San Salvador"
-            className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-28 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+            className="motion-field w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-28 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
           <button
             type="submit"
-            className="btn-press absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-4 py-2 rounded-lg text-label-md hover:opacity-90 transition-opacity"
+            className="motion-interactive btn-press absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-4 py-2 rounded-full text-label-md hover:opacity-90 transition-opacity"
           >
             Buscar
           </button>
@@ -89,24 +89,24 @@ export default async function ProvidersPage({
 
       {/* Notices */}
       {geocodeFailed && (
-        <p className="text-label-sm text-on-surface-variant mb-4">
+        <p className="motion-reveal text-label-sm text-on-surface-variant mb-4">
           No pudimos ubicar <strong className="text-on-surface">&quot;{locationQuery}&quot;</strong>.
           Mostrando todos los profesionales{validCategory ? ` de ${CATEGORY_LABELS[validCategory]}` : ''}.
         </p>
       )}
       {!geocodeFailed && (validCategory || locationQuery) && (
-        <p className="text-label-sm text-on-surface-variant mb-4">
+        <p className="motion-reveal text-label-sm text-on-surface-variant mb-4">
           {providers.length} resultado{providers.length !== 1 ? 's' : ''}
           {validCategory && <> en <strong className="text-on-surface">{CATEGORY_LABELS[validCategory]}</strong></>}
           {searchPoint && <> cerca de <strong className="text-on-surface">{locationQuery}</strong></>}
           {' · '}
-          <Link href="/providers" className="text-primary hover:underline">Limpiar filtros</Link>
+          <Link href="/providers" className="link-quiet">Limpiar filtros</Link>
         </p>
       )}
 
       {/* Results */}
       {providers.length === 0 ? (
-        <div className="flex flex-col items-center text-center py-20 gap-4">
+        <div className="motion-surface flex flex-col items-center text-center py-20 gap-4">
           <span className="material-symbols-outlined text-5xl text-outline">person_off</span>
           <p className="text-headline-md text-on-surface-variant">No hay profesionales disponibles</p>
           <p className="text-body-md text-on-surface-variant max-w-sm">
@@ -114,13 +114,13 @@ export default async function ProvidersPage({
           </p>
           <Link
             href="/providers"
-            className="btn-press mt-2 bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity"
+            className="motion-interactive btn-press mt-2 bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity"
           >
             Ver todos
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="motion-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {providers.map((provider) => (
             <ProviderCard key={provider.id} provider={provider} />
           ))}

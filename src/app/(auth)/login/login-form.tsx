@@ -12,8 +12,8 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const [state, formAction] = useActionState<AuthState | null, FormData>(login, null)
 
   return (
-    <div className="bg-white sm:rounded-2xl sm:shadow-md p-6 sm:p-10">
-      <div className="flex items-center gap-2 mb-8">
+    <div className="motion-panel bg-white sm:rounded-2xl sm:shadow-md p-6 sm:p-10">
+      <div className="motion-reveal flex items-center gap-2 mb-8">
         <span
           className="material-symbols-outlined text-primary"
           style={{ fontVariationSettings: "'FILL' 1" }}
@@ -23,12 +23,12 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
         <span className="text-headline-md text-primary">ServiLocal</span>
       </div>
 
-      <h1 className="text-headline-md text-on-surface mb-2">{t('login.title')}</h1>
-      <p className="text-body-md text-on-surface-variant mb-8">{t('login.subtitle')}</p>
+      <h1 className="motion-reveal text-headline-md text-on-surface mb-2">{t('login.title')}</h1>
+      <p className="motion-reveal text-body-md text-on-surface-variant mb-8">{t('login.subtitle')}</p>
 
       {state?.error && (
-        <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-label-md mb-4">
-          <span className="material-symbols-outlined text-[18px]">error</span>
+        <div className="flex items-center gap-2 bg-error-container border border-red-200 text-on-error-container rounded-xl px-4 py-3 text-label-md mb-4">
+          <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>error</span>
           {state.error}
         </div>
       )}
@@ -46,7 +46,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
             type="email"
             autoComplete="email"
             required
-            className="w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary bg-surface-container-lowest"
+            className="motion-field w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary bg-surface-container-lowest"
           />
           {state?.fieldErrors?.email && (
             <p className="text-red-600 text-label-sm mt-1">{state.fieldErrors.email}</p>
@@ -63,7 +63,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
             type="password"
             autoComplete="current-password"
             required
-            className="w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary bg-surface-container-lowest"
+            className="motion-field w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary bg-surface-container-lowest"
           />
           {state?.fieldErrors?.password && (
             <p className="text-red-600 text-label-sm mt-1">{state.fieldErrors.password}</p>
@@ -75,7 +75,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
 
       <p className="text-center text-body-md text-on-surface-variant mt-8">
         {t('login.noAccount')}{' '}
-        <Link href="/register" className="text-primary font-semibold hover:underline">
+        <Link href="/register" className="motion-interactive link-quiet font-semibold">
           {t('login.registerLink')}
         </Link>
       </p>

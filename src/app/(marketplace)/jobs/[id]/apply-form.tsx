@@ -40,21 +40,21 @@ export function ApplyForm({ jobPostId, budget }: { jobPostId: string; budget: nu
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="motion-section space-y-6">
       {error && (
-        <div className="flex items-start gap-3 bg-primary-container border border-outline rounded-xl px-4 py-3">
+        <div className="motion-reveal flex items-start gap-3 bg-error-container border border-red-200 rounded-xl px-4 py-3">
           <span
-            className="material-symbols-outlined text-on-primary-container text-[20px] mt-0.5 shrink-0"
+            className="material-symbols-outlined text-on-error-container text-[20px] mt-0.5 shrink-0"
             style={{ fontVariationSettings: "'FILL' 1" }}
           >
             error
           </span>
-          <p className="text-on-primary-container text-label-md">{error}</p>
+          <p className="text-on-error-container text-label-md">{error}</p>
         </div>
       )}
 
       {/* Mensaje */}
-      <div className="space-y-2">
+      <div className="motion-field space-y-2">
         <label htmlFor="message" className="block text-label-md text-on-surface">
           Mensaje al cliente
         </label>
@@ -66,12 +66,12 @@ export function ApplyForm({ jobPostId, budget }: { jobPostId: string; budget: nu
           maxLength={1000}
           rows={4}
           placeholder="Explica por qué eres la mejor opción, tu experiencia y disponibilidad…"
-          className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
+          className="motion-field w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
         />
       </div>
 
       {/* Precio propuesto */}
-      <div className="space-y-2">
+      <div className="motion-field space-y-2">
         <label htmlFor="proposedPrice" className="block text-label-md text-on-surface">
           Precio propuesto
         </label>
@@ -91,7 +91,7 @@ export function ApplyForm({ jobPostId, budget }: { jobPostId: string; budget: nu
             min="0.01"
             required
             placeholder="0.00"
-            className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-8 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+            className="motion-field w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-8 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
         </div>
       </div>
@@ -100,7 +100,7 @@ export function ApplyForm({ jobPostId, budget }: { jobPostId: string; budget: nu
       <button
         type="submit"
         disabled={pending}
-        className="btn-press w-full bg-primary text-on-primary py-4 rounded-full text-label-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-40"
+        className="motion-interactive btn-press w-full bg-primary text-on-primary py-4 rounded-full text-label-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-40"
       >
         {pending ? (
           <>

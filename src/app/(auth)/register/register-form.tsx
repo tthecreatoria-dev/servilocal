@@ -31,7 +31,7 @@ const COUNTRY_CODES = [
 ]
 
 const inputClass =
-  'w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest transition-colors'
+  'motion-field w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest transition-colors'
 
 export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
   const t = useTranslations('Auth')
@@ -57,8 +57,8 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
   }
 
   return (
-    <div className="bg-white sm:rounded-2xl sm:shadow-md p-6 sm:p-10">
-      <div className="flex items-center gap-2 mb-8">
+    <div className="motion-panel bg-white sm:rounded-2xl sm:shadow-md p-6 sm:p-10">
+      <div className="motion-reveal flex items-center gap-2 mb-8">
         <span
           className="material-symbols-outlined text-primary"
           style={{ fontVariationSettings: "'FILL' 1" }}
@@ -68,11 +68,11 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
         <span className="text-headline-md text-primary">ServiLocal</span>
       </div>
 
-      <h1 className="text-headline-md text-on-surface mb-2">{t('register.title')}</h1>
-      <p className="text-body-md text-on-surface-variant mb-8">{t('register.subtitle')}</p>
+      <h1 className="motion-reveal text-headline-md text-on-surface mb-2">{t('register.title')}</h1>
+      <p className="motion-reveal text-body-md text-on-surface-variant mb-8">{t('register.subtitle')}</p>
 
       {state?.error && (
-        <div className="flex items-center gap-2 bg-primary-container border border-outline text-on-primary-container rounded-xl px-4 py-3 text-label-md mb-4">
+        <div className="flex items-center gap-2 bg-error-container border border-red-200 text-on-error-container rounded-xl px-4 py-3 text-label-md mb-4">
           <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>error</span>
           {state.error}
         </div>
@@ -92,11 +92,11 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
           <label className="text-label-md text-on-surface-variant block mb-2">
             {t('register.roleLabel')}
           </label>
-          <div className="flex bg-surface-container rounded-full p-1 gap-1">
+          <div className="motion-field flex bg-surface-container rounded-full p-1 gap-1">
             <button
               type="button"
               onClick={() => setRole('CLIENT')}
-              className={`flex-1 py-2 rounded-full text-label-md transition-colors duration-200 ${
+              className={`motion-interactive flex-1 py-2 rounded-full text-label-md transition-colors duration-200 ${
                 role === 'CLIENT'
                   ? 'bg-primary text-on-primary'
                   : 'text-on-surface-variant hover:bg-surface-variant'
@@ -107,7 +107,7 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
             <button
               type="button"
               onClick={() => setRole('PROVIDER')}
-              className={`flex-1 py-2 rounded-full text-label-md transition-colors duration-200 ${
+              className={`motion-interactive flex-1 py-2 rounded-full text-label-md transition-colors duration-200 ${
                 role === 'PROVIDER'
                   ? 'bg-primary text-on-primary'
                   : 'text-on-surface-variant hover:bg-surface-variant'
@@ -150,7 +150,7 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
             <select
               value={countryCode}
               onChange={(e) => setCountryCode(e.target.value)}
-              className="border border-outline rounded-xl px-3 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary bg-surface-container-lowest transition-colors shrink-0"
+              className="motion-field border border-outline rounded-xl px-3 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary bg-surface-container-lowest transition-colors shrink-0"
             >
               {COUNTRY_CODES.map(({ code, flag, name }) => (
                 <option key={code} value={code}>
@@ -192,7 +192,7 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
               Mis habilidades
               <span className="text-label-sm text-on-surface-variant/60 ml-1">(selecciona todas las que apliquen)</span>
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
+            <div className="motion-list grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
               {SKILLS.map(({ value, label, icon }) => {
                 const active = skills.includes(value)
                 return (
@@ -200,7 +200,7 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
                     key={value}
                     type="button"
                     onClick={() => toggleSkill(value)}
-                    className={`btn-press flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-colors ${
+                    className={`motion-list-item motion-interactive btn-press flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-colors ${
                       active
                         ? 'bg-primary border-primary text-on-primary'
                         : 'bg-surface-container-lowest border-outline-variant text-on-surface hover:border-primary/60 hover:bg-surface-container'
@@ -253,7 +253,7 @@ export function RegisterForm({ callbackUrl }: { callbackUrl: string }) {
 
       <p className="text-center text-body-md text-on-surface-variant mt-8">
         {t('register.haveAccount')}{' '}
-        <Link href="/login" className="text-primary font-semibold hover:underline">
+        <Link href="/login" className="motion-interactive link-quiet font-semibold">
           {t('register.loginLink')}
         </Link>
       </p>

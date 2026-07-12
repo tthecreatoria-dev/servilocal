@@ -29,9 +29,9 @@ export default async function ProfilePage() {
       : null
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="motion-section max-w-2xl mx-auto space-y-8">
       <div>
-        <h1 className="text-headline-lg-mobile text-primary">Mi perfil</h1>
+        <h1 className="motion-reveal text-headline-lg-mobile text-primary">Mi perfil</h1>
         <p className="text-body-md text-on-surface-variant mt-1">
           Tu información personal{profile ? ' y tu método de cobro' : ''}.
         </p>

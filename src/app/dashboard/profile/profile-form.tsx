@@ -8,7 +8,7 @@ import { CATEGORY_LABELS } from '@/lib/categories'
 import type { ServiceCategory, UserRole } from '@/types/index'
 
 const inputClass =
-  'w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest transition-colors'
+  'motion-field w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest transition-colors'
 
 type ProfileInitial = {
   name: string
@@ -73,7 +73,7 @@ export function ProfileForm({ role, initial }: { role: UserRole; initial: Profil
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 flex flex-col gap-5">
+    <form onSubmit={handleSubmit} className="motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 flex flex-col gap-5">
       <h2 className="text-headline-md text-on-surface">Información personal</h2>
 
       <div>
@@ -103,7 +103,7 @@ export function ProfileForm({ role, initial }: { role: UserRole; initial: Profil
                     key={value}
                     type="button"
                     onClick={() => toggleSkill(value)}
-                    className={`btn-press px-3 py-2.5 rounded-xl border text-left text-label-sm transition-colors ${
+                    className={`motion-interactive btn-press px-3 py-2.5 rounded-xl border text-left text-label-sm transition-colors ${
                       active
                         ? 'bg-primary border-primary text-on-primary'
                         : 'bg-surface-container-lowest border-outline-variant text-on-surface hover:border-primary/60'
@@ -126,7 +126,7 @@ export function ProfileForm({ role, initial }: { role: UserRole; initial: Profil
               type="checkbox"
               checked={showPhone}
               onChange={(e) => setShowPhone(e.target.checked)}
-              className="mt-1 h-4 w-4 accent-primary"
+              className="motion-field mt-1 h-4 w-4 accent-primary"
             />
             <span>
               <span className="text-label-md text-on-surface block">
@@ -146,7 +146,7 @@ export function ProfileForm({ role, initial }: { role: UserRole; initial: Profil
       <button
         type="submit"
         disabled={pending}
-        className="btn-press bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity disabled:opacity-50 self-start"
+        className="motion-interactive btn-press bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity disabled:opacity-50 self-start"
       >
         {pending ? 'Guardando...' : 'Guardar cambios'}
       </button>

@@ -23,7 +23,7 @@ export function StartJobButton({ jobPostId }: { jobPostId: string }) {
     <button
       onClick={handleStart}
       disabled={pending}
-      className="btn-press bg-primary text-on-primary px-4 py-2 rounded-full text-label-md hover:opacity-90 disabled:opacity-50"
+      className="motion-interactive btn-press bg-primary text-on-primary px-4 py-2 rounded-full text-label-md hover:opacity-90 disabled:opacity-50"
     >
       {pending ? 'Iniciando...' : 'Iniciar trabajo'}
     </button>

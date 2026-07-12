@@ -2,10 +2,10 @@ import Link from 'next/link'
 
 export default function AboutPage() {
   return (
-    <div className="max-w-3xl mx-auto py-8">
+    <div className="motion-section max-w-3xl mx-auto py-8">
 
       {/* Hero */}
-      <section className="text-center mb-16">
+      <section className="motion-reveal text-center mb-16">
         <span
           className="material-symbols-outlined text-primary text-[56px] mb-4 block"
           style={{ fontVariationSettings: "'FILL' 1" }}
@@ -22,7 +22,7 @@ export default function AboutPage() {
       </section>
 
       {/* Philosophy */}
-      <section className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-8 mb-8 shadow-sm">
+      <section className="motion-surface motion-reveal bg-surface-container-lowest border border-outline-variant rounded-2xl p-8 mb-8 shadow-sm">
         <h2 className="text-headline-md text-primary mb-4">Nuestra filosofía</h2>
         <p className="text-body-md text-on-surface leading-relaxed mb-4">
           Creemos que el talento local merece oportunidades reales. Hay electricistas, fontaneros,
@@ -36,11 +36,11 @@ export default function AboutPage() {
       </section>
 
       {/* How it works — 3 steps */}
-      <section className="mb-12">
+      <section className="motion-section mb-12">
         <h2 className="text-headline-md text-primary mb-8 text-center">¿Cómo funciona?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="motion-list grid grid-cols-1 md:grid-cols-3 gap-6">
 
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
+          <div className="motion-surface motion-list-item card-hover bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
             <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center mb-4">
               <span
                 className="material-symbols-outlined text-primary text-[28px]"
@@ -57,7 +57,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
+          <div className="motion-surface motion-list-item card-hover bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
             <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center mb-4">
               <span
                 className="material-symbols-outlined text-primary text-[28px]"
@@ -74,7 +74,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
+          <div className="motion-surface motion-list-item card-hover bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
             <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center mb-4">
               <span
                 className="material-symbols-outlined text-primary text-[28px]"
@@ -95,9 +95,9 @@ export default function AboutPage() {
       </section>
 
       {/* Trust section */}
-      <section className="bg-surface-container rounded-2xl p-8 mb-12">
+      <section className="motion-surface motion-reveal bg-surface-container rounded-2xl p-8 mb-12">
         <h2 className="text-headline-md text-primary mb-6">Por qué confiar en ServiLocal</h2>
-        <ul className="space-y-5">
+        <ul className="motion-list space-y-5">
           {[
             {
               icon: 'shield',
@@ -120,7 +120,7 @@ export default function AboutPage() {
               desc: 'Puedes ver el estado de tu proyecto, las propuestas recibidas y el historial de pagos en todo momento desde tu panel.',
             },
           ].map(({ icon, title, desc }) => (
-            <li key={icon} className="flex items-start gap-4">
+            <li key={icon} className="motion-list-item flex items-start gap-4">
               <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shrink-0 mt-0.5">
                 <span
                   className="material-symbols-outlined text-primary text-[20px]"
@@ -139,16 +139,16 @@ export default function AboutPage() {
       </section>
 
       {/* CTAs */}
-      <section className="text-center flex flex-col sm:flex-row gap-4 justify-center">
+      <section className="motion-reveal text-center flex flex-col sm:flex-row gap-4 justify-center">
         <Link
           href="/dashboard/jobs/new"
-          className="btn-press bg-primary text-on-primary px-8 py-4 rounded-full text-label-md hover:opacity-90 transition-opacity shadow-sm"
+          className="motion-interactive btn-press bg-primary text-on-primary px-8 py-4 rounded-full text-label-md hover:opacity-90 transition-opacity shadow-sm"
         >
           Publicar un proyecto
         </Link>
         <Link
           href="/jobs"
-          className="btn-press border border-secondary text-secondary px-8 py-4 rounded-full text-label-md hover:bg-surface-variant transition-colors"
+          className="motion-interactive btn-press border border-secondary text-secondary px-8 py-4 rounded-full text-label-md hover:bg-surface-variant transition-colors"
         >
           Buscar trabajo
         </Link>

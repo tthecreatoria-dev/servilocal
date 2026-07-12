@@ -35,16 +35,16 @@ export default async function ProviderApplicationsPage() {
   })
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="motion-section max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-headline-lg-mobile text-primary">Mis propuestas</h1>
+        <h1 className="motion-reveal text-headline-lg-mobile text-primary">Mis propuestas</h1>
         <p className="text-body-md text-on-surface-variant mt-1">
           Proyectos a los que has aplicado.
         </p>
       </div>
 
       {applications.length === 0 ? (
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-10 flex flex-col items-center text-center gap-4">
+        <div className="motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-10 flex flex-col items-center text-center gap-4">
           <span className="material-symbols-outlined text-5xl text-outline">description</span>
           <p className="text-headline-md text-on-surface-variant">Aún no has enviado propuestas</p>
           <p className="text-body-md text-on-surface-variant max-w-xs">
@@ -52,13 +52,13 @@ export default async function ProviderApplicationsPage() {
           </p>
           <Link
             href="/"
-            className="btn-press mt-2 bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity"
+            className="motion-interactive btn-press mt-2 bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity"
           >
             Ver proyectos
           </Link>
         </div>
       ) : (
-        <ul className="space-y-4">
+        <ul className="motion-list space-y-4">
           {applications.map((app) => {
             const job    = app.jobPost
             const status = STATUS_CONFIG[app.status as keyof typeof STATUS_CONFIG]
@@ -67,12 +67,12 @@ export default async function ProviderApplicationsPage() {
             return (
               <li
                 key={app.id}
-                className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 shadow-sm"
+                className="motion-list-item motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 shadow-sm"
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <Link
                     href={`/jobs/${job.id}`}
-                    className="text-headline-md text-on-surface hover:text-primary transition-colors line-clamp-2 flex-1"
+                    className="motion-interactive text-headline-md text-on-surface hover:text-primary transition-colors line-clamp-2 flex-1"
                   >
                     {job.title}
                   </Link>
@@ -111,10 +111,10 @@ export default async function ProviderApplicationsPage() {
                   </span>
                   <Link
                     href={`/jobs/${job.id}`}
-                    className="btn-press inline-flex items-center gap-1 text-label-sm text-primary hover:underline"
+                    className="motion-interactive link-quiet inline-flex items-center gap-1 text-label-sm"
                   >
                     Ver proyecto
-                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    <span className="material-symbols-outlined link-quiet-icon text-[16px]">arrow_forward</span>
                   </Link>
                 </div>
 

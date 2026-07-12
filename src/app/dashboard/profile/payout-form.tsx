@@ -6,7 +6,7 @@ import { updatePayoutSettings } from '@/actions/payouts'
 import type { PayoutMethod } from '@/types/index'
 
 const inputClass =
-  'w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest transition-colors'
+  'motion-field w-full border border-outline rounded-xl px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest transition-colors'
 
 type PayoutInitial = {
   payoutMethod: PayoutMethod | null
@@ -41,7 +41,7 @@ export function PayoutForm({ initial }: { initial: PayoutInitial }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 flex flex-col gap-5">
+    <form onSubmit={handleSubmit} className="motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 flex flex-col gap-5">
       <div>
         <h2 className="text-headline-md text-on-surface">Método de cobro</h2>
         <p className="text-body-md text-on-surface-variant mt-1">
@@ -62,7 +62,7 @@ export function PayoutForm({ initial }: { initial: PayoutInitial }) {
             key={m}
             type="button"
             onClick={() => setMethod(m)}
-            className={`flex-1 py-2 rounded-full text-label-md transition-colors duration-200 ${
+            className={`motion-interactive flex-1 py-2 rounded-full text-label-md transition-colors duration-200 ${
               method === m ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-variant'
             }`}
           >
@@ -107,7 +107,7 @@ export function PayoutForm({ initial }: { initial: PayoutInitial }) {
       <button
         type="submit"
         disabled={pending}
-        className="btn-press bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity disabled:opacity-50 self-start"
+        className="motion-interactive btn-press bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity disabled:opacity-50 self-start"
       >
         {pending ? 'Guardando...' : 'Guardar método de cobro'}
       </button>

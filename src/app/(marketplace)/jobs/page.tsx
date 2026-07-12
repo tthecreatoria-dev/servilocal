@@ -1,7 +1,9 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
+import { getTranslations, getLocale } from 'next-intl/server'
 import type { ServiceCategory } from '@/types/index'
-import { CATEGORY_LABELS, CATEGORY_ICONS, CATEGORY_KEYS as CATEGORIES } from '@/lib/categories'
+import { CATEGORY_ICONS, CATEGORY_KEYS as CATEGORIES } from '@/lib/categories'
+import { ServicePicker, type ServicePickerOption } from '@/components/features/service-picker'
 
 export default async function JobsPage({
   searchParams,
@@ -10,11 +12,27 @@ export default async function JobsPage({
 }) {
   const { category, q } = await searchParams
 
+  const [t, tHome, locale] = await Promise.all([
+    getTranslations('JobsPage'),
+    getTranslations('HomePage'),
+    getLocale(),
+  ])
+
   const validCategory = CATEGORIES.includes(category as ServiceCategory)
     ? (category as ServiceCategory)
     : undefined
 
   const searchQuery = q?.trim() || undefined
+
+  const categoryLabel = (cat: ServiceCategory) => tHome(`serviceCategory.${cat}`)
+
+  const categoryOptions: ServicePickerOption[] = CATEGORIES.map((cat) => ({
+    value: cat,
+    label: categoryLabel(cat),
+    icon: CATEGORY_ICONS[cat],
+  }))
+
+  const dateLocale = locale === 'en' ? 'en-US' : 'es-SV'
 
   const jobs = await db.jobPost.findMany({
     where: {
@@ -33,120 +51,96 @@ export default async function JobsPage({
     orderBy: { createdAt: 'desc' },
   })
 
-  // Build href preserving the other param
-  function catHref(cat?: ServiceCategory) {
-    const params = new URLSearchParams()
-    if (cat) params.set('category', cat)
-    if (searchQuery) params.set('q', searchQuery)
-    const qs = params.toString()
-    return qs ? `/jobs?${qs}` : '/jobs'
-  }
-
   return (
-    <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-headline-lg-mobile md:text-headline-lg text-primary">
-          Proyectos disponibles
-        </h1>
-        <p className="text-body-md text-on-surface-variant mt-1">
-          Encuentra proyectos que coincidan con tus habilidades y aplica directamente.
-        </p>
-      </div>
+    <div className="motion-section">
+      {/* Header + search — vertically centered block, mirrors the homepage hero */}
+      <div className="motion-reveal mb-8 flex flex-col items-center justify-center text-center min-h-[50vh] gap-8">
+        <div>
+          <h1 className="text-headline-lg-mobile md:text-headline-lg text-primary">
+            {t('title')}
+          </h1>
+          <p className="text-body-md text-on-surface-variant mt-1">
+            {t('subtitle')}
+          </p>
+        </div>
 
-      {/* Search bar — plain GET form so no JS needed */}
-      <form method="GET" action="/jobs" className="mb-6">
-        {validCategory && (
-          <input type="hidden" name="category" value={validCategory} />
-        )}
-        <div className="relative max-w-xl">
-          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">
-            search
-          </span>
-          <input
-            name="q"
-            defaultValue={searchQuery}
-            placeholder="Buscar por título o descripción…"
-            className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-28 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+        {/* Search bar — category + text query in one unified control, mirrors the homepage hero search */}
+        <form
+          method="GET"
+          action="/jobs"
+          className="motion-surface w-full max-w-2xl mx-auto bg-surface-container-lowest rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row gap-0 md:gap-2 shadow-sm border border-outline-variant"
+        >
+          <ServicePicker
+            name="category"
+            options={categoryOptions}
+            defaultValue={validCategory}
+            placeholder={t('categoryPlaceholder')}
+            searchLabel={t('searchCategoryLabel')}
+            allServicesLabel={t('allCategoriesLabel')}
+            noResultsLabel={t('noCategoryResultsLabel')}
           />
+          <div className="flex-1 flex items-center px-4 py-3 border-b md:border-b-0 border-outline-variant">
+            <span className="material-symbols-outlined text-outline mr-2 flex-shrink-0">
+              search
+            </span>
+            <input
+              name="q"
+              defaultValue={searchQuery}
+              type="text"
+              placeholder={t('queryPlaceholder')}
+              className="motion-field w-full bg-transparent border-none focus:ring-0 text-on-surface text-body-md outline-none placeholder:text-on-surface-variant/60"
+            />
+          </div>
           <button
             type="submit"
-            className="btn-press absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-4 py-2 rounded-lg text-label-md hover:opacity-90 transition-opacity"
+            className="motion-interactive btn-press bg-primary text-on-primary px-8 py-3 mt-2 md:mt-0 rounded-xl md:rounded-full text-label-md w-full md:w-auto"
           >
-            Buscar
+            {t('searchButton')}
           </button>
-        </div>
-      </form>
-
-      {/* Category pills */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        <Link
-          href={catHref()}
-          className={`btn-press inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-label-sm border transition-colors ${
-            !validCategory
-              ? 'bg-primary text-on-primary border-primary'
-              : 'bg-surface-container-lowest border-outline-variant text-on-surface-variant hover:border-primary/60 hover:bg-surface-container'
-          }`}
-        >
-          Todos
-        </Link>
-        {CATEGORIES.map((cat) => (
-          <Link
-            key={cat}
-            href={catHref(cat)}
-            className={`btn-press inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-label-sm border transition-colors ${
-              validCategory === cat
-                ? 'bg-primary text-on-primary border-primary'
-                : 'bg-surface-container-lowest border-outline-variant text-on-surface-variant hover:border-primary/60 hover:bg-surface-container'
-            }`}
-          >
-            <span
-              className="material-symbols-outlined text-[15px]"
-              style={{ fontVariationSettings: `'FILL' ${validCategory === cat ? 1 : 0}` }}
-            >
-              {CATEGORY_ICONS[cat]}
-            </span>
-            {CATEGORY_LABELS[cat]}
-          </Link>
-        ))}
+        </form>
       </div>
+
+      {/* Section title */}
+      <h2 className="motion-reveal text-headline-md text-on-surface mb-4">
+        {t('allJobsTitle')}
+      </h2>
 
       {/* Results count */}
       {(searchQuery || validCategory) && (
-        <p className="text-label-sm text-on-surface-variant mb-4">
-          {jobs.length} resultado{jobs.length !== 1 ? 's' : ''}
-          {searchQuery && <> para <strong className="text-on-surface">"{searchQuery}"</strong></>}
-          {validCategory && <> en <strong className="text-on-surface">{CATEGORY_LABELS[validCategory]}</strong></>}
+        <p className="motion-reveal text-label-sm text-on-surface-variant mb-4">
+          {t('resultsCount', { count: jobs.length })}
+          {searchQuery && <> {t('resultsFor', { query: searchQuery })}</>}
+          {validCategory && <> {t('resultsIn', { category: categoryLabel(validCategory) })}</>}
           {' · '}
-          <Link href="/jobs" className="text-primary hover:underline">
-            Limpiar filtros
+          <Link href="/jobs" className="link-quiet">
+            {t('clearFilters')}
           </Link>
         </p>
       )}
 
       {/* Grid */}
       {jobs.length === 0 ? (
-        <div className="flex flex-col items-center text-center py-20 gap-4">
+        <div className="motion-surface flex flex-col items-center text-center py-20 gap-4">
           <span className="material-symbols-outlined text-5xl text-outline">work_off</span>
-          <p className="text-headline-md text-on-surface-variant">No hay proyectos disponibles</p>
+          <p className="text-headline-md text-on-surface-variant">{t('emptyTitle')}</p>
           <p className="text-body-md text-on-surface-variant max-w-sm">
-            Intenta con otra categoría o cambia los términos de búsqueda.
+            {t('emptySubtitle')}
           </p>
           <Link
             href="/jobs"
-            className="btn-press mt-2 bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity"
+            className="motion-interactive btn-press mt-2 bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity"
           >
-            Ver todos
+            {t('viewAll')}
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="motion-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {jobs.map((job) => {
             const cat = job.category as ServiceCategory
             return (
               <article
                 key={job.id}
-                className="card-hover bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 shadow-sm flex flex-col"
+                className="card-hover motion-surface motion-list-item bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 shadow-sm flex flex-col"
               >
                 {/* Top row */}
                 <div className="flex items-center justify-between mb-3">
@@ -154,10 +148,10 @@ export default async function JobsPage({
                     <span className="material-symbols-outlined text-[15px]">
                       {CATEGORY_ICONS[cat]}
                     </span>
-                    {CATEGORY_LABELS[cat]}
+                    {categoryLabel(cat)}
                   </span>
                   <span className="text-label-sm text-on-surface-variant">
-                    {new Date(job.deadline).toLocaleDateString('es-SV')}
+                    {new Date(job.deadline).toLocaleDateString(dateLocale)}
                   </span>
                 </div>
 
@@ -184,9 +178,9 @@ export default async function JobsPage({
                   </div>
                   <Link
                     href={`/jobs/${job.id}`}
-                    className="btn-press bg-primary text-on-primary px-4 py-2 rounded-full text-label-sm hover:opacity-90 transition-opacity"
+                    className="motion-interactive btn-press bg-primary text-on-primary px-4 py-2 rounded-full text-label-sm hover:opacity-90 transition-opacity"
                   >
-                    Ver
+                    {t('viewJob')}
                   </Link>
                 </div>
               </article>

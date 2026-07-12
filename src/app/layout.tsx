@@ -1,18 +1,15 @@
 import type { Metadata } from 'next'
-import { Montserrat, Plus_Jakarta_Sans } from 'next/font/google'
+import { Suspense } from 'react'
+import { Poppins } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
+import { NavigationOverlay } from '@/components/ui/navigation-overlay'
 import './globals.css'
 
-const montserrat = Montserrat({
+const poppins = Poppins({
   subsets: ['latin'],
-  variable: '--font-montserrat',
-  display: 'swap',
-})
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-jakarta',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
   display: 'swap',
 })
 
@@ -27,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={`${montserrat.variable} ${jakarta.variable}`}>
+    <html lang={locale} className={poppins.variable}>
       <head>
         <link
           rel="stylesheet"
@@ -35,6 +32,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className="bg-background text-on-background font-sans antialiased">
+        <Suspense fallback={null}>
+          <NavigationOverlay />
+        </Suspense>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

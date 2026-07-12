@@ -35,9 +35,9 @@ export default async function PayoutsPage() {
   })
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="motion-section max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-headline-lg-mobile text-primary">Liquidaciones pendientes</h1>
+        <h1 className="motion-reveal text-headline-lg-mobile text-primary">Liquidaciones pendientes</h1>
         <p className="text-body-md text-on-surface-variant mt-1">
           Pagos retenidos de trabajos completados, listos para enviar al proveedor.
         </p>
@@ -46,7 +46,7 @@ export default async function PayoutsPage() {
       {payments.length === 0 ? (
         <p className="text-body-md text-on-surface-variant">No hay liquidaciones pendientes.</p>
       ) : (
-        <ul className="space-y-4">
+        <ul className="motion-list space-y-4">
           {payments.map((p) => {
             const provider = p.jobPost.applications[0]?.provider
             const profile = provider?.providerProfile
@@ -57,7 +57,7 @@ export default async function PayoutsPage() {
             const gross = Number(p.amount)
             const fee = Number(p.commission?.amount ?? 0)
             return (
-              <li key={p.id} className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5">
+              <li key={p.id} className="motion-list-item motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-5">
                 <div className="flex justify-between items-start gap-4 flex-wrap">
                   <div>
                     <p className="text-body-md font-medium text-on-surface">{p.jobPost.title}</p>

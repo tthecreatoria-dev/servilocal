@@ -63,7 +63,7 @@ export function LocationMap({ lat, lng, onPick }: LocationMapProps) {
       zoom={13}
       scrollWheelZoom={false}
       style={{ height: '260px', width: '100%' }}
-      className="rounded-xl overflow-hidden border border-outline-variant"
+      className="motion-reveal motion-surface rounded-xl overflow-hidden border border-outline-variant"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

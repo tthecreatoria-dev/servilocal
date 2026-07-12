@@ -4,11 +4,14 @@ import { db } from '@/lib/db'
 import { SiteHeader } from '@/components/features/site-header'
 import { SiteFooter } from '@/components/features/site-footer'
 import { BottomNav } from '@/components/features/bottom-nav'
+import { ServicePicker, type ServicePickerOption } from '@/components/features/service-picker'
+import { CATEGORY_ICONS, CATEGORY_KEYS } from '@/lib/categories'
 import type { ServiceCategory } from '@/types'
 
 // ---- Types ----
 
 type ActiveCategory = { category: ServiceCategory; icon: string }
+type JobSort = 'newest' | 'budget'
 
 type JobPostListing = {
   id: string
@@ -50,12 +53,12 @@ async function getActiveCategories(): Promise<ActiveCategory[]> {
   }
 }
 
-async function getActiveJobPosts(): Promise<JobPostListing[]> {
+async function getActiveJobPosts(sort: JobSort): Promise<JobPostListing[]> {
   try {
     const rows = await db.jobPost.findMany({
       where: { status: 'OPEN' },
       include: { client: { select: { name: true } } },
-      orderBy: { createdAt: 'desc' },
+      orderBy: sort === 'budget' ? { budget: 'desc' } : { createdAt: 'desc' },
       take: 6,
     })
     return rows.map((row) => ({
@@ -75,9 +78,16 @@ async function getActiveJobPosts(): Promise<JobPostListing[]> {
 
 // ---- Page ----
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string | string[] }>
+}) {
+  const { sort: requestedSort } = await searchParams
+  const sort: JobSort = requestedSort === 'budget' ? 'budget' : 'newest'
+
   const [jobs, categories, t] = await Promise.all([
-    getActiveJobPosts(),
+    getActiveJobPosts(sort),
     getActiveCategories(),
     getTranslations('HomePage'),
   ])
@@ -85,6 +95,12 @@ export default async function HomePage() {
   const categoryIconMap = Object.fromEntries(
     categories.map(({ category, icon }) => [category, icon])
   )
+
+  const serviceOptions: ServicePickerOption[] = CATEGORY_KEYS.map((category) => ({
+    value: category,
+    label: t(`serviceCategory.${category}`),
+    icon: CATEGORY_ICONS[category],
+  }))
 
   const howItWorks = [
     {
@@ -110,19 +126,11 @@ export default async function HomePage() {
 
       <main className="max-w-7xl mx-auto">
         {/* Hero */}
-        <section className="relative rounded-b-3xl md:rounded-3xl overflow-hidden mt-0 md:mt-6 px-margin-mobile md:px-margin-desktop bg-surface-container py-16 md:py-24 flex flex-col items-center text-center">
-          {/* Background gradients */}
+        <section className="relative rounded-b-3xl md:rounded-3xl mt-0 md:mt-6 mb-4 md:mb-6 px-margin-mobile md:px-margin-desktop bg-surface-container py-16 md:py-24 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-145px)] md:min-h-[calc(100dvh-101px)]">
+          {/* Background wash */}
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 pointer-events-none"
-          />
-          <div
-            aria-hidden
-            className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-secondary/15 to-transparent pointer-events-none rounded-full opacity-60"
-          />
-          <div
-            aria-hidden
-            className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-primary/15 to-transparent pointer-events-none rounded-full opacity-60"
+            className="absolute inset-0 rounded-[inherit] bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 pointer-events-none"
           />
 
           <div className="relative z-10 max-w-3xl w-full flex flex-col items-center gap-6">
@@ -138,27 +146,16 @@ export default async function HomePage() {
             <form
               method="GET"
               action="/providers"
-              className="hero-item hero-item-3 w-full max-w-2xl bg-surface-container-lowest rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row gap-0 md:gap-2 shadow-sm border border-outline-variant"
+              className="hero-item hero-item-3 relative z-20 w-full max-w-2xl bg-surface-container-lowest rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row gap-0 md:gap-2 shadow-sm border border-outline-variant"
             >
-              <div className="flex-1 flex items-center px-4 py-3 border-b md:border-b-0 md:border-r border-outline-variant">
-                <span className="material-symbols-outlined text-outline mr-2 flex-shrink-0">
-                  search
-                </span>
-                <select
-                  name="category"
-                  defaultValue=""
-                  className="w-full bg-transparent border-none focus:ring-0 text-on-surface text-body-md outline-none"
-                >
-                  <option value="">{t('searchService')}</option>
-                  {(['PLUMBING', 'TEACHING', 'DELIVERY', 'CLEANING', 'DESIGN', 'DIGITAL'] as const).map(
-                    (cat) => (
-                      <option key={cat} value={cat}>
-                        {t(`serviceCategory.${cat}`)}
-                      </option>
-                    ),
-                  )}
-                </select>
-              </div>
+              <ServicePicker
+                name="category"
+                options={serviceOptions}
+                placeholder={t('searchService')}
+                searchLabel={t('servicePickerSearch')}
+                allServicesLabel={t('servicePickerAll')}
+                noResultsLabel={t('servicePickerNoResults')}
+              />
               <div className="flex-1 flex items-center px-4 py-3 border-b md:border-b-0 border-outline-variant">
                 <span className="material-symbols-outlined text-outline mr-2 flex-shrink-0">
                   location_on
@@ -172,7 +169,7 @@ export default async function HomePage() {
               </div>
               <button
                 type="submit"
-                className="btn-press bg-secondary text-on-secondary px-8 py-3 mt-2 md:mt-0 rounded-xl md:rounded-full text-label-md hover:bg-primary transition-colors duration-200 w-full md:w-auto"
+                className="motion-interactive btn-press bg-primary text-on-primary px-8 py-3 mt-2 md:mt-0 rounded-xl md:rounded-full text-label-md w-full md:w-auto"
               >
                 {t('searchButton')}
               </button>
@@ -182,13 +179,13 @@ export default async function HomePage() {
             <div className="hero-item hero-item-4 flex flex-wrap justify-center gap-4">
               <Link
                 href="/dashboard/jobs/new"
-                className="btn-press bg-primary text-on-primary px-8 py-3 rounded-full text-label-md hover:opacity-90 shadow-sm"
+                className="motion-interactive btn-press bg-primary text-on-primary px-8 py-3 rounded-full text-label-md shadow-sm"
               >
                 {t('postJob')}
               </Link>
               <Link
                 href="/jobs"
-                className="btn-press border border-secondary text-secondary px-8 py-3 rounded-full text-label-md hover:bg-surface-variant transition-colors duration-200 bg-transparent"
+                className="motion-interactive btn-press border border-secondary text-secondary px-8 py-3 rounded-full text-label-md hover:bg-surface-variant transition-colors duration-200 bg-transparent"
               >
                 {t('findWork')}
               </Link>
@@ -228,25 +225,25 @@ export default async function HomePage() {
         </section>
 
         {/* Browse by Category */}
-        <section className="px-margin-mobile md:px-margin-desktop py-16">
-          <div className="flex justify-between items-end mb-8">
+        <section className="motion-section px-margin-mobile md:px-margin-desktop py-16">
+          <div className="motion-reveal flex justify-between items-end mb-8">
             <h2 className="text-headline-lg-mobile md:text-headline-lg text-primary">
               {t('browseCategoriesTitle')}
             </h2>
             <Link
               href="/jobs"
-              className="text-secondary text-label-md hover:underline flex items-center gap-1"
+              className="motion-interactive link-quiet text-label-md flex items-center gap-1"
             >
               {t('seeAll')}
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              <span className="material-symbols-outlined link-quiet-icon text-[18px]">arrow_forward</span>
             </Link>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
+          <div className="motion-list grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
             {categories.map(({ category, icon }) => (
               <button
                 key={category}
-                className="flex flex-col items-center gap-2 md:gap-3 cursor-pointer"
+                className="motion-list-item motion-interactive flex flex-col items-center gap-2 md:gap-3 cursor-pointer"
                 aria-label={t(`serviceCategory.${category}`)}
               >
                 <div className="category-icon w-16 h-16 md:w-20 md:h-20 rounded-full bg-secondary-fixed flex items-center justify-center shadow-sm border-2 border-outline-variant">
@@ -297,8 +294,8 @@ export default async function HomePage() {
         {/*</section>*/}
 
         {/* Active Job Listings */}
-        <section className="px-margin-mobile md:px-margin-desktop py-8 bg-surface-container-low rounded-3xl mb-16">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <section className="motion-section px-margin-mobile md:px-margin-desktop py-8 bg-surface-container-low rounded-3xl mb-16">
+          <div className="motion-reveal flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
               <h2 className="text-headline-lg-mobile md:text-headline-lg text-primary">
                 {t('activeJobsTitle')}
@@ -307,19 +304,41 @@ export default async function HomePage() {
                 {t('activeJobsSubtitle')}
               </p>
             </div>
-            <div className="flex gap-2">
-              <button className="btn-press px-4 py-2 rounded-full border border-outline-variant text-on-surface text-label-md hover:bg-surface-variant transition-colors duration-200">
+            <div
+              role="group"
+              aria-label={t('sortJobs')}
+              className="inline-flex w-full items-center gap-1 rounded-xl border border-primary/25 bg-surface-container-lowest p-1 shadow-sm md:w-auto"
+            >
+              <Link
+                href="/"
+                aria-current={sort === 'newest' ? 'page' : undefined}
+                className={`motion-interactive btn-press inline-flex min-h-10 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-2.5 py-2 text-label-sm font-semibold whitespace-nowrap md:flex-none md:px-4 md:text-label-md ${
+                  sort === 'newest'
+                    ? 'bg-primary text-on-primary'
+                    : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined shrink-0 text-[18px]">schedule</span>
                 {t('sortNewest')}
-              </button>
-              <button className="btn-press px-4 py-2 rounded-full border border-outline-variant text-on-surface text-label-md hover:bg-surface-variant transition-colors duration-200">
+              </Link>
+              <Link
+                href="/?sort=budget"
+                aria-current={sort === 'budget' ? 'page' : undefined}
+                className={`motion-interactive btn-press inline-flex min-h-10 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-2.5 py-2 text-label-sm font-semibold whitespace-nowrap md:flex-none md:px-4 md:text-label-md ${
+                  sort === 'budget'
+                    ? 'bg-primary text-on-primary'
+                    : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined shrink-0 text-[18px]">payments</span>
                 {t('sortBudget')}
-              </button>
+              </Link>
             </div>
           </div>
 
           {jobs.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="motion-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {jobs.map((job, i) => {
                   const delayIndex = Math.min(i + 1, 6)
                   const secs = secondsAgo(job.createdAt)
@@ -333,7 +352,7 @@ export default async function HomePage() {
                   return (
                     <article
                       key={job.id}
-                      className={`card-enter card-enter-${delayIndex} card-hover bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col h-full`}
+                      className={`card-enter card-enter-${delayIndex} card-hover motion-surface bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col h-full`}
                     >
                       <div className="flex justify-between items-start mb-4">
                         <span className="inline-flex items-center gap-1 bg-surface-container px-3 py-1 rounded-full text-label-sm text-on-surface-variant">
@@ -360,12 +379,12 @@ export default async function HomePage() {
                       </div>
 
                       <div className="flex justify-between items-center mt-auto pt-4 border-t border-outline-variant">
-                        <div className="bg-primary-container text-primary font-bold px-4 py-2 rounded-lg text-label-md">
+                        <div className="bg-primary-container text-primary font-bold px-4 py-2 rounded-full text-label-md">
                           ${job.budget.toFixed(2)}
                         </div>
                         <Link
                           href={`/jobs/${job.id}`}
-                          className="btn-press bg-primary text-on-primary px-5 py-2 rounded-full text-label-md hover:opacity-90 transition-opacity"
+                          className="motion-interactive btn-press bg-primary text-on-primary px-5 py-2 rounded-full text-label-md"
                         >
                           {t('viewJob')}
                         </Link>
@@ -378,7 +397,7 @@ export default async function HomePage() {
               <div className="mt-8 text-center">
                 <Link
                   href="/jobs"
-                  className="btn-press border-2 border-primary text-primary px-8 py-3 rounded-full text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 inline-block"
+                  className="motion-interactive btn-press border-2 border-primary text-primary px-8 py-3 rounded-full text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 inline-block"
                 >
                   {t('viewAllJobs')}
                 </Link>
@@ -410,13 +429,13 @@ function EmptyState({
   cta: string
 }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
+    <div className="motion-reveal flex flex-col items-center justify-center py-16 text-center">
       <span className="material-symbols-outlined text-6xl text-outline mb-4">work_off</span>
       <p className="text-headline-md text-on-surface-variant mb-2">{title}</p>
       <p className="text-body-md text-on-surface-variant mb-6">{subtitle}</p>
       <Link
         href="/dashboard/jobs/new"
-        className="btn-press bg-primary text-on-primary px-8 py-3 rounded-full text-label-md hover:opacity-90"
+        className="motion-interactive btn-press bg-primary text-on-primary px-8 py-3 rounded-full text-label-md"
       >
         {cta}
       </Link>

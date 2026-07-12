@@ -112,8 +112,8 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
   const lng = value.longitude ?? DEFAULT_LNG
 
   return (
-    <div className="space-y-4">
-      <label className="flex items-center gap-3 cursor-pointer select-none">
+    <div className="motion-panel space-y-4">
+      <label className="motion-interactive flex items-center gap-3 cursor-pointer select-none">
         <input
           type="checkbox"
           checked={value.isRemote}
@@ -124,7 +124,7 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
       </label>
 
       {!value.isRemote && (
-        <div className="space-y-3">
+        <div className="motion-reveal space-y-3">
           <div className="space-y-2">
             <label htmlFor="address" className="block text-label-md text-on-surface">
               Dirección
@@ -154,13 +154,13 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
                 aria-expanded={suggestions !== null}
                 aria-controls="address-suggestions"
                 placeholder="Ej: Col. Escalón, San Salvador"
-                className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                className="motion-field w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               />
               {suggestions !== null && (
                 <ul
                   id="address-suggestions"
                   role="listbox"
-                  className="absolute z-[1100] top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-md overflow-hidden"
+                  className="motion-list absolute z-[1100] top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-md overflow-hidden"
                 >
                   {suggestions.length === 0 ? (
                     <li className="px-4 py-3 text-body-md text-on-surface-variant">
@@ -168,7 +168,7 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
                     </li>
                   ) : (
                     suggestions.map((s) => (
-                      <li key={`${s.lat},${s.lng}`} role="option" aria-selected={false}>
+                      <li key={`${s.lat},${s.lng}`} role="option" aria-selected={false} className="motion-list-item">
                         <button
                           type="button"
                           // mousedown fires before the input's blur, so selection
@@ -177,7 +177,7 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
                             e.preventDefault()
                             handleSelect(s)
                           }}
-                          className="w-full flex items-start gap-2 px-4 py-3 text-left text-body-md text-on-surface hover:bg-surface-container transition-colors"
+                          className="motion-interactive w-full flex items-start gap-2 px-4 py-3 text-left text-body-md text-on-surface hover:bg-surface-container transition-colors"
                         >
                           <span className="material-symbols-outlined text-[18px] text-on-surface-variant shrink-0 mt-0.5">
                             location_on

@@ -65,18 +65,18 @@ export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCateg
   const today = new Date().toISOString().split('T')[0]
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-7">
+    <form onSubmit={handleSubmit} className="motion-section space-y-7">
 
       {/* Error banner */}
       {error && (
-        <div className="flex items-start gap-3 bg-primary-container border border-outline rounded-xl px-4 py-3">
+        <div className="flex items-start gap-3 bg-error-container border border-red-200 rounded-xl px-4 py-3">
           <span
-            className="material-symbols-outlined text-on-primary-container text-[20px] mt-0.5 shrink-0"
+            className="material-symbols-outlined text-on-error-container text-[20px] mt-0.5 shrink-0"
             style={{ fontVariationSettings: "'FILL' 1" }}
           >
             error
           </span>
-          <p className="text-on-primary-container text-label-md">{error}</p>
+          <p className="text-on-error-container text-label-md">{error}</p>
         </div>
       )}
 
@@ -96,7 +96,7 @@ export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCateg
             minLength={5}
             maxLength={150}
             placeholder="Ej: Necesito fontanero para reparar tuberías"
-            className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+             className="motion-field w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
         </div>
       </div>
@@ -114,7 +114,7 @@ export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCateg
           maxLength={2000}
           rows={4}
           placeholder="Describe en detalle lo que necesitas: horarios, materiales, experiencia requerida…"
-          className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
+          className="motion-field w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
         />
       </div>
 
@@ -129,7 +129,7 @@ export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCateg
                 key={value}
                 type="button"
                 onClick={() => setCategory(value)}
-                className={`btn-press flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-colors ${
+                className={`motion-interactive btn-press flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-colors ${
                   active
                     ? 'bg-primary border-primary text-on-primary'
                     : 'bg-surface-container-lowest border-outline-variant text-on-surface hover:border-primary/60 hover:bg-surface-container'
@@ -172,7 +172,7 @@ export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCateg
               min="0.01"
               required
               placeholder="0.00"
-              className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-8 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+               className="motion-field w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-8 pr-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
             />
           </div>
         </div>
@@ -191,7 +191,7 @@ export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCateg
               type="date"
               required
               min={today}
-              className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-4 py-3.5 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors [color-scheme:light]"
+              className="motion-field w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-11 pr-4 py-3.5 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors [color-scheme:light]"
             />
           </div>
         </div>
@@ -201,7 +201,7 @@ export function NewJobForm({ initialCategory }: { initialCategory?: ServiceCateg
       <button
         type="submit"
         disabled={pending}
-        className="btn-press w-full bg-primary text-on-primary py-4 rounded-full text-label-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-40"
+        className="motion-interactive btn-press w-full bg-primary text-on-primary py-4 rounded-full text-label-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-40"
       >
         {pending ? (
           <>

@@ -12,8 +12,8 @@ export function ProviderCard({ provider }: { provider: RankedProvider }) {
         : (provider.address ?? 'Ubicación no especificada')
 
   return (
-    <Link href={`/providers/${provider.slug}`} className="block">
-      <article className="card-hover bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 shadow-sm flex flex-col h-full">
+    <Link href={`/providers/${provider.slug}`} className="block motion-interactive">
+      <article className="card-hover motion-surface motion-list-item bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 shadow-sm flex flex-col h-full">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-label-md text-on-surface flex items-center gap-2">
             <InitialsAvatar name={provider.name} sizeClass="w-8 h-8 text-label-sm" />

@@ -7,16 +7,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="min-h-screen bg-surface">
-      <nav className="bg-surface-container-lowest border-b border-outline-variant px-6 py-0">
+      <nav className="motion-section bg-surface-container-lowest border-b border-outline-variant px-6 py-0">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link href="/" className="font-display font-bold text-lg text-primary py-4">
+          <Link href="/" className="motion-interactive font-display font-bold text-lg text-primary py-4">
             ServiLocal
           </Link>
           <div className="flex items-center gap-1">
             {role === 'CLIENT' && (
               <Link
                 href="/dashboard/jobs"
-                className="flex items-center gap-1.5 px-3 py-4 text-label-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-primary"
+                className="motion-interactive flex items-center gap-1.5 px-3 py-4 text-label-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-primary"
               >
                 <span className="material-symbols-outlined text-[18px]">work</span>
                 Mis proyectos
@@ -25,7 +25,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             {role === 'PROVIDER' && (
               <Link
                 href="/dashboard/applications"
-                className="flex items-center gap-1.5 px-3 py-4 text-label-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-primary"
+                className="motion-interactive flex items-center gap-1.5 px-3 py-4 text-label-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-primary"
               >
                 <span className="material-symbols-outlined text-[18px]">description</span>
                 Mis propuestas
@@ -40,7 +40,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           >
             <button
               type="submit"
-              className="flex items-center gap-1.5 px-3 py-2 text-label-md text-on-surface-variant hover:text-on-surface transition-colors rounded-lg hover:bg-surface-variant"
+              className="motion-interactive flex items-center gap-1.5 px-3 py-2 text-label-md text-on-surface-variant hover:text-on-surface transition-colors rounded-lg hover:bg-surface-variant"
             >
               <span className="material-symbols-outlined text-[18px]">logout</span>
               <span className="hidden sm:inline">Salir</span>

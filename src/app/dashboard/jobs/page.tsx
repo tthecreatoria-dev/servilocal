@@ -26,17 +26,17 @@ export default async function DashboardJobsPage() {
   })
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="motion-section max-w-2xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-headline-lg-mobile text-primary">Mis proyectos</h1>
+          <h1 className="motion-reveal text-headline-lg-mobile text-primary">Mis proyectos</h1>
           <p className="text-body-md text-on-surface-variant mt-1">
             {jobs.length} proyecto{jobs.length !== 1 ? 's' : ''} publicado{jobs.length !== 1 ? 's' : ''}
           </p>
         </div>
         <Link
           href="/dashboard/jobs/new"
-          className="btn-press bg-primary text-on-primary px-5 py-2.5 rounded-full text-label-md hover:opacity-90 transition-opacity flex items-center gap-1.5"
+          className="motion-interactive btn-press bg-primary text-on-primary px-5 py-2.5 rounded-full text-label-md hover:opacity-90 transition-opacity flex items-center gap-1.5"
         >
           <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>add</span>
           Nuevo
@@ -44,18 +44,18 @@ export default async function DashboardJobsPage() {
       </div>
 
       {jobs.length === 0 ? (
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-10 flex flex-col items-center text-center gap-4">
+        <div className="motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-10 flex flex-col items-center text-center gap-4">
           <span className="material-symbols-outlined text-5xl text-outline">work_off</span>
           <p className="text-headline-md text-on-surface-variant">Aún no has publicado proyectos</p>
           <Link
             href="/dashboard/jobs/new"
-            className="btn-press bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity"
+            className="motion-interactive btn-press bg-primary text-on-primary px-6 py-3 rounded-full text-label-md hover:opacity-90 transition-opacity"
           >
             Publicar primer proyecto
           </Link>
         </div>
       ) : (
-        <ul className="space-y-3">
+        <ul className="motion-list space-y-3">
           {jobs.map((job) => {
             const statusCfg = STATUS_CONFIG[job.status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.OPEN
             const isPendingPayment = job.status === 'PENDING_PAYMENT'
@@ -64,7 +64,7 @@ export default async function DashboardJobsPage() {
             return (
               <li
                 key={job.id}
-                className={`bg-surface-container-lowest border rounded-2xl p-5 shadow-sm transition-colors ${
+                className={`motion-list-item motion-surface bg-surface-container-lowest border rounded-2xl p-5 shadow-sm transition-colors ${
                   isPendingPayment ? 'border-primary/40' : 'border-outline-variant'
                 }`}
               >
@@ -72,7 +72,7 @@ export default async function DashboardJobsPage() {
                   <div className="flex-1 min-w-0">
                     <Link
                       href={isPendingPayment ? `/dashboard/jobs/${job.id}/pay` : `/dashboard/jobs/${job.id}`}
-                      className="text-label-md text-on-surface hover:text-primary transition-colors line-clamp-1"
+                      className="motion-interactive text-label-md text-on-surface hover:text-primary transition-colors line-clamp-1"
                     >
                       {job.title}
                     </Link>
@@ -101,7 +101,7 @@ export default async function DashboardJobsPage() {
                     </p>
                     <Link
                       href={`/dashboard/jobs/${job.id}/pay`}
-                      className="btn-press inline-flex items-center gap-1 bg-primary text-on-primary px-4 py-1.5 rounded-full text-label-sm hover:opacity-90 transition-opacity"
+                      className="motion-interactive btn-press inline-flex items-center gap-1 bg-primary text-on-primary px-4 py-1.5 rounded-full text-label-sm hover:opacity-90 transition-opacity"
                     >
                       <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                         payments

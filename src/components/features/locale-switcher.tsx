@@ -26,7 +26,7 @@ export function LocaleSwitcher({ currentLocale }: LocaleSwitcherProps) {
       onClick={handleSwitch}
       disabled={isPending}
       aria-label="Switch language"
-      className="btn-press px-3 py-1.5 rounded-full border border-outline-variant text-label-sm text-on-surface-variant hover:bg-surface-variant transition-colors duration-200 disabled:opacity-50"
+      className="motion-interactive btn-press px-3 py-1.5 rounded-full border border-outline-variant text-label-sm text-on-surface-variant hover:bg-surface-variant transition-colors duration-200 disabled:opacity-50"
     >
       {currentLocale === 'es' ? 'EN' : 'ES'}
     </button>

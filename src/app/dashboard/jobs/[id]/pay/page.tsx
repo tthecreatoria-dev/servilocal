@@ -40,19 +40,19 @@ export default async function PayJobPage({
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="motion-section max-w-2xl mx-auto">
       <Link
         href="/dashboard/jobs"
-        className="inline-flex items-center gap-1 text-label-md text-on-surface-variant hover:text-on-surface transition-colors mb-6"
+        className="motion-interactive inline-flex items-center gap-1 text-label-md text-on-surface-variant hover:text-on-surface transition-colors mb-6"
       >
         <span className="material-symbols-outlined text-[18px]">arrow_back</span>
         Mis proyectos
       </Link>
 
       {/* Header */}
-      <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 mb-6 shadow-sm">
+      <div className="motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 mb-6 shadow-sm">
         <p className="text-label-sm text-on-surface-variant mb-1">Completar pago para</p>
-        <h1 className="text-headline-lg-mobile text-primary mb-4">{job.title}</h1>
+        <h1 className="motion-reveal text-headline-lg-mobile text-primary mb-4">{job.title}</h1>
 
         <div className="border-t border-outline-variant pt-4 space-y-2">
           <div className="flex justify-between text-body-md text-on-surface-variant">
@@ -79,7 +79,7 @@ export default async function PayJobPage({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         {/* Tkiero QR */}
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col">
+        <div className="motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col">
           <div className="flex items-center gap-2 mb-4">
             <span
               className="material-symbols-outlined text-primary text-[24px]"
@@ -115,7 +115,7 @@ export default async function PayJobPage({
                 </p>
                 <a
                   href={`/api/payments/tkiero/create?jobId=${id}`}
-                  className="btn-press mt-4 w-full bg-primary text-on-primary py-3 rounded-full text-label-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                  className="motion-interactive btn-press mt-4 w-full bg-primary text-on-primary py-3 rounded-full text-label-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>qr_code_2</span>
                   Generar QR
@@ -126,7 +126,7 @@ export default async function PayJobPage({
         </div>
 
         {/* PayPal */}
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col">
+        <div className="motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col">
           <div className="flex items-center gap-2 mb-4">
             <span
               className="material-symbols-outlined text-primary text-[24px]"
@@ -156,7 +156,7 @@ export default async function PayJobPage({
 
           <a
             href={`/api/payments/paypal/create-order?jobId=${id}`}
-            className="btn-press mt-4 w-full bg-[#0070ba] text-white py-3 rounded-full text-label-md hover:bg-[#003087] transition-colors flex items-center justify-center gap-2"
+            className="motion-interactive btn-press mt-4 w-full bg-[#0070ba] text-white py-3 rounded-full text-label-md hover:bg-[#003087] transition-colors flex items-center justify-center gap-2"
           >
             <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>open_in_new</span>
             Pagar con PayPal

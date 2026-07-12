@@ -16,7 +16,7 @@ export async function BottomNav({ activePath = '/' }: BottomNavProps) {
   const t = await getTranslations('BottomNav')
 
   return (
-    <nav className="bg-surface-container shadow-sm fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter pb-4 pt-2 md:hidden rounded-t-xl">
+    <nav className="motion-bottom-nav bg-surface-container shadow-sm fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter pb-4 pt-2 md:hidden rounded-t-xl">
       {NAV_ITEMS.map(({ href, icon, key, fill }) => {
         const isActive = activePath === href
         return (
@@ -24,7 +24,7 @@ export async function BottomNav({ activePath = '/' }: BottomNavProps) {
             key={href}
             href={href}
             className={[
-              'flex flex-col items-center justify-center px-4 py-1 rounded-full transition-colors duration-200',
+              'motion-interactive flex flex-col items-center justify-center px-4 py-1 rounded-full transition-colors duration-200',
               isActive
                 ? 'bg-primary-container text-on-primary-container'
                 : 'text-on-surface-variant hover:bg-surface-variant',

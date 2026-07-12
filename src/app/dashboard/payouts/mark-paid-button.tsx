@@ -30,12 +30,12 @@ export function MarkPaidButton({ jobPaymentId }: { jobPaymentId: string }) {
         value={reference}
         onChange={(e) => setReference(e.target.value)}
         placeholder="Referencia (opcional)"
-        className="border border-outline-variant rounded-lg px-3 py-1.5 text-label-md bg-surface-container-lowest focus:outline-none focus:border-primary"
+        className="motion-field border border-outline-variant rounded-lg px-3 py-1.5 text-label-md bg-surface-container-lowest focus:outline-none focus:border-primary"
       />
       <button
         onClick={handlePaid}
         disabled={pending}
-        className="btn-press bg-primary text-on-primary px-4 py-2 rounded-full text-label-md hover:opacity-90 disabled:opacity-50"
+        className="motion-interactive btn-press bg-primary text-on-primary px-4 py-2 rounded-full text-label-md hover:opacity-90 disabled:opacity-50"
       >
         {pending ? 'Liquidando...' : 'Marcar como pagado'}
       </button>

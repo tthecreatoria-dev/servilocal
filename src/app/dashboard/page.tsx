@@ -32,11 +32,11 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-semibold">Welcome, {session.user.name}</h1>
+    <div className="motion-section max-w-2xl mx-auto">
+      <h1 className="motion-reveal text-headline-lg-mobile text-primary">Bienvenido, {session.user.name}</h1>
 
       {needsPayoutSetup && (
-        <div className="mt-4 flex items-center gap-3 bg-primary-container text-on-primary-container rounded-xl px-4 py-3">
+        <div className="motion-surface mt-4 flex items-center gap-3 bg-primary-container text-on-primary-container rounded-xl px-4 py-3">
           <span className="material-symbols-outlined">account_balance_wallet</span>
           <p className="text-label-md flex-1">
             Tienes ${pendingPayoutTotal.toFixed(2)} de trabajos completados esperando.
@@ -44,14 +44,14 @@ export default async function DashboardPage() {
           </p>
           <Link
             href="/dashboard/profile"
-            className="btn-press bg-primary text-on-primary px-4 py-2 rounded-full text-label-md shrink-0"
+            className="motion-interactive btn-press bg-primary text-on-primary px-4 py-2 rounded-full text-label-md shrink-0"
           >
             Configurar
           </Link>
         </div>
       )}
 
-      <p className="mt-2 text-zinc-500">Dashboard features coming soon.</p>
+      <p className="mt-2 text-body-md text-on-surface-variant">Más funciones próximamente.</p>
     </div>
   )
 }

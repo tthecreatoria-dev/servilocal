@@ -1,32 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors */
-  --color-primary: #1d4ed8;
+  /* Colors (tkiero-inspired palette) */
+  --color-primary: #0784f2;
   --color-on-primary: #ffffff;
-  --color-primary-container: #dbeafe;
-  --color-on-primary-container: #1e40af;
-  --color-secondary: #2563eb;
+  --color-primary-container: #e3f6ff;
+  --color-on-primary-container: #0784f2;
+  --color-secondary: #1e3a8a;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #dbeafe;
-  --color-on-secondary-container: #1e40af;
-  --color-background: #eff6ff;
-  --color-on-background: #172554;
-  --color-surface: #eff6ff;
-  --color-on-surface: #172554;
-  --color-surface-variant: #dbeafe;
-  --color-on-surface-variant: #1e3a8a;
-  --color-surface-container: #dbeafe;
-  --color-surface-container-low: #eff6ff;
+  --color-secondary-container: #e3f6ff;
+  --color-on-secondary-container: #1e3a8a;
+  --color-background: #ffffff;
+  --color-on-background: #212529;
+  --color-surface: #ffffff;
+  --color-on-surface: #212529;
+  --color-surface-variant: #e3f6ff;
+  --color-on-surface-variant: #555555;
+  --color-surface-container: #e3f6ff;
+  --color-surface-container-low: #f8fafc;
   --color-surface-container-lowest: #ffffff;
-  --color-outline: #93c5fd;
-  --color-outline-variant: #bfdbfe;
-  --color-secondary-fixed: #dbeafe;
-  --color-on-secondary-fixed: #1e40af;
+  --color-outline: #87ceeb;
+  --color-outline-variant: #e2e8f0;
+  --color-secondary-fixed: #87ceeb;
+  --color-on-secondary-fixed: #1e3a8a;
+  --color-error: #dc2626;
+  --color-error-container: #fef2f2;
+  --color-on-error-container: #b91c1c;
 
   /* Fonts */
-  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
-  --font-display: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-sans: var(--font-poppins), "Poppins", sans-serif;
+  --font-display: var(--font-poppins), "Poppins", sans-serif;
 
   /* Spacing */
   --spacing-gutter: 1rem;
@@ -41,6 +44,157 @@
 :root {
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --motion-fast: 160ms;
+  --motion-base: 220ms;
+  --motion-enter: 460ms;
+  --motion-distance: 10px;
+}
+
+/* ---- Cards: soft blue-tinted elevation instead of neutral black shadows ---- */
+
+.shadow-sm {
+  box-shadow: 0 2px 10px -2px rgb(7 132 242 / 0.12);
+}
+
+/* ---- Interactive elements: pointer cursor ----
+   Native <button> defaults to `cursor: default`, unlike <a>. */
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* ---- Primary buttons: minimal hover — color shift only, no scale ----
+   Targets .btn-press elements that are also solid-primary (bg-primary),
+   so toggle/outline/neutral buttons keep their own distinct hover styles. */
+.btn-press.bg-primary:hover {
+  background-color: var(--color-secondary);
+  opacity: 1;
+}
+
+/* ---- Secondary/outline links styled as buttons ----
+   Quiet navigation links ("Ver todos", "Limpiar filtros", etc.) — no underline,
+   a color shift to navy and, where an icon is present, a subtle forward nudge. */
+.link-quiet {
+  color: var(--color-primary);
+  transition: color var(--motion-base) var(--ease-out);
+}
+
+.link-quiet:hover {
+  color: var(--color-secondary);
+}
+
+.link-quiet .link-quiet-icon {
+  transition: transform var(--motion-base) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .link-quiet:hover .link-quiet-icon {
+    transform: translateX(3px);
+  }
+}
+
+/* ---- Unified motion system ----
+   Lightweight CSS motion shared by navigation, sections, cards, and controls. */
+
+@keyframes motion-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.motion-nav,
+.motion-panel,
+.motion-reveal,
+.motion-section,
+.motion-footer,
+.motion-bottom-nav,
+.motion-list-item {
+  animation: motion-rise var(--motion-enter) var(--ease-out) both;
+}
+
+.motion-brand {
+  animation: motion-rise 420ms var(--ease-out) both;
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+
+.motion-interactive {
+  transition: color var(--motion-base) var(--ease-out), background-color var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out), box-shadow var(--motion-base) var(--ease-out),
+    opacity var(--motion-fast) var(--ease-out);
+}
+
+.motion-nav-link,
+.motion-footer-link {
+  transition: color var(--motion-base) var(--ease-out), transform var(--motion-fast) var(--ease-out);
+}
+
+.motion-field {
+  transition: transform var(--motion-fast) var(--ease-out), border-color var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out), background-color var(--motion-base) var(--ease-out);
+}
+
+.motion-surface {
+  transition: transform var(--motion-base) var(--ease-out), box-shadow var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out);
+}
+
+.motion-list > .motion-list-item:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.motion-list > .motion-list-item:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.motion-list > .motion-list-item:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.motion-list > .motion-list-item:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+.motion-list > .motion-list-item:nth-child(n + 6) {
+  animation-delay: 300ms;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .motion-brand:hover,
+  .motion-nav-link:hover,
+  .motion-footer-link:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.motion-field:focus,
+.motion-field:focus-within {
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .motion-section,
+    .motion-footer {
+      animation: motion-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 28%;
+    }
+
+    .motion-list > .motion-list-item {
+      animation: motion-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 4% cover 24%;
+    }
+  }
 }
 
 /* ---- Typography utilities ---- */
@@ -108,7 +262,9 @@
 /* ---- Buttons: press feedback (Emil: scale on :active, 160ms) ---- */
 
 .btn-press {
-  transition: transform 160ms var(--ease-out), opacity 160ms var(--ease-out);
+  transition: transform var(--motion-fast) var(--ease-out), opacity var(--motion-fast) var(--ease-out),
+    background-color var(--motion-base) var(--ease-out), color var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out);
 }
 
 .btn-press:active {
@@ -138,7 +294,12 @@
 
 /* ---- Job card stagger entrance ---- */
 
-@keyframes fadeSlideUp {
+@keyframes fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -148,7 +309,7 @@
 .card-enter {
   opacity: 0;
   transform: translateY(8px);
-  animation: fadeSlideUp 400ms var(--ease-out) forwards;
+  animation: fade-slide-up var(--motion-enter) var(--ease-out) forwards;
 }
 
 .card-enter-1 { animation-delay: 0ms; }
@@ -158,16 +319,15 @@
 .card-enter-5 { animation-delay: 240ms; }
 .card-enter-6 { animation-delay: 300ms; }
 
-/* ---- Card hover lift — pointer devices only ---- */
+/* ---- Card hover: quiet border emphasis on pointer devices ---- */
 
 .card-hover {
-  transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  transition: border-color var(--motion-base) var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .card-hover:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px -4px rgb(0 0 0 / 0.10);
+    border-color: rgb(7 132 242 / 0.24);
   }
 }
 
@@ -176,7 +336,7 @@
 .step-enter {
   opacity: 0;
   transform: translateY(8px);
-  animation: fadeSlideUp 400ms var(--ease-out) forwards;
+  animation: fade-slide-up var(--motion-enter) var(--ease-out) forwards;
 }
 
 .step-enter-1 { animation-delay: 0ms; }
@@ -195,6 +355,34 @@
   transition: transform 200ms var(--ease-out);
 }
 
+/* ---- Route change loader ----
+   Fades in after a short delay so fast navigations never flash it. */
+
+@keyframes loader-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+.page-loader {
+  opacity: 0;
+  animation: loader-fade-in var(--motion-base) var(--ease-out) 150ms forwards;
+}
+
+/* ---- Navigation overlay: unified cross-fade on every route change ----
+   Covers the outgoing page instantly, holds the loader, then dissolves
+   to reveal the new page already rendered underneath. */
+
+.nav-overlay {
+  transition: opacity var(--motion-enter) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-overlay {
+    transition: none;
+  }
+}
+
 /* ---- Reduced motion ---- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -202,10 +390,34 @@
   .card-enter,
   .step-enter,
   .category-icon,
-  .card-hover {
+  .card-hover,
+  .page-loader,
+  .motion-nav,
+  .motion-panel,
+  .motion-reveal,
+  .motion-section,
+  .motion-footer,
+  .motion-bottom-nav,
+  .motion-list-item,
+  .motion-brand {
     animation: none;
     transition: none;
     opacity: 1;
     transform: none;
+  }
+
+  .motion-interactive,
+  .motion-nav-link,
+  .motion-footer-link,
+  .motion-field,
+  .motion-surface {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+
+  .page-loader .animate-spin,
+  .page-loader .animate-pulse {
+    animation: none;
   }
 }

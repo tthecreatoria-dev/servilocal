@@ -13,14 +13,14 @@ export async function SiteHeader() {
   const typedLocale = locale as Locale
 
   const dashboardHref =
-    session?.user.role === 'PROVIDER' ? '/dashboard/applications' : '/dashboard/jobs'
+    session?.user?.role === 'PROVIDER' ? '/dashboard/applications' : '/dashboard/jobs'
 
   return (
-    <header className="bg-surface border-b border-outline-variant sticky top-0 z-40">
+    <header className="motion-nav bg-surface sticky top-0 z-40">
       <div className="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-base w-full max-w-7xl mx-auto">
         <Link
           href="/"
-          className="text-headline-md text-primary flex items-center gap-2"
+          className="motion-brand text-headline-md text-primary flex items-center gap-2"
         >
           <span
             className="material-symbols-outlined"
@@ -34,25 +34,25 @@ export async function SiteHeader() {
         <nav className="hidden md:flex gap-8 items-center">
           <Link
             href="/jobs"
-            className="text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
+            className="motion-nav-link text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
           >
             {t('findWork')}
           </Link>
           <Link
             href="/dashboard/jobs/new"
-            className="text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
+            className="motion-nav-link text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
           >
             {t('postJob')}
           </Link>
           <Link
             href="/providers"
-            className="text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
+            className="motion-nav-link text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
           >
             {t('providers')}
           </Link>
           <Link
             href="/about"
-            className="text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
+            className="motion-nav-link text-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200"
           >
             {t('about')}
           </Link>
@@ -64,7 +64,7 @@ export async function SiteHeader() {
           {session ? (
             <Link
               href={dashboardHref}
-              className="btn-press flex items-center gap-2 bg-primary text-on-primary px-5 py-2 rounded-full text-label-md hover:opacity-90"
+              className="motion-interactive btn-press flex items-center gap-2 bg-primary text-on-primary px-5 py-2 rounded-full text-label-md hover:opacity-90"
             >
               <span
                 className="material-symbols-outlined text-[18px]"
@@ -77,7 +77,7 @@ export async function SiteHeader() {
           ) : (
             <Link
               href="/login"
-              className="btn-press bg-primary text-on-primary px-6 py-2 rounded-full text-label-md hover:opacity-90"
+              className="motion-interactive btn-press bg-primary text-on-primary px-6 py-2 rounded-full text-label-md hover:opacity-90"
             >
               {t('login')}
             </Link>

@@ -12,7 +12,7 @@ export function PublicProfileLink({ url }: { url: string }) {
   }
 
   return (
-    <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6">
+    <div className="motion-surface bg-surface-container-lowest border border-outline-variant rounded-2xl p-6">
       <h2 className="text-headline-md text-on-surface mb-1">Tu perfil público</h2>
       <p className="text-body-md text-on-surface-variant mb-4">
         Comparte este enlace como tu tarjeta de presentación digital.
@@ -22,14 +22,14 @@ export function PublicProfileLink({ url }: { url: string }) {
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 truncate text-label-md text-primary hover:underline bg-surface-container rounded-xl px-4 py-3"
+          className="motion-interactive flex-1 truncate text-label-md text-primary hover:underline bg-surface-container rounded-xl px-4 py-3"
         >
           {url}
         </a>
         <button
           type="button"
           onClick={handleCopy}
-          className="btn-press inline-flex items-center justify-center gap-2 border border-outline-variant px-5 py-3 rounded-full text-label-md text-on-surface hover:bg-surface-container transition-colors shrink-0"
+          className="motion-interactive btn-press inline-flex items-center justify-center gap-2 border border-outline-variant px-5 py-3 rounded-full text-label-md text-on-surface hover:bg-surface-container transition-colors shrink-0"
         >
           <span className="material-symbols-outlined text-[18px]">
             {copied ? 'check' : 'content_copy'}

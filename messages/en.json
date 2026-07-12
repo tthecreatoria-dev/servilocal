@@ -8,6 +8,9 @@
   },
   "Footer": {
     "tagline": "© 2024 ServiLocal. Built for the community.",
+    "description": "A simple place to find trusted local help and get work done close to home.",
+    "explore": "Explore",
+    "support": "Help and trust",
     "providers": "Worker directory",
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
@@ -24,6 +27,9 @@
     "heroTitle": "Find trusted local workers",
     "heroSubtitle": "Connect with skilled artisans and tradespeople in your community. Secure, simple, and locally driven.",
     "searchService": "What service?",
+    "servicePickerSearch": "Search services",
+    "servicePickerAll": "All services",
+    "servicePickerNoResults": "No services found",
     "searchLocation": "Where?",
     "searchButton": "Search",
     "postJob": "Post a Job",
@@ -34,6 +40,7 @@
     "activeJobsSubtitle": "Apply directly to these open requests.",
     "sortNewest": "Newest",
     "sortBudget": "Highest Budget",
+    "sortJobs": "Sort jobs",
     "viewAllJobs": "View All Jobs",
     "viewJob": "View",
     "noJobsTitle": "No jobs posted yet",
@@ -63,6 +70,11 @@
       "TEACHING": "Teacher",
       "DELIVERY": "Delivery",
       "CLEANING": "Housekeeper",
+      "ELECTRICAL": "Electrician",
+      "MASONRY": "Mason",
+      "WELDING": "Welder",
+      "ELECTRONICS": "Electronics",
+      "APPLIANCE_REPAIR": "Appliance Repair",
       "DESIGN": "Designer",
       "DIGITAL": "Digital"
     },
@@ -71,6 +83,25 @@
       "hoursAgo": "{count} h ago",
       "daysAgo": "{count} d ago"
     }
+  },
+  "JobsPage": {
+    "title": "Available Projects",
+    "subtitle": "Find projects that match your skills and apply directly.",
+    "categoryPlaceholder": "Category",
+    "searchCategoryLabel": "Search category",
+    "allCategoriesLabel": "All categories",
+    "noCategoryResultsLabel": "No matching category",
+    "queryPlaceholder": "Search by title or description…",
+    "searchButton": "Search",
+    "allJobsTitle": "All jobs",
+    "resultsCount": "{count, plural, one {# result} other {# results}}",
+    "resultsFor": "for \"{query}\"",
+    "resultsIn": "in {category}",
+    "clearFilters": "Clear filters",
+    "emptyTitle": "No projects available",
+    "emptySubtitle": "Try another category or change your search terms.",
+    "viewAll": "View all",
+    "viewJob": "View"
   },
   "Auth": {
     "login": {

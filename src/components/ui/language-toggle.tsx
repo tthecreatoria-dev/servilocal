@@ -24,8 +24,8 @@ export function LanguageToggle() {
         onClick={() => handleSwitch('es')}
         className={
           locale === 'es'
-            ? 'font-semibold text-on-surface'
-            : 'text-on-surface-variant hover:text-on-surface transition-colors'
+            ? 'motion-interactive font-semibold text-on-surface'
+            : 'motion-interactive text-on-surface-variant hover:text-on-surface transition-colors'
         }
       >
         Español
@@ -35,8 +35,8 @@ export function LanguageToggle() {
         onClick={() => handleSwitch('en')}
         className={
           locale === 'en'
-            ? 'font-semibold text-on-surface'
-            : 'text-on-surface-variant hover:text-on-surface transition-colors'
+            ? 'motion-interactive font-semibold text-on-surface'
+            : 'motion-interactive text-on-surface-variant hover:text-on-surface transition-colors'
         }
       >
         English

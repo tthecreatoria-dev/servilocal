@@ -69,17 +69,17 @@ export default async function MarketplaceJobDetailPage({
   const category = job.category as ServiceCategory
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="motion-section max-w-2xl mx-auto">
       <Link
         href="/"
-        className="inline-flex items-center gap-1 text-label-md text-on-surface-variant hover:text-on-surface transition-colors mb-6"
+        className="motion-interactive inline-flex items-center gap-1 text-label-md text-on-surface-variant hover:text-on-surface transition-colors mb-6"
       >
         <span className="material-symbols-outlined text-[18px]">arrow_back</span>
         Proyectos disponibles
       </Link>
 
       {/* Job card */}
-      <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 md:p-8 shadow-sm mb-6">
+      <div className="motion-surface motion-reveal bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 md:p-8 shadow-sm mb-6">
         {/* Category + status */}
         <div className="flex items-center justify-between mb-4">
           <span className="inline-flex items-center gap-1.5 bg-surface-container px-3 py-1 rounded-full text-label-sm text-on-surface-variant">
@@ -118,7 +118,7 @@ export default async function MarketplaceJobDetailPage({
 
       {/* Action area */}
       {actionState === 'unauthenticated' && (
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 md:p-8 shadow-sm">
+        <div className="motion-surface motion-reveal bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 md:p-8 shadow-sm">
           <div className="flex items-start gap-3 mb-5">
             <span
               className="material-symbols-outlined text-primary text-[28px] mt-0.5 shrink-0"
@@ -135,7 +135,7 @@ export default async function MarketplaceJobDetailPage({
           </div>
           <Link
             href={`/login?callbackUrl=/jobs/${id}`}
-            className="btn-press inline-flex items-center justify-center gap-2 w-full bg-primary text-on-primary py-3.5 rounded-full text-label-md hover:opacity-90 transition-opacity"
+            className="motion-interactive btn-press inline-flex items-center justify-center gap-2 w-full bg-primary text-on-primary py-3.5 rounded-full text-label-md hover:opacity-90 transition-opacity"
           >
             <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
               login
@@ -146,7 +146,7 @@ export default async function MarketplaceJobDetailPage({
       )}
 
       {actionState === 'owner' && (
-        <div className="flex items-start gap-3 bg-surface-container border border-outline-variant rounded-2xl p-5">
+        <div className="motion-surface motion-reveal flex items-start gap-3 bg-surface-container border border-outline-variant rounded-2xl p-5">
           <span
             className="material-symbols-outlined text-secondary text-[24px] mt-0.5 shrink-0"
             style={{ fontVariationSettings: "'FILL' 1" }}
@@ -167,7 +167,7 @@ export default async function MarketplaceJobDetailPage({
       )}
 
       {actionState === 'client-not-owner' && (
-        <div className="flex items-start gap-3 bg-surface-container border border-outline-variant rounded-2xl p-5">
+        <div className="motion-surface motion-reveal flex items-start gap-3 bg-surface-container border border-outline-variant rounded-2xl p-5">
           <span className="material-symbols-outlined text-on-surface-variant text-[24px] mt-0.5 shrink-0">
             info
           </span>
@@ -178,7 +178,7 @@ export default async function MarketplaceJobDetailPage({
       )}
 
       {actionState === 'job-closed' && (
-        <div className="flex items-start gap-3 bg-surface-container border border-outline-variant rounded-2xl p-5">
+        <div className="motion-surface motion-reveal flex items-start gap-3 bg-surface-container border border-outline-variant rounded-2xl p-5">
           <span className="material-symbols-outlined text-on-surface-variant text-[24px] mt-0.5 shrink-0">
             lock
           </span>
@@ -189,7 +189,7 @@ export default async function MarketplaceJobDetailPage({
       )}
 
       {actionState === 'provider-wrong-category' && (
-        <div className="flex items-start gap-3 bg-surface-container border border-outline-variant rounded-2xl p-5">
+        <div className="motion-surface motion-reveal flex items-start gap-3 bg-surface-container border border-outline-variant rounded-2xl p-5">
           <span className="material-symbols-outlined text-on-surface-variant text-[24px] mt-0.5 shrink-0">
             do_not_disturb
           </span>
@@ -228,7 +228,7 @@ export default async function MarketplaceJobDetailPage({
         const cfg = configs[s as keyof typeof configs] ?? configs.PENDING
 
         return (
-          <div className={`border rounded-2xl p-6 ${cfg.wrapClass}`}>
+          <div className={`motion-surface motion-reveal border rounded-2xl p-6 ${cfg.wrapClass}`}>
             <div className="flex items-start gap-3 mb-4">
               <span
                 className={`material-symbols-outlined text-[28px] mt-0.5 shrink-0 ${cfg.iconClass}`}
@@ -257,7 +257,7 @@ export default async function MarketplaceJobDetailPage({
       })()}
 
       {actionState === 'can-apply' && (
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 md:p-8 shadow-sm">
+        <div className="motion-surface motion-reveal bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 md:p-8 shadow-sm">
           <h2 className="text-headline-md text-on-surface mb-6">Enviar propuesta</h2>
           <ApplyForm jobPostId={id} budget={Number(job.budget)} />
         </div>
