@@ -5,10 +5,8 @@ import { getPublicProviderProfile } from '@/lib/provider-profile'
 import { whatsappNumber } from '@/lib/phone'
 import { InitialsAvatar } from '@/components/features/initials-avatar'
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/lib/categories'
-
-function appUrl(): string {
-  return (process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000').replace(/['"]/g, '').trimEnd()
-}
+import { SITE_NAME, appUrl } from '@/lib/seo'
+import { JsonLd } from '@/components/features/json-ld'
 
 export async function generateMetadata({
   params,
@@ -17,25 +15,33 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const profile = await getPublicProviderProfile(slug)
-  if (!profile) return { title: 'Perfil no encontrado | ServiLocal' }
+  if (!profile) return { title: 'Perfil no encontrado' }
 
   const mainCategory = profile.skills[0]
+  // El layout raíz aplica el template `%s | ServiLocal`, no repetir la marca.
   const title = mainCategory
-    ? `${profile.name} — ${CATEGORY_LABELS[mainCategory]} | ServiLocal`
-    : `${profile.name} | ServiLocal`
+    ? `${profile.name} — ${CATEGORY_LABELS[mainCategory]}`
+    : profile.name
   const fallbackDescription = `Perfil de ${profile.name} en ServiLocal, el marketplace de servicios locales de El Salvador.`
   const bio = profile.bio.length > 155 ? `${profile.bio.slice(0, 152)}...` : profile.bio
   const description = bio || fallbackDescription
+  const path = `/providers/${profile.slug}`
 
   return {
     title,
     description,
+    alternates: { canonical: path },
     openGraph: {
       title,
       description,
-      url: `${appUrl()}/providers/${profile.slug}`,
-      siteName: 'ServiLocal',
+      url: path,
+      siteName: SITE_NAME,
       type: 'profile',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
     },
   }
 }
@@ -57,8 +63,35 @@ export default async function ProviderProfilePage({
     : `/dashboard/jobs/new?invite=${profile.slug}`
   const waNumber = profile.phone ? whatsappNumber(profile.phone) : null
 
+  const mainCategory = profile.skills[0]
+  const personJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: profile.name,
+    url: `${appUrl()}/providers/${profile.slug}`,
+    ...(profile.bio && { description: profile.bio }),
+    ...(mainCategory && { jobTitle: CATEGORY_LABELS[mainCategory] }),
+    ...(profile.address && {
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: profile.address,
+        addressCountry: 'SV',
+      },
+    }),
+    // Google rechaza aggregateRating con cero reseñas.
+    ...(profile.totalReviews > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: profile.rating,
+        reviewCount: profile.totalReviews,
+        bestRating: 5,
+      },
+    }),
+  }
+
   return (
     <div className="motion-section max-w-2xl mx-auto">
+      <JsonLd data={personJsonLd} />
       <Link
         href="/providers"
         className="motion-interactive inline-flex items-center gap-1 text-label-md text-on-surface-variant hover:text-on-surface transition-colors mb-6"

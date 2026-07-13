@@ -138,7 +138,9 @@ TKIERO_BASE_URL=            # Base URL of Tkiero API (confirm with their team)
 TKIERO_WEBHOOK_SECRET=      # Secret for verifying webhook signatures
 
 # App
-NEXT_PUBLIC_APP_URL=        # Public-facing URL (used in emails, redirects)
+NEXT_PUBLIC_APP_URL=        # Public-facing URL (emails, redirects, and all SEO
+                            # absolute URLs: canonical, Open Graph, sitemap,
+                            # robots, JSON-LD). Production: https://jobs.inkytap.com
 ```
 
 Never log these values. Never expose `TKIERO_API_KEY` or `TKIERO_WEBHOOK_SECRET`

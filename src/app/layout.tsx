@@ -4,6 +4,7 @@ import { Poppins } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { NavigationOverlay } from '@/components/ui/navigation-overlay'
+import { appUrl, SITE_NAME } from '@/lib/seo'
 import './globals.css'
 
 const poppins = Poppins({
@@ -13,10 +14,27 @@ const poppins = Poppins({
   display: 'swap',
 })
 
+const DEFAULT_TITLE = 'ServiLocal — Albañiles, electricistas y fontaneros en El Salvador'
+const DEFAULT_DESCRIPTION =
+  'Marketplace de servicios locales en El Salvador. Contrata albañiles, electricistas, fontaneros, limpieza, clases y más con pago protegido en custodia. Publica tu trabajo gratis.'
+
 export const metadata: Metadata = {
-  title: 'ServiLocal — Encuentra trabajadores locales de confianza',
-  description:
-    'Conecta con artesanos y trabajadores calificados en tu comunidad. Seguro, simple y local.',
+  metadataBase: new URL(appUrl()),
+  title: {
+    default: DEFAULT_TITLE,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: DEFAULT_DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    locale: 'es_SV',
+    siteName: SITE_NAME,
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

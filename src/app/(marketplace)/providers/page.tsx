@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { db } from '@/lib/db'
 import { geocodeAddress } from '@/lib/geocode'
@@ -5,6 +6,13 @@ import { rankProviders, type ProviderForRanking } from '@/lib/provider-search'
 import { ProviderCard } from '@/components/features/provider-card'
 import type { ServiceCategory } from '@/types/index'
 import { CATEGORY_LABELS, CATEGORY_KEYS as CATEGORIES } from '@/lib/categories'
+
+export const metadata: Metadata = {
+  title: 'Trabajadores y profesionales disponibles en El Salvador',
+  description:
+    'Directorio de albañiles, electricistas, fontaneros y más profesionales de confianza en El Salvador. Filtra por servicio y ubicación y contrata con pago protegido.',
+  alternates: { canonical: '/providers' },
+}
 
 export default async function ProvidersPage({
   searchParams,

@@ -5,7 +5,9 @@ import { SiteHeader } from '@/components/features/site-header'
 import { SiteFooter } from '@/components/features/site-footer'
 import { BottomNav } from '@/components/features/bottom-nav'
 import { ServicePicker, type ServicePickerOption } from '@/components/features/service-picker'
+import { JsonLd } from '@/components/features/json-ld'
 import { CATEGORY_ICONS, CATEGORY_KEYS } from '@/lib/categories'
+import { SITE_NAME, appUrl, categoryPath } from '@/lib/seo'
 import type { ServiceCategory } from '@/types'
 
 // ---- Types ----
@@ -120,8 +122,33 @@ export default async function HomePage({
     },
   ]
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: appUrl(),
+    description:
+      'Marketplace de servicios locales en El Salvador: albañiles, electricistas, fontaneros y más con pago protegido.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${appUrl()}/providers?location={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: appUrl(),
+    logo: `${appUrl()}/opengraph-image`,
+    areaServed: { '@type': 'Country', name: 'El Salvador' },
+  }
+
   return (
     <div className="pb-20 md:pb-0">
+      <JsonLd data={websiteJsonLd} />
+      <JsonLd data={organizationJsonLd} />
       <SiteHeader />
 
       <main className="max-w-7xl mx-auto">
@@ -241,8 +268,9 @@ export default async function HomePage({
 
           <div className="motion-list grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
             {categories.map(({ category, icon }) => (
-              <button
+              <Link
                 key={category}
+                href={categoryPath(category)}
                 className="motion-list-item motion-interactive flex flex-col items-center gap-2 md:gap-3 cursor-pointer"
                 aria-label={t(`serviceCategory.${category}`)}
               >
@@ -257,7 +285,7 @@ export default async function HomePage({
                 <span className="text-label-sm md:text-label-md text-on-surface text-center leading-tight">
                   {t(`serviceCategory.${category}`)}
                 </span>
-              </button>
+              </Link>
             ))}
           </div>
         </section>

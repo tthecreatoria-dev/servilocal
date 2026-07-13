@@ -1,3 +1,5 @@
+import type { Metadata } from 'next'
+import { cache } from 'react'
 import { auth } from '@/lib/auth'
 import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
@@ -5,6 +7,37 @@ import Link from 'next/link'
 import { ApplyForm } from './apply-form'
 import type { ServiceCategory } from '@/types/index'
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/lib/categories'
+
+// cache() deduplica la query entre generateMetadata y la página.
+const getJob = cache((id: string) =>
+  db.jobPost.findUnique({
+    where: { id },
+    include: { client: { select: { name: true } } },
+  }),
+)
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const job = await getJob(id)
+  if (!job) return { title: 'Trabajo no encontrado' }
+
+  const title = `${job.title} — trabajo de ${CATEGORY_LABELS[job.category as ServiceCategory]}`
+  const description =
+    job.description.length > 155 ? `${job.description.slice(0, 152)}...` : job.description
+  const path = `/jobs/${job.id}`
+
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: { title, description, url: path, type: 'website' },
+    twitter: { card: 'summary_large_image', title, description },
+  }
+}
 
 export default async function MarketplaceJobDetailPage({
   params,
@@ -14,10 +47,7 @@ export default async function MarketplaceJobDetailPage({
   const { id } = await params
   const session = await auth()
 
-  const job = await db.jobPost.findUnique({
-    where: { id },
-    include: { client: { select: { name: true } } },
-  })
+  const job = await getJob(id)
   if (!job) notFound()
 
   // Fetch provider-specific data only when needed

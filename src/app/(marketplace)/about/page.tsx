@@ -1,4 +1,12 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Acerca de ServiLocal',
+  description:
+    'ServiLocal conecta a clientes con trabajadores de confianza en El Salvador. Conoce cómo funciona nuestro pago protegido en custodia y por qué es seguro contratar aquí.',
+  alternates: { canonical: '/about' },
+}
 
 export default function AboutPage() {
   return (

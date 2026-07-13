@@ -10,6 +10,7 @@
     "tagline": "© 2024 ServiLocal. Built for the community.",
     "description": "A simple place to find trusted local help and get work done close to home.",
     "explore": "Explore",
+    "services": "Services",
     "support": "Help and trust",
     "providers": "Worker directory",
     "terms": "Terms of Service",
@@ -24,8 +25,8 @@
     "profile": "Profile"
   },
   "HomePage": {
-    "heroTitle": "Find trusted local workers",
-    "heroSubtitle": "Connect with skilled artisans and tradespeople in your community. Secure, simple, and locally driven.",
+    "heroTitle": "Trusted masons, electricians and plumbers in El Salvador",
+    "heroSubtitle": "Find verified professionals near you for construction, repairs, cleaning, lessons and more. Your payment stays protected until the job is done.",
     "searchService": "What service?",
     "servicePickerSearch": "Search services",
     "servicePickerAll": "All services",

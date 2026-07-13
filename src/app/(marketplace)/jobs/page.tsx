@@ -1,9 +1,17 @@
+import type { Metadata } from 'next'
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import { getTranslations, getLocale } from 'next-intl/server'
 import type { ServiceCategory } from '@/types/index'
 import { CATEGORY_ICONS, CATEGORY_KEYS as CATEGORIES } from '@/lib/categories'
 import { ServicePicker, type ServicePickerOption } from '@/components/features/service-picker'
+
+export const metadata: Metadata = {
+  title: 'Trabajos disponibles para profesionales',
+  description:
+    'Encuentra trabajos de albañilería, electricidad, fontanería, limpieza y más en El Salvador. Envía tu propuesta y cobra con pago protegido en ServiLocal.',
+  alternates: { canonical: '/jobs' },
+}
 
 export default async function JobsPage({
   searchParams,

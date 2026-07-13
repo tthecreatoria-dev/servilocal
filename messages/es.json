@@ -10,6 +10,7 @@
     "tagline": "© 2024 ServiLocal. Hecho para la comunidad.",
     "description": "Un lugar simple para encontrar ayuda local de confianza y resolver lo que necesitas cerca de ti.",
     "explore": "Explorar",
+    "services": "Servicios",
     "support": "Ayuda y confianza",
     "providers": "Directorio de trabajadores",
     "terms": "Términos de servicio",
@@ -24,8 +25,8 @@
     "profile": "Perfil"
   },
   "HomePage": {
-    "heroTitle": "Encuentra trabajadores locales de confianza",
-    "heroSubtitle": "Conecta con artesanos y trabajadores calificados en tu comunidad. Seguro, simple y local.",
+    "heroTitle": "Albañiles, electricistas y fontaneros de confianza en El Salvador",
+    "heroSubtitle": "Encuentra profesionales verificados cerca de ti para construcción, reparaciones, limpieza, clases y más. Tu pago queda protegido hasta que el trabajo esté terminado.",
     "searchService": "¿Qué servicio necesitas?",
     "servicePickerSearch": "Buscar servicios",
     "servicePickerAll": "Todos los servicios",
